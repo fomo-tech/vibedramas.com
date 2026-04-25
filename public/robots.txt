@@ -1,0 +1,30 @@
+# Robots.txt for Vibe Drama
+# Allow all search engines to crawl
+
+User-agent: *
+Allow: /
+
+# Disallow crawling of these paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://vibedramas.com/sitemap.xml
+
+# Crawl delay (ms) - Optional
+Crawl-delay: 1
+
+# Specify user agents
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Disallow some common bot patterns
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Crawl-delay: 10

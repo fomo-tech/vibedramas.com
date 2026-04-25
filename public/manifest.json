@@ -1,0 +1,85 @@
+{
+  "name": "Vibe Drama - Xem Phim Ngắn, Phim Bộ Hay 2026",
+  "short_name": "Vibe Drama",
+  "description": "Xem phim ngắn, phim bộ Trung Quốc, Hàn Quốc, Thái Lan HOT nhất 2026. Cập nhật liên tục, chất lượng HD. Xem phim online miễn phí tại Vibe Drama.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF4500",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "vi",
+  "dir": "ltr",
+  "categories": ["entertainment", "video"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/app-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-1.jpg",
+      "sizes": "1170x2532",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/screenshot-2.jpg",
+      "sizes": "2048x1536",
+      "type": "image/jpeg",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Phim Đang Hot",
+      "short_name": "Hot",
+      "description": "Xem phim đang hot nhất",
+      "url": "/?section=trending",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Hồ Sơ Của Tôi",
+      "short_name": "Hồ Sơ",
+      "description": "Xem hồ sơ của bạn",
+      "url": "/profile",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

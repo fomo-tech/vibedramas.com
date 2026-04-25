@@ -1,0 +1,30 @@
+# PWA Guide Images
+
+Thư mục này chứa ảnh hướng dẫn cài đặt PWA cho iOS.
+
+## Required Images
+
+- `ios-step1.png` - Screenshot showing Share button in Safari
+- `ios-step2.png` - Screenshot showing "Add to Home Screen" option
+- `ios-step3.png` - Screenshot showing final "Add" confirmation
+
+## Image Specifications
+
+- Format: PNG with transparency (if needed)
+- Dimensions: 400x160px (or 800x320px @2x)
+- Max file size: 100KB each
+- Compression: Optimized for web
+
+## How to Create
+
+1. Open Safari on iOS device
+2. Navigate to your PWA site
+3. Take screenshots at each step
+4. Crop to show relevant UI
+5. Optimize with ImageOptim or similar tool
+6. Place in this folder
+
+## Alternative: Use Placeholders
+
+The component currently shows placeholder illustrations.
+For production, replace with actual iOS screenshots.

@@ -1,0 +1,72 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dark background gradient matching app -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D0D0D;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1A0A06;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <radialGradient id="glow" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#FF6B2D;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#FF6B2D;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Decorative glow elements -->
+  <ellipse cx="200" cy="150" rx="300" ry="200" fill="url(#glow)" opacity="0.4"/>
+  <ellipse cx="1000" cy="480" rx="350" ry="220" fill="url(#glow)" opacity="0.35"/>
+  
+  <!-- Subtle grid pattern -->
+  <line x1="0" y1="315" x2="1200" y2="315" stroke="rgba(255,107,45,0.08)" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="630" stroke="rgba(255,107,45,0.08)" stroke-width="1"/>
+  
+  <!-- VD Logo - New flat design (larger, cleaner) -->
+  <g transform="translate(150, 200) scale(0.35)">
+    <!-- V letter - white -->
+    <path d="M80 120 L160 380 L240 120 L300 120 L180 480 L140 480 L20 120 Z" fill="#FFFFFF"/>
+    <!-- D letter - orange -->
+    <path d="M340 120 L440 120 C485 120 520 155 520 200 L520 400 C520 445 485 480 440 480 L340 480 Z M380 160 L380 440 L440 440 C463 440 480 423 480 400 L480 200 C480 177 463 160 440 160 Z" fill="#FF6B2D"/>
+  </g>
+  
+  <!-- Main Title -->
+  <text x="400" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="bold" fill="white">
+    Vibe Drama
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="400" y="320" font-family="system-ui, sans-serif" font-size="32" fill="rgba(255,255,255,0.85)">
+    Xem Phim Ngắn, Phim Bộ Hay 2026
+  </text>
+  
+  <!-- Features -->
+  <text x="400" y="380" font-family="system-ui, sans-serif" font-size="22" fill="rgba(255,255,255,0.7)">
+    <tspan fill="#FF6B2D">●</tspan> Chất lượng HD  
+    <tspan fill="#FF6B2D">●</tspan> Cập nhật liên tục  
+    <tspan fill="#FF6B2D">●</tspan> Miễn phí
+  </text>
+  
+  <!-- Accent line -->
+  <line x1="400" y1="420" x2="1050" y2="420" stroke="#FF6B2D" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Categories -->
+  <g transform="translate(400, 460)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="rgba(255,107,45,0.2)" stroke="#FF6B2D" stroke-width="1.5"/>
+    <text x="70" y="24" font-family="system-ui, sans-serif" font-size="16" fill="#FF6B2D" text-anchor="middle">Trung Quốc</text>
+    
+    <rect x="155" y="0" width="120" height="36" rx="18" fill="rgba(255,107,45,0.2)" stroke="#FF6B2D" stroke-width="1.5"/>
+    <text x="215" y="24" font-family="system-ui, sans-serif" font-size="16" fill="#FF6B2D" text-anchor="middle">Hàn Quốc</text>
+    
+    <rect x="290" y="0" width="110" height="36" rx="18" fill="rgba(255,107,45,0.2)" stroke="#FF6B2D" stroke-width="1.5"/>
+    <text x="345" y="24" font-family="system-ui, sans-serif" font-size="16" fill="#FF6B2D" text-anchor="middle">Thái Lan</text>
+  </g>
+  
+  <!-- Domain -->
+  <text x="400" y="560" font-family="system-ui, sans-serif" font-size="20" fill="rgba(255,107,45,0.9)" font-weight="500">
+    vibedramas.com
+  </text>
+</svg>
