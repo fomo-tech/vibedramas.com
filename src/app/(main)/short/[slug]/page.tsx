@@ -27,7 +27,7 @@ function stripHtml(input: string = ""): string {
 }
 
 function getOgImage(thumb_url: string): string {
-  if (!thumb_url) return `${SITE_URL}/og-image.jpg`;
+  if (!thumb_url) return `${SITE_URL}/icons/og-image.png`;
   if (thumb_url.startsWith("http")) return thumb_url;
   return `${CDN}/${thumb_url}`;
 }
