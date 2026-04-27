@@ -157,7 +157,9 @@ export default async function ShortPage({ params }: Props) {
     description,
     image: getOgImage(drama.thumb_url),
     url: canonicalUrl,
-    datePublished: drama.year ? `${drama.year}-01-01` : undefined,
+    datePublished: drama.year
+      ? `${drama.year}-01-01T00:00:00+07:00`
+      : undefined,
     actor: (drama.actor || [])
       .slice(0, 8)
       .map((name: string) => ({ "@type": "Person", name })),
@@ -171,7 +173,11 @@ export default async function ShortPage({ params }: Props) {
     name: titleHead,
     description,
     thumbnailUrl: [getOgImage(drama.thumb_url)],
-    uploadDate: drama.year ? `${drama.year}-01-01` : undefined,
+    uploadDate: drama.year
+      ? `${drama.year}-01-01T00:00:00+07:00`
+      : new Date().toISOString(),
+    contentUrl: canonicalUrl,
+    embedUrl: canonicalUrl,
     url: canonicalUrl,
     potentialAction: {
       "@type": "WatchAction",

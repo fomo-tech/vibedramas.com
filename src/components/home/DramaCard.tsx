@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
@@ -21,20 +20,21 @@ export default function DramaCard({
   const img = drama.thumb_url || drama.poster_url || "";
 
   return (
-    <Link href={`/short/${drama.slug}`} draggable={false}>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: (index % 8) * 0.04 }}
-        viewport={{ once: true }}
+    <Link
+      href={`/short/${drama.slug}`}
+      draggable={false}
+      aria-label={drama.name || "Xem phim"}
+    >
+      <div
         draggable={false}
-        className={`shrink-0 flex flex-col group cursor-pointer relative ${
+        className={`shrink-0 flex flex-col group cursor-pointer relative card-fade-in ${
           fluid
             ? "w-full"
             : rank
               ? "w-40 lg:w-56 pl-12 lg:pl-16"
               : "w-27.5 lg:w-44"
         } select-none touch-auto`}
+        style={{ animationDelay: `${(index % 8) * 40}ms` }}
       >
         {/* Rank number — outside overflow-hidden, Netflix style */}
         {rank && (
@@ -76,12 +76,12 @@ export default function DramaCard({
           {img ? (
             <Image
               src={img}
-              alt={drama.name || "Drama"}
+              alt={drama.name || "Poster phim"}
               fill
               draggable={false}
               className="object-cover group-hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 1024px) 220px, 352px"
-              priority={index < 6}
+              sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 220px"
+              priority={index < 3}
             />
           ) : (
             <div className="absolute inset-0 bg-white/5 flex items-center justify-center">
@@ -121,7 +121,7 @@ export default function DramaCard({
             {drama.name}
           </h3>
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

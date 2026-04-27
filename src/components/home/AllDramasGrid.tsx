@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import DramaCard from "./DramaCard";
 
@@ -47,11 +46,7 @@ export default function AllDramasGrid({ dramas }: AllDramasGridProps) {
   return (
     <div className="mx-auto w-full max-w-350 px-3 py-2 lg:p-6 xl:p-8">
       {dramas.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="h-96 flex flex-col items-center justify-center text-center"
-        >
+        <div className="h-96 flex flex-col items-center justify-center text-center animate-fade-in">
           <div className="text-6xl mb-4">🎬</div>
           <h3 className="text-2xl font-bold text-white mb-2">
             Không tìm thấy phim nào
@@ -59,31 +54,29 @@ export default function AllDramasGrid({ dramas }: AllDramasGridProps) {
           <p className="text-white/50">
             Thử thay đổi các bộ lọc để xem thêm phim
           </p>
-        </motion.div>
+        </div>
       ) : (
         <div className="space-y-6">
           {/* Grid */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={page}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 lg:gap-3.5 xl:gap-4"
-            >
-              {paginated.map((drama, index) => (
-                <DramaCard key={drama._id} drama={drama} index={index} fluid />
-              ))}
-            </motion.div>
-          </AnimatePresence>
+          <div
+            key={page}
+            className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 lg:gap-3.5 xl:gap-4 animate-fade-in"
+          >
+            {paginated.map((drama, index) => (
+              <DramaCard key={drama._id} drama={drama} index={index} fluid />
+            ))}
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-1 lg:gap-1.5 pt-4 pb-4">
+            <nav
+              aria-label="Phân trang"
+              className="flex items-center justify-center gap-1 lg:gap-1.5 pt-4 pb-4"
+            >
               <button
                 onClick={() => goTo(page - 1)}
                 disabled={page === 1}
+                aria-label="Trang trước"
                 className="w-8 h-8 lg:w-9 lg:h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft size={16} />
@@ -94,6 +87,7 @@ export default function AllDramasGrid({ dramas }: AllDramasGridProps) {
                   <span
                     key={`dots-${i}`}
                     className="w-7 h-8 lg:w-9 lg:h-9 flex items-center justify-center text-white/30 text-xs lg:text-sm"
+                    aria-hidden="true"
                   >
                     ···
                   </span>
@@ -101,6 +95,8 @@ export default function AllDramasGrid({ dramas }: AllDramasGridProps) {
                   <button
                     key={p}
                     onClick={() => goTo(p as number)}
+                    aria-label={`Trang ${p}`}
+                    aria-current={page === p ? "page" : undefined}
                     className={`w-8 h-8 lg:w-9 lg:h-9 rounded-xl text-xs lg:text-sm font-black transition-all ${
                       page === p
                         ? "bg-vibe-pink text-white shadow-[0_0_15px_rgba(223,36,255,0.4)]"
@@ -115,11 +111,12 @@ export default function AllDramasGrid({ dramas }: AllDramasGridProps) {
               <button
                 onClick={() => goTo(page + 1)}
                 disabled={page === totalPages}
+                aria-label="Trang sau"
                 className="w-8 h-8 lg:w-9 lg:h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronRight size={16} />
               </button>
-            </div>
+            </nav>
           )}
         </div>
       )}

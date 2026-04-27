@@ -14,7 +14,7 @@ import {
   Timer,
   Sparkles,
 } from "lucide-react";
-import { motion } from "framer-motion";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -146,11 +146,7 @@ export default function Sidebar({
           {item.label}
         </span>
         {isActive && (
-          <motion.div
-            layoutId="sidebarActiveIndicator"
-            className="absolute right-0 w-1 h-6 bg-vibe-pink rounded-full shadow-[0_0_20px_rgba(223,36,255,1)]"
-            transition={{ type: "spring", stiffness: 400, damping: 35 }}
-          />
+          <div className="absolute right-0 w-1 h-6 bg-vibe-pink rounded-full shadow-[0_0_20px_rgba(223,36,255,1)]" />
         )}
       </>
     );
@@ -297,11 +293,7 @@ export default function Sidebar({
             User
           </span>
           {pathname === "/profile" && (
-            <motion.div
-              layoutId="sidebarActiveIndicator"
-              className="absolute right-0 w-1 h-6 bg-vibe-pink rounded-full shadow-[0_0_20px_rgba(223,36,255,1)]"
-              transition={{ type: "spring", stiffness: 400, damping: 35 }}
-            />
+            <div className="absolute right-0 w-1 h-6 bg-vibe-pink rounded-full shadow-[0_0_20px_rgba(223,36,255,1)]" />
           )}
         </Link>
       </div>

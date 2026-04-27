@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Home, Compass, Crown, Film, User } from "lucide-react";
-import { motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 
 const TABS = [
@@ -26,9 +25,12 @@ export default function MobileNav() {
   }
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-100 pointer-events-none bg-black">
-      <div className="pointer-events-none relative bg-black/78 border-t border-white/12">
-        <div className="pointer-events-none flex items-center justify-between px-2 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
+    <nav
+      aria-label="Điều hướng chính"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-100 bg-black"
+    >
+      <div className="relative bg-black/78 border-t border-white/12">
+        <div className="flex items-center justify-between px-2 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = pathname === tab.href;
@@ -38,17 +40,19 @@ export default function MobileNav() {
                 <button
                   key={tab.href}
                   onClick={() => router.push(tab.href)}
-                  className="pointer-events-auto flex flex-col items-center justify-center flex-1 group relative py-2"
+                  aria-label={tab.label}
+                  aria-current={isActive ? "page" : undefined}
+                  className="flex flex-col items-center justify-center flex-1 group relative py-2 active:scale-90 transition-transform duration-150"
                 >
-                  <motion.div
-                    whileTap={{ scale: 0.9 }}
-                    className="relative w-10 h-10"
-                  >
-                    {/* Main button */}
+                  <div className="relative w-10 h-10">
                     <div className="relative w-10 h-10 bg-linear-to-br from-vibe-pink via-orange-500 to-rose-500 rounded-full flex items-center justify-center border border-white/20">
-                      <Icon size={20} className="text-white" />
+                      <Icon
+                        size={20}
+                        className="text-white"
+                        aria-hidden="true"
+                      />
                     </div>
-                  </motion.div>
+                  </div>
                 </button>
               );
             }
@@ -57,11 +61,14 @@ export default function MobileNav() {
               <button
                 key={tab.href}
                 onClick={() => router.push(tab.href)}
-                className="pointer-events-auto flex flex-col items-center justify-center flex-1 group relative py-2"
+                aria-label={tab.label}
+                aria-current={isActive ? "page" : undefined}
+                className="flex flex-col items-center justify-center flex-1 group relative py-2"
               >
                 <div className="relative mb-1">
                   <Icon
                     size={22}
+                    aria-hidden="true"
                     className={`relative transition-all duration-300 ${
                       isActive
                         ? "text-vibe-pink scale-110"
@@ -84,6 +91,6 @@ export default function MobileNav() {
           })}
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
