@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
-import { X, Gift, Zap, Clock, Star, Lock, Flame } from "lucide-react";
+import { X, Gift, Zap, Clock, Star, Lock } from "lucide-react";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -76,20 +76,6 @@ export default function GiftInfoSheet({
       ? rankName
       : (RANK_NAMES[safeRank] ?? "Khán Giả");
   const remainingSeconds = Math.max(0, Math.ceil(safeWatchMax - safeWatchExp));
-  const currentTier = (
-    {
-      1: { name: "Khán Giả", coins: 10, secs: 60 },
-      2: { name: "Fan Cứng", coins: 20, secs: 55 },
-      3: { name: "Sao Nổi", coins: 35, secs: 50 },
-      4: { name: "Minh Tinh", coins: 55, secs: 45 },
-      5: { name: "Huyền Thoại", coins: 80, secs: 40 },
-    } as const
-  )[safeRank] ?? {
-    name: safeRankName,
-    coins: safeCoinsReward,
-    secs: safeWatchMax,
-  };
-  const CurrentRankBadgeIcon = RANK_BADGES[safeRank] ?? Flame;
 
   const rankStep = Math.max(1, Math.min(5, safeRank));
 
@@ -352,85 +338,95 @@ export default function GiftInfoSheet({
           <div className="flex items-center gap-2 mb-3">
             <Star size={14} style={{ color: PRIMARY }} />
             <span className="text-white/80 text-sm font-bold">
-              Hành Trình Phần Thưởng
+              Bảng Thưởng Theo Bậc
             </span>
           </div>
-          <div className="space-y-2">
-            <div
-              className="flex items-center gap-3 rounded-2xl p-3"
-              style={{
-                background: `linear-gradient(135deg, ${PRIMARY}20, ${SECONDARY}0a)`,
-                border: `1px solid ${PRIMARY}55`,
-                boxShadow: `0 4px 24px -8px ${PRIMARY}40`,
-              }}
-            >
-              <div
-                className="relative w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                style={{
-                  background: `linear-gradient(135deg, ${PRIMARY}30, ${SECONDARY}18)`,
-                  border: `1px solid ${PRIMARY}44`,
-                  boxShadow: `0 0 18px -4px ${PRIMARY}55`,
-                }}
-              >
-                <GiftBoxIcon
-                  size={38}
-                  rank={safeRank}
-                  openProgress={isReady ? 0.4 : 0}
-                />
+          <div className="space-y-1.5">
+            {(
+              [
+                { rank: 1, name: "Khán Giả", coins: 10, secs: 60, free: true },
+                { rank: 2, name: "Fan Cứng", coins: 20, secs: 55, free: false },
+                { rank: 3, name: "Sao Nổi", coins: 35, secs: 50, free: false },
+                {
+                  rank: 4,
+                  name: "Minh Tinh",
+                  coins: 55,
+                  secs: 45,
+                  free: false,
+                },
+                {
+                  rank: 5,
+                  name: "Huyền Thoại",
+                  coins: 80,
+                  secs: 40,
+                  free: false,
+                },
+              ] as const
+            ).map((tier) => {
+              const isCurrent = safeRank === tier.rank;
+              const [TC, TS] = RANK_COLORS[tier.rank] ?? RANK_COLORS[1];
+              const TIcon = RANK_BADGES[tier.rank];
+              return (
                 <div
-                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                  key={tier.rank}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2"
                   style={{
-                    background: `linear-gradient(135deg, ${PRIMARY}, ${SECONDARY})`,
-                    boxShadow: `0 0 8px ${PRIMARY}80`,
+                    background: isCurrent
+                      ? `linear-gradient(135deg, ${TC}22, ${TS}0e)`
+                      : "rgba(255,255,255,0.025)",
+                    border: `1px solid ${isCurrent ? TC + "55" : "rgba(255,255,255,0.07)"}`,
+                    boxShadow: isCurrent ? `0 2px 16px -4px ${TC}33` : "none",
                   }}
                 >
-                  <CurrentRankBadgeIcon size={9} color="#fff" />
-                </div>
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span
-                    className="text-xs font-black"
-                    style={{ color: PRIMARY }}
-                  >
-                    {currentTier.name}
-                  </span>
-                  <span
-                    className="text-[8px] font-black px-1.5 py-0.5 rounded-full tracking-wide"
+                  <div
+                    className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                     style={{
-                      background: `linear-gradient(135deg, ${PRIMARY}, ${SECONDARY})`,
-                      color: "#fff",
+                      background: `linear-gradient(135deg, ${TC}33, ${TS}1a)`,
+                      border: `1px solid ${TC}33`,
                     }}
                   >
-                    ĐANG DÙNG
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] text-white/30">
-                    Xem {currentTier.secs}s
-                  </span>
-                  <span className="text-[10px] text-white/15">·</span>
-                  <span
-                    className="text-[10px] font-bold"
-                    style={{ color: PRIMARY }}
+                    {TIcon && <TIcon size={13} style={{ color: TC }} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className="text-[11px] font-black"
+                        style={{
+                          color: isCurrent ? TC : "rgba(255,255,255,0.65)",
+                        }}
+                      >
+                        {tier.name}
+                      </span>
+                      {isCurrent && (
+                        <span
+                          className="text-[7px] font-black px-1.5 py-0.5 rounded-full tracking-wide"
+                          style={{
+                            background: `linear-gradient(135deg, ${TC}, ${TS})`,
+                            color: "#fff",
+                          }}
+                        >
+                          ĐANG DÙNG
+                        </span>
+                      )}
+                      {tier.free && !isCurrent && (
+                        <span className="text-[7px] font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">
+                          MIỄN PHÍ
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-white/30">
+                      Xem {tier.secs}s để mở hộp
+                    </span>
+                  </div>
+                  <div
+                    className="text-sm font-black shrink-0"
+                    style={{ color: isCurrent ? TC : "rgba(255,255,255,0.4)" }}
                   >
-                    +{currentTier.coins} xu
-                  </span>
+                    +{tier.coins} xu
+                  </div>
                 </div>
-              </div>
-
-              <div
-                className="text-sm font-black shrink-0 px-2.5 py-1 rounded-xl"
-                style={{
-                  background: `${PRIMARY}22`,
-                  color: PRIMARY,
-                  border: `1px solid ${PRIMARY}30`,
-                }}
-              >
-                +{currentTier.coins}
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
 

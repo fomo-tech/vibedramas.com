@@ -10,7 +10,6 @@ import {
   PlayCircle,
   Gift,
   TrendingUp,
-  Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import VipHero from "@/components/vip/VipHero";
@@ -31,24 +30,24 @@ import {
 
 const VIP_GUIDE_STEPS = [
   {
-    icon: Coins,
-    title: "1. Chọn gói bậc phù hợp",
-    desc: "Mỗi gói có mức xu/phút, bậc hộp quà và thời hạn khác nhau.",
-  },
-  {
     icon: Gift,
-    title: "2. Kích hoạt gói để mở quyền lợi",
-    desc: "Gói bậc bật cơ chế kiếm xu khi xem video theo cấu hình đã chọn.",
+    title: "1. Chọn bậc hộp quà phù hợp",
+    desc: "Mỗi bậc có xu thưởng khi mở hộp và thời gian xem cần thiết khác nhau.",
   },
   {
     icon: PlayCircle,
-    title: "3. Xem video để tích thời gian",
-    desc: "Mỗi giây xem phim tích lũy vào hộp. Đủ thời gian → hộp sẵn sàng mở.",
+    title: "2. Xem video để tích lũy thời gian",
+    desc: "Mỗi giây xem phim được tính vào bộ đếm. Đủ thời gian → hộp quà mở khóa.",
+  },
+  {
+    icon: Coins,
+    title: "3. Mở hộp nhận xu theo bậc",
+    desc: "Hộp sẵn sàng thì mở ngay để nhận xu. Xu được cộng vào ví của bạn.",
   },
   {
     icon: TrendingUp,
-    title: "4. Bậc càng cao, thưởng càng lớn",
-    desc: "Bậc Huyền Thoại nhận 8× xu so với bậc Khán Giả mỗi lần mở hộp.",
+    title: "4. Bậc càng cao, xu nhận càng nhiều",
+    desc: "Bậc Huyền Thoại nhận 80 xu/hộp — gấp 8 lần so với bậc Khán Giả.",
   },
 ] as const;
 
@@ -156,6 +155,7 @@ export default function VipPage() {
     const [PRIMARY, SECONDARY] = RANK_COLORS[tier.rank] ?? RANK_COLORS[1];
     const RankIcon = RANK_BADGES[tier.rank];
     const isUserRank = giftLevel === tier.rank;
+    const isFree = tier.rank === 1;
     return (
       <motion.div
         key={tier.rank}
@@ -191,6 +191,11 @@ export default function VipPage() {
                 }}
               >
                 ĐANG DÙNG
+              </span>
+            )}
+            {isFree && !isUserRank && (
+              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">
+                MIỄN PHÍ
               </span>
             )}
           </div>
@@ -259,11 +264,11 @@ export default function VipPage() {
             </div>
             <div>
               <p className="text-emerald-400 font-black text-[11px] uppercase tracking-[0.14em]">
-                Ai cũng kiếm xu được — không cần mua gói!
+                Miễn phí — Bậc Khán Giả: +10 xu/hộp
               </p>
               <p className="text-white/55 text-[11px] mt-1 leading-relaxed">
-                Xem video là kiếm xu miễn phí. Chỉ cần nâng cấp gói bậc khi muốn
-                nhận nhiều xu hơn mỗi lần mở hộp.
+                Xem video là tích thời gian. Đủ thời gian → mở hộp nhận xu. Nâng
+                bậc để nhận nhiều xu hơn mỗi lần mở.
               </p>
             </div>
           </motion.div>
@@ -297,7 +302,7 @@ export default function VipPage() {
           <div className="px-4 pt-1 pb-3">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
               <p className="text-white/85 text-[11px] font-black uppercase tracking-[0.16em]">
-                Hướng dẫn tăng thưởng theo bậc
+                Cách nhận xu từ hộp quà
               </p>
               <div className="mt-3 grid grid-cols-1 gap-2.5">
                 {VIP_GUIDE_STEPS.map((step, index) => {
@@ -330,15 +335,21 @@ export default function VipPage() {
 
               <div className="mt-4 border-t border-white/10 pt-3">
                 <p className="text-white/75 text-[11px] font-black uppercase tracking-[0.16em] mb-1">
-                  Thưởng hộp quà theo cấp
+                  Xu nhận theo bậc hộp quà
                 </p>
                 <p className="text-white/40 text-[11px] leading-relaxed mb-3">
-                  Xem phim để tích lũy thời gian mở hộp và nhận xu theo bậc hiện
-                  tại.
+                  Xem đủ thời gian → mở hộp → nhận xu. Bậc càng cao, xu nhận mỗi
+                  lần càng nhiều.
                 </p>
                 <div className="space-y-2">
                   {ranks.length === 0
                     ? [
+                        {
+                          rank: 1,
+                          name: "Khán Giả",
+                          coinsReward: 10,
+                          watchSeconds: 60,
+                        },
                         {
                           rank: 2,
                           name: "Fan Cứng",
@@ -364,9 +375,7 @@ export default function VipPage() {
                           watchSeconds: 40,
                         },
                       ].map((tier) => renderRankTier(tier))
-                    : ranks
-                        .filter((t) => t.rank !== 1)
-                        .map((tier) => renderRankTier(tier))}
+                    : ranks.map((tier) => renderRankTier(tier))}
                 </div>
               </div>
             </div>

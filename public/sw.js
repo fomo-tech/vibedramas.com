@@ -1,6 +1,6 @@
 // Service Worker for Vibe Drama PWA
 // ⚠️ Bump BUILD_VERSION mỗi khi deploy để invalidate cache cũ
-const BUILD_VERSION = "0.0.49";
+const BUILD_VERSION = "0.0.50";
 const CACHE_NAME = "vibe-drama-static-" + BUILD_VERSION;
 const OFFLINE_CACHE = "vibe-drama-offline-" + BUILD_VERSION;
 

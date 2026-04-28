@@ -70,11 +70,9 @@ export default function VipCTA({
                   Gói bậc đã chọn · Mua và áp dụng ngay
                 </p>
                 <p className="mt-1 text-white/45 text-[11px] leading-relaxed">
-                  {(plan.coinsPerMinute ?? 1) > 1
-                    ? `Bật kiếm tiền khi xem · bonus +${plan.coinsPerMinute} xu/phút.`
-                    : "Bật kiếm tiền khi xem video theo cơ chế mặc định của hệ thống."}{" "}
-                  Áp dụng bậc hộp quà tối thiểu: Bậc {plan.giftRank ?? 1}. Mua
-                  gói mới sẽ thay thế gói hiện tại, không cộng dồn thời hạn cũ.
+                  Áp dụng bậc hộp quà {plan.giftRank ?? 1}. Xem phim đủ thời
+                  gian → mở hộp → nhận xu theo bậc. Mua gói mới sẽ thay thế gói
+                  hiện tại, không cộng dồn thời hạn cũ.
                 </p>
               </motion.div>
 

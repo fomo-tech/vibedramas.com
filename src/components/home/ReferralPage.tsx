@@ -280,10 +280,14 @@ export default function ReferralPage() {
             >
               <div className="px-4 pt-4 pb-2">
                 <p className="text-white/50 text-xs font-bold uppercase tracking-widest">
-                  Bảng cấp bậc
+                  Bảng cấp bậc thưởng
+                </p>
+                <p className="text-white/25 text-[10px] mt-1">
+                  Giới thiệu càng nhiều người, cấp bậc càng cao và xu nhận mỗi
+                  người càng lớn.
                 </p>
               </div>
-              <div className="divide-y divide-white/5">
+              <div className="px-4 pb-4 space-y-2.5 mt-1">
                 {(
                   stats?.allMilestones || [
                     stats?.currentMilestone,
@@ -292,24 +296,59 @@ export default function ReferralPage() {
                 )
                   .filter((m): m is Milestone => m !== null && m !== undefined)
                   .slice()
-                  .reverse()
-                  .map((m, i) => {
+                  .sort((a, b) => a.min - b.min)
+                  .map((m) => {
                     const Icon = MILESTONE_ICONS[m.id] ?? Star;
                     const isActive = stats?.currentMilestone.id === m.id;
-                    const isPast = (stats?.referralCount ?? 0) >= m.min;
+                    const count = stats?.referralCount ?? 0;
+                    const isPast = count >= m.min;
+
+                    // Progress: how far through THIS tier the user is
+                    // Get next milestone after this one to calculate tier range
+                    const allSorted = (
+                      stats?.allMilestones || [
+                        stats?.currentMilestone,
+                        stats?.nextMilestone,
+                      ]
+                    )
+                      .filter(
+                        (x): x is Milestone => x !== null && x !== undefined,
+                      )
+                      .sort((a, b) => a.min - b.min);
+                    const tierIdx = allSorted.findIndex((x) => x.id === m.id);
+                    const nextM = allSorted[tierIdx + 1] ?? null;
+
+                    let progressPct = 0;
+                    if (isPast && !nextM) {
+                      progressPct = 100; // max tier, fully filled
+                    } else if (isActive && nextM) {
+                      progressPct = Math.min(
+                        100,
+                        ((count - m.min) / (nextM.min - m.min)) * 100,
+                      );
+                    } else if (isPast) {
+                      progressPct = 100;
+                    }
+
                     return (
                       <div
                         key={m.id}
-                        className={`flex items-center justify-between px-4 py-3 transition-colors ${isActive ? "bg-white/4" : ""}`}
+                        className="rounded-2xl p-3"
+                        style={{
+                          background: isActive
+                            ? `linear-gradient(135deg, ${m.color}18, rgba(0,0,0,0))`
+                            : "rgba(255,255,255,0.025)",
+                          border: `1px solid ${isActive ? m.color + "44" : "rgba(255,255,255,0.06)"}`,
+                        }}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5 mb-2">
                           <div
                             className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                             style={{
                               background: isPast
-                                ? `${m.color}20`
+                                ? `${m.color}22`
                                 : "rgba(255,255,255,0.04)",
-                              border: `1px solid ${isPast ? m.color + "40" : "rgba(255,255,255,0.06)"}`,
+                              border: `1px solid ${isPast ? m.color + "44" : "rgba(255,255,255,0.06)"}`,
                             }}
                           >
                             <Icon
@@ -321,56 +360,105 @@ export default function ReferralPage() {
                               }}
                             />
                           </div>
-                          <div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p
+                                className="text-sm font-black"
+                                style={{
+                                  color: isPast
+                                    ? "white"
+                                    : "rgba(255,255,255,0.3)",
+                                }}
+                              >
+                                {m.label}
+                              </p>
+                              {isActive && (
+                                <span
+                                  className="text-[9px] font-black px-1.5 py-0.5 rounded-full"
+                                  style={{
+                                    background: `${m.color}22`,
+                                    color: m.color,
+                                  }}
+                                >
+                                  ĐANG Ở ĐÂY
+                                </span>
+                              )}
+                              {isPast && !isActive && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-white/8 text-white/30">
+                                  ĐÃ ĐẠT
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-white/25 mt-0.5">
+                              Từ {m.min} người trở lên
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
                             <p
                               className="text-sm font-black"
                               style={{
                                 color: isPast
-                                  ? "white"
-                                  : "rgba(255,255,255,0.3)",
+                                  ? m.color
+                                  : "rgba(255,255,255,0.2)",
                               }}
                             >
-                              {m.label}
-                              {isActive && (
-                                <span
-                                  className="ml-2 text-[9px] font-black px-1.5 py-0.5 rounded-full"
-                                  style={{
-                                    background: `${m.color}20`,
-                                    color: m.color,
-                                  }}
-                                >
-                                  HIỆN TẠI
-                                </span>
-                              )}
+                              +{m.rate} xu
                             </p>
-                            <p className="text-[10px] text-white/25 mt-0.5">
-                              {m.min}+ người giới thiệu
+                            <p className="text-[10px] text-white/20">
+                              mỗi người
                             </p>
+                            {m.bonus > 0 && (
+                              <p
+                                className="text-[9px] font-bold"
+                                style={{
+                                  color: isPast
+                                    ? m.color + "cc"
+                                    : "rgba(255,255,255,0.15)",
+                                }}
+                              >
+                                +{m.bonus} thưởng
+                              </p>
+                            )}
                           </div>
                         </div>
-                        <div className="text-right shrink-0">
-                          <p
-                            className="text-sm font-black"
-                            style={{
-                              color: isPast ? m.color : "rgba(255,255,255,0.2)",
-                            }}
-                          >
-                            +{m.rate} xu
-                          </p>
-                          <p className="text-[10px] text-white/20">mỗi người</p>
-                          {m.bonus > 0 && (
-                            <p
-                              className="text-[9px] font-bold mt-0.5"
-                              style={{
-                                color: isPast
-                                  ? m.color + "cc"
-                                  : "rgba(255,255,255,0.15)",
-                              }}
+
+                        {/* Progress bar for this tier */}
+                        {(isActive || (isPast && nextM)) && (
+                          <div>
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="text-[9px] text-white/25">
+                                {isActive
+                                  ? nextM
+                                    ? `${count} / ${nextM.min} người → ${nextM.label}`
+                                    : `${count} người — cấp cao nhất`
+                                  : `Đã đạt ${m.min}+ người`}
+                              </span>
+                              <span
+                                className="text-[9px] font-bold"
+                                style={{ color: m.color }}
+                              >
+                                {Math.round(progressPct)}%
+                              </span>
+                            </div>
+                            <div
+                              className="h-1.5 rounded-full overflow-hidden"
+                              style={{ background: "rgba(255,255,255,0.06)" }}
                             >
-                              +{m.bonus} xu thưởng
-                            </p>
-                          )}
-                        </div>
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progressPct}%` }}
+                                transition={{
+                                  duration: 0.9,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                                className="h-full rounded-full"
+                                style={{
+                                  background: `linear-gradient(90deg, ${m.color}, ${m.color}bb)`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}

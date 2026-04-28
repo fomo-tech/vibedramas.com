@@ -216,7 +216,7 @@ function VipStatusCard() {
                   Gói <span className="text-vibe-pink">Bậc Hộp Quà</span>
                 </p>
                 <p className="text-white/40 text-[11px] mt-0.5">
-                  Bật kiếm xu khi xem phim và nhận thưởng hộp quà theo bậc
+                  Xem phim để tích thời gian, mở hộp nhận xu theo bậc
                 </p>
                 <div className="mt-2 flex items-center gap-2">
                   <span className="bg-vibe-pink/20 border border-vibe-pink/30 text-vibe-pink text-[10px] font-black px-2 py-0.5 rounded-full">
@@ -245,8 +245,8 @@ function VipStatusCard() {
     {
       label:
         vipCoinsPerMinute > 1
-          ? `Kiếm xu +${vipCoinsPerMinute} xu/phút khi xem`
-          : "Bật kiếm tiền khi xem video",
+          ? `Xem phim tích thời gian · Bonus +${vipCoinsPerMinute} xu/phút`
+          : "Xem phim tích thời gian, mở hộp nhận xu",
     },
     { label: "Nhận thưởng hộp quà theo bậc hiện tại" },
     { label: "Mua gói mới sẽ thay thế gói hiện tại" },

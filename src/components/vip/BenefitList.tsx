@@ -17,12 +17,9 @@ export default function BenefitList({ selectedPlan }: BenefitListProps) {
   const benefits = [
     {
       icon: Coins,
-      title:
-        (selectedPlan?.coinsPerMinute ?? 1) > 1
-          ? `+${selectedPlan?.coinsPerMinute ?? 1} xu mỗi phút xem`
-          : "Bật kiếm tiền khi xem video",
+      title: `Bậc hộp quà ${selectedPlan?.giftRank ?? 1} — xem đủ thời gian mở hộp nhận xu`,
       description:
-        "Không có gói bậc sẽ không tích xu khi xem. Gói bậc là điều kiện để bật cơ chế kiếm tiền.",
+        "Mỗi lần xem đủ giây quy định, hộp quà mở khóa và bạn nhận xu theo bậc đang dùng.",
     },
     {
       icon: Gift,

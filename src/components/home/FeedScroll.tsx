@@ -1166,7 +1166,7 @@ export default function FeedScroll() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  dismissAd(false);
+                  dismissAd(true);
                 }}
                 className="absolute -top-2 -right-2 z-10 w-5 h-5 rounded-full bg-black/80 border border-white/20 flex items-center justify-center active:scale-90 transition-transform shadow-md"
               >

@@ -44,7 +44,7 @@ export default function TopupHistoryPage() {
           <EmptyState
             icon={Crown}
             title="Chưa có giao dịch nạp xu"
-            subtitle="Mua gói bậc để bật kiếm tiền khi xem video và mở hộp quà theo bậc"
+            subtitle="Mua gói bậc để nâng cấp hộp quà và nhận nhiều xu hơn mỗi lần mở hộp"
             ctaLabel="Xem gói bậc"
             ctaHref="/vip"
           />

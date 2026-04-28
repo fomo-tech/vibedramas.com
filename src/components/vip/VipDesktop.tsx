@@ -36,8 +36,8 @@ const VIP_GUIDE_STEPS = [
   },
   {
     icon: PlayCircle,
-    title: "Xem video tích xu",
-    desc: "Gói bậc bật cơ chế cộng xu theo từng phút xem.",
+    title: "Xem video tích lũy thời gian",
+    desc: "Mỗi giây xem phim tích vào bộ đếm. Đủ thời gian → hộp quà mở khóa.",
   },
   {
     icon: Gift,
@@ -70,16 +70,36 @@ function DesktopPlanCard({
   const [loading, setLoading] = useState(false);
   const isBest = plan.badgeVariant === "best";
   const hasCoinBonus = plan.coinsPerMinute > 1;
+  const giftRankNum = Math.max(1, Math.min(5, plan.giftRank ?? 1));
+  const tierNames: Record<number, string> = {
+    1: "Khán Giả",
+    2: "Fan Cứng",
+    3: "Sao Nổi",
+    4: "Minh Tinh",
+    5: "Huyền Thoại",
+  };
+  const tierCoins: Record<number, number> = {
+    1: 10,
+    2: 20,
+    3: 35,
+    4: 55,
+    5: 80,
+  };
+  const tierSecs: Record<number, number> = {
+    1: 60,
+    2: 55,
+    3: 50,
+    4: 45,
+    5: 40,
+  };
   const benefits = [
     {
-      icon: Coins,
-      text: hasCoinBonus
-        ? `Bật kiếm tiền +${plan.coinsPerMinute} xu/phút`
-        : "Bật kiếm tiền khi xem video",
+      icon: Gift,
+      text: `Bậc hộp quà: ${tierNames[giftRankNum]} — +${tierCoins[giftRankNum]} xu/hộp`,
     },
     {
-      icon: Gift,
-      text: `Áp dụng bậc hộp quà ${plan.giftRank ?? 1}`,
+      icon: Coins,
+      text: `Xem ${tierSecs[giftRankNum]}s là đầy hộp · Mở nhận xu ngay`,
     },
     { icon: Clock3, text: `${plan.days} ngày sử dụng` },
     {
@@ -159,12 +179,8 @@ function DesktopPlanCard({
             <span className="text-white/40 text-sm font-bold mb-1.5">xu</span>
           </div>
           <p className="text-white/30 text-xs mt-1.5">
-            {plan.days} ngày ·{" "}
-            {hasCoinBonus
-              ? `Bonus +${plan.coinsPerMinute} xu/phút`
-              : "Bật kiếm tiền"}
-            {" · "}
-            {`Bậc hộp quà ${plan.giftRank ?? 1}`}
+            {plan.days} ngày · {tierNames[giftRankNum]} · +
+            {tierCoins[giftRankNum]} xu/hộp
           </p>
         </div>
 
@@ -331,8 +347,8 @@ export default function VipDesktop({ onSubscribe }: VipDesktopProps) {
             </div>
           ) : (
             <p className="text-white/45 text-base leading-relaxed">
-              Gói bậc là quyền để bật kiếm tiền khi xem video. Một số gói có thể
-              có bonus xu/phút và bậc hộp quà tối thiểu theo cấu hình admin.
+              Chọn bậc hộp quà phù hợp, xem phim để tích thời gian, mở hộp nhận
+              xu. Bậc càng cao, xu nhận mỗi lần càng nhiều.
             </p>
           )}
         </motion.div>
@@ -371,17 +387,17 @@ export default function VipDesktop({ onSubscribe }: VipDesktopProps) {
               </div>
               <div>
                 <p className="text-emerald-400 font-black text-[11px] uppercase tracking-[0.14em]">
-                  Ai cũng kiếm xu được — không cần mua gói!
+                  Miễn phí — Bậc Khán Giả: +10 xu/hộp
                 </p>
                 <p className="text-white/55 text-xs mt-1 leading-relaxed">
-                  Xem video là kiếm xu miễn phí. Chỉ nâng cấp gói bậc khi muốn
-                  nhận nhiều xu hơn mỗi lần mở hộp.
+                  Xem video là tích thời gian. Đủ thời gian → mở hộp nhận xu.
+                  Nâng bậc để nhận nhiều xu hơn mỗi lần mở.
                 </p>
               </div>
             </div>
 
             <p className="text-white/75 text-xs font-black uppercase tracking-[0.16em]">
-              Hướng dẫn kiếm tiền theo bậc
+              Cách nhận xu từ hộp quà
             </p>
             <div className="mt-3 grid grid-cols-1 gap-2.5">
               {VIP_GUIDE_STEPS.map((step, index) => {
