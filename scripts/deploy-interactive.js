@@ -60,7 +60,7 @@ function hiddenQuestion(query) {
 
 async function main() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🚀 Vibe Drama Deployment Script");
+  console.log("🚀 Phim ngắn hay Deployment Script");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
   // Get deployment info
