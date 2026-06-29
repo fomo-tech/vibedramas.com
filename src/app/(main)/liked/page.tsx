@@ -2,7 +2,7 @@ import LikedPage from "@/components/home/LikedPage";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Yêu Thích | Vibe Drama",
+  title: "Yêu Thích | Phim ngắn hay",
   description: "Danh sách phim ngắn bạn đã thả tim và lưu lại.",
   robots: {
     index: false,

@@ -24,7 +24,7 @@ import {
   type VipPackage,
   getVisibleVipPackages,
 } from "@/hooks/useVipPackages";
-import { useGiftRanks } from "@/hooks/useGiftRanks";
+import { useGiftRanks, type GiftRankTier } from "@/hooks/useGiftRanks";
 import CoinIcon from "@/components/ui/CoinIcon";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -58,6 +58,7 @@ interface DesktopPlanCardProps {
   onSelect: (id: string) => void;
   onSubscribe: (id: string) => Promise<void>;
   index: number;
+  ranks: GiftRankTier[];
 }
 
 function DesktopPlanCard({
@@ -66,40 +67,21 @@ function DesktopPlanCard({
   onSelect,
   onSubscribe,
   index,
+  ranks,
 }: DesktopPlanCardProps) {
   const [loading, setLoading] = useState(false);
   const isBest = plan.badgeVariant === "best";
   const hasCoinBonus = plan.coinsPerMinute > 1;
   const giftRankNum = Math.max(1, Math.min(5, plan.giftRank ?? 1));
-  const tierNames: Record<number, string> = {
-    1: "Khán Giả",
-    2: "Fan Cứng",
-    3: "Sao Nổi",
-    4: "Minh Tinh",
-    5: "Huyền Thoại",
-  };
-  const tierCoins: Record<number, number> = {
-    1: 10,
-    2: 20,
-    3: 35,
-    4: 55,
-    5: 80,
-  };
-  const tierSecs: Record<number, number> = {
-    1: 60,
-    2: 55,
-    3: 50,
-    4: 45,
-    5: 40,
-  };
+  const rankData = ranks.find((r) => r.rank === giftRankNum);
   const benefits = [
     {
       icon: Gift,
-      text: `Bậc hộp quà: ${tierNames[giftRankNum]} — +${tierCoins[giftRankNum]} xu/hộp`,
+      text: `Bậc hộp quà: ${rankData?.name ?? "..."} — +${rankData?.coinsReward ?? "?"} xu/hộp`,
     },
     {
       icon: Coins,
-      text: `Xem ${tierSecs[giftRankNum]}s là đầy hộp · Mở nhận xu ngay`,
+      text: `Xem ${rankData?.watchSeconds ?? "?"}s là đầy hộp · Mở nhận xu ngay`,
     },
     { icon: Clock3, text: `${plan.days} ngày sử dụng` },
     {
@@ -179,8 +161,8 @@ function DesktopPlanCard({
             <span className="text-white/40 text-sm font-bold mb-1.5">xu</span>
           </div>
           <p className="text-white/30 text-xs mt-1.5">
-            {plan.days} ngày · {tierNames[giftRankNum]} · +
-            {tierCoins[giftRankNum]} xu/hộp
+            {plan.days} ngày · {rankData?.name ?? "..."} · +
+            {rankData?.coinsReward ?? "?"} xu/hộp
           </p>
         </div>
 
@@ -369,6 +351,7 @@ export default function VipDesktop({ onSubscribe }: VipDesktopProps) {
                   onSelect={setSelectedId}
                   onSubscribe={onSubscribe}
                   index={i}
+                  ranks={ranks}
                 />
               ))}
             </div>
@@ -387,7 +370,9 @@ export default function VipDesktop({ onSubscribe }: VipDesktopProps) {
               </div>
               <div>
                 <p className="text-emerald-400 font-black text-[11px] uppercase tracking-[0.14em]">
-                  Miễn phí — Bậc Khán Giả: +10 xu/hộp
+                  {ranks[0]
+                    ? `Miễn phí — ${ranks[0].name}: +${ranks[0].coinsReward} xu/hộp`
+                    : "Miễn phí — Bậc cơ bản"}
                 </p>
                 <p className="text-white/55 text-xs mt-1 leading-relaxed">
                   Xem video là tích thời gian. Đủ thời gian → mở hộp nhận xu.

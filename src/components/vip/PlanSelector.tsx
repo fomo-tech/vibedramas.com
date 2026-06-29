@@ -8,12 +8,14 @@ import {
   type VipPackage,
   getVisibleVipPackages,
 } from "@/hooks/useVipPackages";
+import type { GiftRankTier } from "@/hooks/useGiftRanks";
 
 interface PlanSelectorProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
   userCoins?: number;
   ownedPlanName?: string;
+  ranks: GiftRankTier[];
 }
 
 export default function PlanSelector({
@@ -21,6 +23,7 @@ export default function PlanSelector({
   onSelect,
   userCoins,
   ownedPlanName,
+  ranks,
 }: PlanSelectorProps) {
   const { packages, loading } = useVipPackages();
 
@@ -45,6 +48,7 @@ export default function PlanSelector({
           index={i}
           userCoins={userCoins}
           isOwned={!!ownedPlanName && plan.name === ownedPlanName}
+          ranks={ranks}
         />
       ))}
     </div>

@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import Header from "./Header";
 import HeroSlider from "./HeroSlider";
 import DramaSection from "./DramaSection";
 import PersonalizedSection from "./PersonalizedSection";
-import CategoryShowcase from "./CategoryShowcase";
 import { TrendingUp, Clapperboard, Trophy } from "lucide-react";
 
 /** Render children only once the element has entered the viewport */
@@ -38,31 +36,18 @@ export default function MainLayoutSwitcher({
   topRatedDramas,
   recommendedDramas,
 }: any) {
-  const categorySource = [
-    ...(featuredDramas ?? []),
-    ...(trendingDramas ?? []),
-    ...(newReleases ?? []),
-    ...(topRatedDramas ?? []),
-  ];
-
   return (
     <>
-      {/* Header */}
-      <div className="relative z-50 shrink-0 h-[calc(3.5rem+env(safe-area-inset-top))] lg:h-16">
-        <Header activeTab="home" />
-      </div>
-
       {/* Scrollable content */}
       <div className="flex-1 relative overflow-y-auto">
         <HeroSlider dramas={featuredDramas} />
 
-        <div className="relative z-10 bg-black py-6 lg:py-10 space-y-8 lg:space-y-12">
-          <CategoryShowcase dramas={categorySource} />
-
+        <div className="relative z-10 bg-black py-6 lg:py-10 space-y-9 lg:space-y-14">
           {/* ĐANG THỊNH HÀNH — above fold, always rendered */}
           <DramaSection
             title="Đang Thịnh Hành"
             icon={TrendingUp}
+            subtitle="Top phim được xem nhiều nhất hôm nay"
             dramas={trendingDramas}
             rank
             featured
@@ -74,6 +59,7 @@ export default function MainLayoutSwitcher({
             <DramaSection
               title="Phim Bộ Mới"
               icon={Clapperboard}
+              subtitle="Cập nhật liên tục, chọn là xem ngay"
               dramas={newReleases}
               seeMoreHref="/all?sort=newest"
             />
@@ -83,6 +69,7 @@ export default function MainLayoutSwitcher({
             <DramaSection
               title="Phim Hay Nhất"
               icon={Trophy}
+              subtitle="Những bộ được yêu thích và xem nhiều"
               dramas={topRatedDramas}
               seeMoreHref="/all?sort=view-desc"
             />

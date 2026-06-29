@@ -1,4 +1,4 @@
-# Robots.txt for Vibe Drama
+# Robots.txt for Phim ngắn hay
 # Allow all search engines to crawl
 
 User-agent: *
@@ -10,7 +10,7 @@ Disallow: /api/
 Disallow: /private/
 
 # Sitemap location
-Sitemap: https://vibedramas.com/sitemap.xml
+Sitemap: https://phimnganhay.xyz/sitemap.xml
 
 # Crawl delay (ms) - Optional
 Crawl-delay: 1

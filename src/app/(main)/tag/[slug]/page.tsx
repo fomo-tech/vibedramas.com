@@ -23,7 +23,7 @@ const TAG_METADATA: Record<
   "tong-tai": {
     title: "Phim Ngắn Tổng Tài - Xem Phim Tài Phiệt Trung Quốc Hay Nhất",
     description:
-      "Phim ngắn tổng tài - Xem phim tài phiệt, phim tổng tài trung quốc hay nhất. Những câu chuyện về tycoon, nhà tài phiệt quyền lực giàu có. Cập nhật liên tục, chất lượng HD miễn phí tại Vibe Drama.",
+      "Phim ngắn tổng tài - Xem phim tài phiệt, phim tổng tài trung quốc hay nhất. Những câu chuyện về tycoon, nhà tài phiệt quyền lực giàu có. Cập nhật liên tục, chất lượng HD miễn phí tại Phim ngắn hay.",
     keywords: [
       "phim ngắn tổng tài",
       "phim tài phiệt",
@@ -36,7 +36,7 @@ const TAG_METADATA: Record<
   "trung-quoc": {
     title: "Phim Ngắn Trung Quốc Hay - Xem Phim Trung Quốc HD 2026",
     description:
-      "Phim ngắn trung quốc hay nhất - Xem phim trung quốc chất lượng HD miễn phí. Bộ phim trung quốc mới cập nhật liên tục. Phim bộ, phim ngắn trung quốc hot 2026 tại Vibe Drama.",
+      "Phim ngắn trung quốc hay nhất - Xem phim trung quốc chất lượng HD miễn phí. Bộ phim trung quốc mới cập nhật liên tục. Phim bộ, phim ngắn trung quốc hot 2026 tại Phim ngắn hay.",
     keywords: [
       "phim ngắn trung quốc",
       "phim trung quốc hay",
@@ -48,7 +48,7 @@ const TAG_METADATA: Record<
   "han-quoc": {
     title: "Phim Ngắn Hàn Quốc Hay - Xem Phim Hàn Quốc HD 2026",
     description:
-      "Phim ngắn Hàn Quốc hay nhất 2026 - Xem phim Hàn Quốc chất lượng HD miễn phí. Phim bộ Hàn Quốc mới, phim ngắn Hàn hot cập nhật liên tục tại Vibe Drama.",
+      "Phim ngắn Hàn Quốc hay nhất 2026 - Xem phim Hàn Quốc chất lượng HD miễn phí. Phim bộ Hàn Quốc mới, phim ngắn Hàn hot cập nhật liên tục tại Phim ngắn hay.",
     keywords: [
       "phim ngắn hàn quốc",
       "phim hàn quốc hay",
@@ -59,7 +59,7 @@ const TAG_METADATA: Record<
   "thai-lan": {
     title: "Phim Ngắn Thái Lan Hay - Xem Phim Thái Lan HD 2026",
     description:
-      "Phim ngắn Thái Lan hay nhất - Xem phim Thái Lan chất lượng HD miễn phí. Phim bộ Thái Lan, phim ngắn Thái hot cập nhật liên tục tại Vibe Drama.",
+      "Phim ngắn Thái Lan hay nhất - Xem phim Thái Lan chất lượng HD miễn phí. Phim bộ Thái Lan, phim ngắn Thái hot cập nhật liên tục tại Phim ngắn hay.",
     keywords: ["phim ngắn thái lan", "phim thái lan hay", "xem phim thái lan"],
   },
 };
@@ -148,14 +148,14 @@ export default async function TagPage({ params }: PageProps) {
               "@type": "CollectionPage",
               name: tagMeta.title,
               description: tagMeta.description,
-              url: `https://vibedramas.com/tag/${slug}`,
+              url: `https://phimnganhay.xyz/tag/${slug}`,
               mainEntity: {
                 "@type": "ItemList",
                 itemListElement: dramas.slice(0, 10).map((drama, index) => ({
                   "@type": "ListItem",
                   position: index + 1,
                   name: drama.name,
-                  url: `https://vibedramas.com/short/${drama.slug}`,
+                  url: `https://phimnganhay.xyz/short/${drama.slug}`,
                   image: drama.poster_url,
                 })),
               },

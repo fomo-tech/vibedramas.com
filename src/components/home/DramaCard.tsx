@@ -17,7 +17,7 @@ export default function DramaCard({
   rank,
   fluid,
 }: DramaCardProps) {
-  const img = drama.thumb_url || drama.poster_url || "";
+  const img = drama.poster_url || drama.thumb_url || "";
 
   return (
     <Link
@@ -80,7 +80,14 @@ export default function DramaCard({
               fill
               draggable={false}
               className="object-cover group-hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 220px"
+              sizes={
+                fluid
+                  ? "(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 260px"
+                  : rank
+                    ? "(max-width: 640px) 45vw, (max-width: 1024px) 28vw, 260px"
+                    : "(max-width: 640px) 34vw, (max-width: 1024px) 24vw, 220px"
+              }
+              quality={95}
               priority={index < 3}
             />
           ) : (

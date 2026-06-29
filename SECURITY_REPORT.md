@@ -1,4 +1,4 @@
-# Báo Cáo Kiểm Tra Bảo Mật & Hiệu Suất — Vibe Drama
+# Báo Cáo Kiểm Tra Bảo Mật & Hiệu Suất — Phim ngắn hay
 
 **Ngày:** 2025  
 **Trạng thái:** ✅ Đã vá — tất cả lỗ hổng được liệt kê bên dưới đã được khắc phục trong commit này

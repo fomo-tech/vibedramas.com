@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -177,18 +178,17 @@ export default function Sidebar({
   return (
     <aside className="hidden lg:flex flex-col w-56 xl:w-72 h-screen fixed top-0 left-0 bg-black/60 backdrop-blur-2xl border-r border-white/5 px-3 xl:px-6 py-5 xl:py-8 z-60">
       {/* Brand */}
-      <div className="px-1.5 xl:px-3 mb-5 xl:mb-8 flex items-center gap-2 xl:gap-3">
-        <div className="w-10 h-10 xl:w-11 xl:h-11 rounded-2xl bg-zinc-950 border border-vibe-pink/30 shadow-[0_0_20px_rgba(255,69,0,0.25)] flex items-center justify-center shrink-0">
-          <span className="text-lg xl:text-xl font-black italic tracking-tighter text-white leading-none">
-            V<span className="text-vibe-pink">D</span>
-          </span>
-        </div>
-        <span className="hidden xl:inline text-xl xl:text-2xl font-black tracking-tighter text-white">
-          Vibe<span className="text-vibe-pink">Drama</span>
-        </span>
-        <span className="xl:hidden text-base font-black tracking-tight text-white/90">
-          Vibe
-        </span>
+      <div className="px-1.5 xl:px-3 mb-5 xl:mb-8 flex items-center">
+        <Link href="/" aria-label="Phim Ngắn Hay - Trang chủ">
+          <Image
+            src="/icons/phim-ngan-hay-logo-alpha.png"
+            alt="Phim Ngắn Hay"
+            width={908}
+            height={299}
+            priority
+            className="h-auto w-40 xl:w-48"
+          />
+        </Link>
       </div>
 
       {/* CTA: đúng logic tính năng theo trạng thái người dùng */}

@@ -264,7 +264,9 @@ export default function VipPage() {
             </div>
             <div>
               <p className="text-emerald-400 font-black text-[11px] uppercase tracking-[0.14em]">
-                Miễn phí — Bậc Khán Giả: +10 xu/hộp
+                {ranks[0]
+                  ? `Miễn phí — ${ranks[0].name}: +${ranks[0].coinsReward} xu/hộp`
+                  : "Miễn phí — Bậc cơ bản"}
               </p>
               <p className="text-white/55 text-[11px] mt-1 leading-relaxed">
                 Xem video là tích thời gian. Đủ thời gian → mở hộp nhận xu. Nâng
@@ -291,6 +293,7 @@ export default function VipPage() {
             selectedId={selectedId}
             onSelect={setSelectedId}
             userCoins={coins}
+            ranks={ranks}
           />
           <motion.div
             initial={{ opacity: 0, scaleX: 0.9 }}
@@ -342,40 +345,7 @@ export default function VipPage() {
                   lần càng nhiều.
                 </p>
                 <div className="space-y-2">
-                  {ranks.length === 0
-                    ? [
-                        {
-                          rank: 1,
-                          name: "Khán Giả",
-                          coinsReward: 10,
-                          watchSeconds: 60,
-                        },
-                        {
-                          rank: 2,
-                          name: "Fan Cứng",
-                          coinsReward: 20,
-                          watchSeconds: 55,
-                        },
-                        {
-                          rank: 3,
-                          name: "Sao Nổi",
-                          coinsReward: 35,
-                          watchSeconds: 50,
-                        },
-                        {
-                          rank: 4,
-                          name: "Minh Tinh",
-                          coinsReward: 55,
-                          watchSeconds: 45,
-                        },
-                        {
-                          rank: 5,
-                          name: "Huyền Thoại",
-                          coinsReward: 80,
-                          watchSeconds: 40,
-                        },
-                      ].map((tier) => renderRankTier(tier))
-                    : ranks.map((tier) => renderRankTier(tier))}
+                  {ranks.map((tier) => renderRankTier(tier))}
                 </div>
               </div>
             </div>

@@ -1,10 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
-  <!-- Simple dark background -->
-  <rect width="512" height="512" fill="#1A0F0D"/>
+  <defs>
+    <filter id="orangeGlow" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 1 0 0 0 0 0.38 0 0 0 0 0 0 0 0 0.75 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
 
-  <!-- V letter - white, large, bold -->
-  <path d="M80 120 L160 380 L240 120 L300 120 L180 480 L140 480 L20 120 Z" fill="#FFFFFF"/>
+  <rect width="512" height="512" rx="112" fill="#050506"/>
+  <rect x="48" y="48" width="416" height="416" rx="92" fill="#08090D" stroke="#FF6A00" stroke-width="12" filter="url(#orangeGlow)"/>
 
-  <!-- D letter - orange, large, bold -->
-  <path d="M340 120 L440 120 C485 120 520 155 520 200 L520 400 C520 445 485 480 440 480 L340 480 Z M380 160 L380 440 L440 440 C463 440 480 423 480 400 L480 200 C480 177 463 160 440 160 Z" fill="#FF6B2D"/>
+  <path d="M184 142H298C365 142 408 181 408 245C408 309 365 348 298 348H244V424H184V142Z" fill="white"/>
+  <path d="M244 202H296C329 202 349 218 349 245C349 272 329 288 296 288H244V202Z" fill="#08090D"/>
+
+  <path d="M118 142H202L174 424H92L118 142Z" fill="#FF6A00"/>
+  <path d="M150 184H190M145 226H184M141 268H180M137 310H176M133 352H172" stroke="#08090D" stroke-width="14" stroke-linecap="square"/>
+
+  <path d="M218 224L288 266L218 308V224Z" fill="#FF6A00"/>
 </svg>

@@ -148,7 +148,7 @@ export default async function AdminDashboard() {
             Dashboard
           </h1>
           <p className="text-gray-400 mt-2 font-medium">
-            Giám sát các chỉ số của Vibe Drama.
+            Giám sát các chỉ số của Phim ngắn hay.
           </p>
         </div>
         <div className="text-xs text-gray-500 bg-gray-950 px-3 py-1.5 rounded-full border border-gray-800">

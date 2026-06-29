@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { X, ShieldCheck, Sparkles, Play, Crown } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -73,12 +74,13 @@ export default function LoginModal() {
               <div className="px-6 pt-4 pb-8 lg:pt-6">
                 {/* Header */}
                 <div className="text-center mb-6">
-                  {/* Logo mark */}
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-zinc-950 border border-vibe-pink/30 mb-4 shadow-[0_0_30px_rgba(255,69,0,0.3)]">
-                    <span className="text-2xl font-black italic text-white tracking-tighter leading-none">
-                      V<span className="text-vibe-pink">D</span>
-                    </span>
-                  </div>
+                  <Image
+                    src="/icons/phim-ngan-hay-logo-alpha.png"
+                    alt="Phim Ngắn Hay"
+                    width={908}
+                    height={299}
+                    className="mx-auto mb-4 h-auto w-48"
+                  />
                   <h2 className="text-white font-black text-2xl tracking-tighter leading-none">
                     Đăng nhập
                   </h2>

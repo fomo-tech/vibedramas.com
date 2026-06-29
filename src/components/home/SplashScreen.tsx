@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 export default function SplashScreen() {
   const [phase, setPhase] = useState<"enter" | "exit" | "hidden">("enter");
@@ -64,7 +65,7 @@ export default function SplashScreen() {
             }}
           />
 
-          {/* App icon — bounces in once */}
+          {/* Brand — bounces in once */}
           <motion.div
             initial={{ scale: 0.72, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -74,42 +75,16 @@ export default function SplashScreen() {
               damping: 22,
               delay: 0.05,
             }}
-            className="relative flex flex-col items-center gap-5"
+            className="relative flex flex-col items-center"
           >
-            {/* Icon */}
-            <div
-              className="w-[96px] h-[96px] rounded-[26px] flex items-center justify-center"
-              style={{
-                background: "linear-gradient(145deg,#1a0a06 0%,#0d0d0d 100%)",
-                boxShadow:
-                  "0 0 0 1px rgba(255,69,0,0.3), 0 0 48px rgba(255,69,0,0.25), 0 12px 40px rgba(0,0,0,0.7)",
-              }}
-            >
-              <span
-                className="font-black italic tracking-tighter leading-none select-none"
-                style={{ fontSize: 44, color: "#fff" }}
-              >
-                V<span style={{ color: "#FF4500" }}>D</span>
-              </span>
-            </div>
-
-            {/* Wordmark */}
-            <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.4, ease: "easeOut" }}
-              className="flex items-baseline gap-0 select-none"
-            >
-              <span className="text-white font-black text-2xl tracking-tight">
-                Vibe
-              </span>
-              <span
-                className="font-black text-2xl tracking-tight"
-                style={{ color: "#FF4500" }}
-              >
-                Drama
-              </span>
-            </motion.div>
+            <Image
+              src="/icons/phim-ngan-hay-logo-alpha.png"
+              alt="Phim Ngắn Hay"
+              width={908}
+              height={299}
+              priority
+              className="h-auto w-72 max-w-[82vw] select-none drop-shadow-[0_0_28px_rgba(255,69,0,0.25)]"
+            />
           </motion.div>
 
           {/* Bottom tagline — fades in last */}

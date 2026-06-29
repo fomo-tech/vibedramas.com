@@ -1,7 +1,7 @@
 import ProfilePage from "@/components/home/ProfilePage";
 
 export const metadata = {
-  title: "Hồ Sơ Của Tôi — Vibe Drama",
+  title: "Hồ Sơ Của Tôi — Phim ngắn hay",
 };
 
 export default function ProfileRoute() {

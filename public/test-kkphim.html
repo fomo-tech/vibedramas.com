@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KKPhim HLS Debug</title>
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        color: #eee;
+        font-family: monospace;
+        padding: 16px;
+      }
+      video {
+        width: 100%;
+        max-width: 360px;
+        aspect-ratio: 9/16;
+        background: #000;
+        display: block;
+        margin: 0 auto 16px;
+      }
+      #log {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 12px;
+        max-height: 400px;
+        overflow-y: auto;
+        font-size: 12px;
+      }
+      .ok {
+        color: #4ade80;
+      }
+      .err {
+        color: #f87171;
+      }
+      .warn {
+        color: #fbbf24;
+      }
+      .info {
+        color: #60a5fa;
+      }
+      button {
+        padding: 8px 16px;
+        margin: 4px;
+        background: #333;
+        color: #eee;
+        border: 1px solid #555;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background: #444;
+      }
+      select {
+        padding: 8px;
+        background: #222;
+        color: #eee;
+        border: 1px solid #555;
+        border-radius: 4px;
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 style="text-align: center; color: #f472b6">KKPhim HLS.js Debug Tool</h2>
+
+    <select id="urlSelect">
+      <option value="https://s6.kkphimplayer6.com/20251209/j0PFM9jX/index.m3u8">
+        URL 1: j0PFM9jX (Dec 9)
+      </option>
+      <option value="https://s6.kkphimplayer6.com/20251208/X3FnMmHF/index.m3u8">
+        URL 2: X3FnMmHF (Dec 8)
+      </option>
+      <option value="https://s6.kkphimplayer6.com/20251204/MzfraQsI/index.m3u8">
+        URL 3: MzfraQsI (Dec 4)
+      </option>
+    </select>
+
+    <video id="video" controls playsinline muted></video>
+
+    <div style="text-align: center; margin-bottom: 12px">
+      <button onclick="testHLS()">▶ Test HLS.js</button>
+      <button onclick="testNative()">▶ Test Native video.src</button>
+      <button onclick="testFetch()">▶ Test fetch() CORS</button>
+      <button onclick="testEmbed()">▶ Test iframe embed</button>
+      <button onclick="clearLog()">Clear log</button>
+    </div>
+
+    <div id="embedContainer" style="display: none; text-align: center">
+      <iframe
+        id="embedFrame"
+        style="width: 360px; height: 640px; border: 0"
+        allow="autoplay; fullscreen"
+      ></iframe>
+    </div>
+
+    <div id="log"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.16/dist/hls.min.js"></script>
+    <script>
+      const video = document.getElementById("video");
+      const logEl = document.getElementById("log");
+      let hlsInstance = null;
+
+      function log(msg, cls = "info") {
+        const t = new Date().toISOString().substring(11, 23);
+        const div = document.createElement("div");
+        div.className = cls;
+        div.textContent = `[${t}] ${msg}`;
+        logEl.prepend(div);
+      }
+
+      function getUrl() {
+        return document.getElementById("urlSelect").value;
+      }
+      function clearLog() {
+        logEl.innerHTML = "";
+      }
+
+      function destroyHls() {
+        if (hlsInstance) {
+          try {
+            hlsInstance.destroy();
+          } catch {}
+          hlsInstance = null;
+        }
+        video.src = "";
+        video.load();
+        document.getElementById("embedContainer").style.display = "none";
+      }
+
+      // ─── Test 1: HLS.js ─────────────────────────────────────────────────────────
+      async function testHLS() {
+        destroyHls();
+        const url = getUrl();
+        log(`=== HLS.js Test: ${url}`, "info");
+
+        if (!Hls.isSupported()) {
+          log("Hls.isSupported() = false — browser không hỗ trợ MSE", "err");
+          return;
+        }
+        log(`Hls.isSupported() = true`, "ok");
+
+        // Check MediaSource codec support
+        const codecs = [
+          'video/mp4; codecs="avc1.640033,mp4a.40.2"',
+          'video/mp4; codecs="avc1.640028,mp4a.40.2"',
+          'video/mp4; codecs="avc1.42E01E,mp4a.40.2"',
+        ];
+        codecs.forEach((c) => {
+          const ok = MediaSource.isTypeSupported(c);
+          log(`MediaSource.isTypeSupported('${c}') = ${ok}`, ok ? "ok" : "err");
+        });
+
+        const hls = new Hls({
+          debug: false,
+          enableWorker: true,
+          startLevel: 0,
+          abrEwmaDefaultEstimate: 3_500_000,
+          manifestLoadingMaxRetry: 1,
+          maxBufferLength: 10,
+        });
+        hlsInstance = hls;
+
+        hls.on(Hls.Events.MANIFEST_LOADING, () =>
+          log("MANIFEST_LOADING", "info"),
+        );
+        hls.on(Hls.Events.MANIFEST_LOADED, (_, d) =>
+          log(`MANIFEST_LOADED — ${d.levels?.length} levels`, "ok"),
+        );
+        hls.on(Hls.Events.MANIFEST_PARSED, (_, d) => {
+          log(
+            `MANIFEST_PARSED — levels: ${JSON.stringify(d.levels?.map((l) => `${l.width}x${l.height}@${l.bitrate}`))}`,
+            "ok",
+          );
+          log("Calling hls.startLoad(0) + video.play()...", "info");
+          hls.startLoad(0);
+          video.muted = true;
+          video
+            .play()
+            .then(() => log("video.play() resolved ✓", "ok"))
+            .catch((e) =>
+              log(`video.play() REJECTED: ${e.name} — ${e.message}`, "err"),
+            );
+        });
+
+        hls.on(Hls.Events.LEVEL_LOADED, (_, d) =>
+          log(
+            `LEVEL_LOADED — ${d.details?.totalduration?.toFixed(1)}s total`,
+            "ok",
+          ),
+        );
+        hls.on(Hls.Events.FRAG_LOADING, (_, d) =>
+          log(`FRAG_LOADING — ${d.frag?.url?.split("/").pop()}`, "info"),
+        );
+        hls.on(Hls.Events.FRAG_LOADED, (_, d) =>
+          log(
+            `FRAG_LOADED — ${(d.frag?.stats?.total / 1024).toFixed(1)} KB`,
+            "ok",
+          ),
+        );
+        hls.on(Hls.Events.BUFFER_APPENDING, (_, d) =>
+          log(
+            `BUFFER_APPENDING — type:${d.type} ${d.data?.byteLength} bytes`,
+            "info",
+          ),
+        );
+        hls.on(Hls.Events.BUFFER_APPENDED, () =>
+          log("BUFFER_APPENDED ✓", "ok"),
+        );
+
+        hls.on(Hls.Events.ERROR, (_, data) => {
+          const msg = `HLS ERROR — fatal:${data.fatal} type:${data.type} details:${data.details} — ${data.error?.message || ""}`;
+          log(msg, data.fatal ? "err" : "warn");
+          if (data.response)
+            log(`  HTTP status: ${data.response.code}`, "warn");
+        });
+
+        video.addEventListener("loadedmetadata", () =>
+          log(
+            `video loadedmetadata — ${video.videoWidth}x${video.videoHeight}`,
+            "ok",
+          ),
+        );
+        video.addEventListener("canplay", () => log("video canplay ✓", "ok"));
+        video.addEventListener("playing", () =>
+          log("video playing ✓ currentTime=" + video.currentTime, "ok"),
+        );
+        video.addEventListener("error", () =>
+          log(
+            `video error: code=${video.error?.code} msg=${video.error?.message}`,
+            "err",
+          ),
+        );
+        video.addEventListener("stalled", () => log("video stalled", "warn"));
+        video.addEventListener("waiting", () => log("video waiting", "warn"));
+
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        log("hls.loadSource + attachMedia called", "info");
+      }
+
+      // ─── Test 2: Native src ─────────────────────────────────────────────────────
+      function testNative() {
+        destroyHls();
+        const url = getUrl();
+        log(`=== Native video.src Test: ${url}`, "info");
+
+        const canPlay = video.canPlayType("application/vnd.apple.mpegurl");
+        log(
+          `canPlayType(application/vnd.apple.mpegurl) = "${canPlay}"`,
+          canPlay ? "ok" : "warn",
+        );
+
+        video.src = url;
+        video.muted = true;
+        video.load();
+        video.addEventListener(
+          "loadedmetadata",
+          () =>
+            log(
+              `loadedmetadata: ${video.videoWidth}x${video.videoHeight}`,
+              "ok",
+            ),
+          { once: true },
+        );
+        video.addEventListener(
+          "error",
+          () =>
+            log(
+              `error: code=${video.error?.code} msg=${video.error?.message}`,
+              "err",
+            ),
+          { once: true },
+        );
+        video
+          .play()
+          .then(() => log("play() resolved ✓", "ok"))
+          .catch((e) =>
+            log(`play() rejected: ${e.name} — ${e.message}`, "err"),
+          );
+        log("video.src set, play() called", "info");
+      }
+
+      // ─── Test 3: fetch() CORS ───────────────────────────────────────────────────
+      async function testFetch() {
+        destroyHls();
+        const url = getUrl();
+        log(`=== fetch() CORS Test: ${url}`, "info");
+        try {
+          const res = await fetch(url, { method: "GET", mode: "cors" });
+          log(`fetch() HTTP ${res.status} — CORS OK`, res.ok ? "ok" : "err");
+          const text = await res.text();
+          log(
+            `Response body (first 200 chars): ${text.substring(0, 200)}`,
+            "ok",
+          );
+
+          // Test first segment
+          const seg = text.split("\n").find((l) => l.trim().endsWith(".ts"));
+          if (seg) {
+            const segUrl =
+              url.replace("index.m3u8", "").replace(/\/?$/, "/") + seg.trim();
+            log(`Testing segment: ${segUrl}`, "info");
+            // Actually need sub-playlist first
+            const sub = url.replace("index.m3u8", "3500kb/hls/index.m3u8");
+            const subRes = await fetch(sub, { mode: "cors" });
+            log(
+              `Sub-playlist fetch HTTP ${subRes.status}`,
+              subRes.ok ? "ok" : "err",
+            );
+            const subText = await subRes.text();
+            const firstSeg = subText
+              .split("\n")
+              .find((l) => l.trim().endsWith(".ts"))
+              ?.trim();
+            if (firstSeg) {
+              const segFullUrl = sub.replace("index.m3u8", firstSeg);
+              log(`Segment fetch: ${segFullUrl}`, "info");
+              const segRes = await fetch(segFullUrl, { mode: "cors" });
+              log(
+                `Segment HTTP ${segRes.status} — Content-Type: ${segRes.headers.get("content-type")} — Size: ${segRes.headers.get("content-length")} bytes`,
+                segRes.ok ? "ok" : "err",
+              );
+            }
+          }
+        } catch (e) {
+          log(`fetch() FAILED: ${e.message}`, "err");
+        }
+      }
+
+      // ─── Test 4: iframe embed ───────────────────────────────────────────────────
+      function testEmbed() {
+        destroyHls();
+        const url = getUrl();
+        const embedUrl = `https://player.phimapi.com/player/?url=${url}`;
+        log(`=== iframe embed: ${embedUrl}`, "info");
+        const container = document.getElementById("embedContainer");
+        const frame = document.getElementById("embedFrame");
+        frame.src = embedUrl;
+        container.style.display = "block";
+        frame.onload = () => log("iframe loaded", "ok");
+        frame.onerror = () => log("iframe error", "err");
+      }
+    </script>
+  </body>
+</html>

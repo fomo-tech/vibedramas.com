@@ -20,6 +20,7 @@ interface RelatedDrama {
   _id: string;
   name: string;
   thumb_url: string;
+  poster_url?: string;
   view: number;
   category: { name: string; slug: string }[];
 }
@@ -155,11 +156,12 @@ export default function DramaDetailSheet({
             <div className="flex items-start gap-3 px-4 pb-4 shrink-0">
               <div className="w-16 h-20 rounded-xl overflow-hidden shrink-0 bg-white/5 border border-white/5">
                 <Image
-                  src={drama.thumb_url || drama.poster_url || ""}
+                  src={drama.poster_url || drama.thumb_url || ""}
                   alt={drama.name}
                   width={64}
                   height={80}
                   className="w-full h-full object-cover"
+                  quality={95}
                 />
               </div>
 
@@ -368,13 +370,14 @@ function RelatedCard({ drama }: { drama: RelatedDrama }) {
   return (
     <div className="cursor-pointer group">
       <div className="relative aspect-2/3 rounded-xl overflow-hidden bg-white/5">
-        {drama.thumb_url && (
+        {(drama.poster_url || drama.thumb_url) && (
           <Image
-            src={drama.thumb_url}
+            src={drama.poster_url || drama.thumb_url || ""}
             alt={drama.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="120px"
+            quality={95}
           />
         )}
         <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-vibe-pink text-[7px] font-black text-white uppercase rounded">

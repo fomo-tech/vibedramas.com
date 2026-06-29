@@ -21,7 +21,7 @@ export default function AdminLogin() {
           <h1 className="text-3xl font-bold bg-linear-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
             Admin Portal
           </h1>
-          <p className="text-gray-400 mt-2">Sign in to manage Vibe Drama</p>
+          <p className="text-gray-400 mt-2">Sign in to manage Phim ngắn hay</p>
         </div>
 
         <form action={formAction} className="space-y-6">

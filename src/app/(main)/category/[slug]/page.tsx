@@ -12,7 +12,7 @@ const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
   process.env.APP_URL ||
-  "https://vibedramas.com"
+  "https://phimnganhay.xyz"
 )
   .trim()
   .replace(/\/+$/, "");
@@ -36,22 +36,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categoryName =
     sample?.category?.find((c: any) => c.slug === slug)?.name || titleize(slug);
 
-  const title = `${categoryName} - Phim Ngắn Mới Nhất | Vibe Drama`;
-  const description = `Tổng hợp phim ngắn thể loại ${categoryName} vietsub, cập nhật liên tục trên Vibe Drama.`;
+  const title = `${categoryName} - Phim Ngắn Mới Nhất | Phim ngắn hay`;
+  const description = `Tổng hợp phim ngắn thể loại ${categoryName} vietsub, cập nhật liên tục trên Phim ngắn hay.`;
   const canonical = `${SITE_URL}/category/${slug}`;
 
   return {
     metadataBase: new URL(SITE_URL),
     title,
     description,
-    keywords: [categoryName, "phim ngắn", "xem phim", "vietsub", "Vibe Drama"],
+    keywords: [categoryName, "phim ngắn", "xem phim", "vietsub", "Phim ngắn hay"],
     alternates: { canonical },
     openGraph: {
       title,
       description,
       url: canonical,
       type: "website",
-      siteName: "Vibe Drama",
+      siteName: "Phim ngắn hay",
       locale: "vi_VN",
       images: [{ url: "/og-image.jpg" }],
     },

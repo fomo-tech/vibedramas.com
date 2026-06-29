@@ -15,7 +15,7 @@
 
 ### 1. Updated SEO Configuration ✅
 **File:** `src/lib/seo.ts`
-- New title: "Vibe Drama - Xem Phim Ngắn Trung Quốc Hay 2026 | Phim Ngắn Tổng Tài"
+- New title: "Phim ngắn hay - Xem Phim Ngắn Trung Quốc Hay 2026 | Phim Ngắn Tổng Tài"
 - Updated keywords (18 total, includes all 5 target keywords)
 - Enhanced description with natural keyword usage
 

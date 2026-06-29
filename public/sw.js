@@ -1,8 +1,8 @@
-// Service Worker for Vibe Drama PWA
+// Service Worker for Phim ngắn hay PWA
 // ⚠️ Bump BUILD_VERSION mỗi khi deploy để invalidate cache cũ
-const BUILD_VERSION = "0.0.50";
-const CACHE_NAME = "vibe-drama-static-" + BUILD_VERSION;
-const OFFLINE_CACHE = "vibe-drama-offline-" + BUILD_VERSION;
+const BUILD_VERSION = "0.0.53";
+const CACHE_NAME = "phim-ngan-hay-static-" + BUILD_VERSION;
+const OFFLINE_CACHE = "phim-ngan-hay-offline-" + BUILD_VERSION;
 
 // Chỉ precache offline fallback — KHÔNG cache HTML pages
 const PRECACHE_ASSETS = [
@@ -122,7 +122,7 @@ async function syncWatchHistory() {
 // Push notifications (optional)
 self.addEventListener("push", (event) => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || "Vibe Drama";
+  const title = data.title || "Phim ngắn hay";
   const options = {
     body: data.body || "New content available!",
     icon: "/icons/icon-192.png",

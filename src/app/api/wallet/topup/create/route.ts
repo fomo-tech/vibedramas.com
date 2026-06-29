@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
   let momoPayUrl: string | undefined;
 
   if (method === "momo") {
-    const orderInfo = `Nap ${pkg.coins} xu VibeDrama`;
+    const orderInfo = `Nap ${pkg.coins} xu Phim ngắn hay`;
     const result = await createMomoOrder(
       orderId,
       requestId,

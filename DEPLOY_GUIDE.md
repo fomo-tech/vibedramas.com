@@ -316,4 +316,4 @@ npm run deploy:next 203.0.113.10 root 22 mypass
 
 ---
 
-**Made with ❤️ for Vibe Drama**
+**Made with ❤️ for Phim ngắn hay**

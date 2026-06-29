@@ -28,7 +28,7 @@ export default function Loading() {
           className="text-center"
         >
           <p className="text-white text-sm font-black tracking-[0.24em]">
-            VIBE DRAMA
+            PHIM NGẮN HAY
           </p>
           <p className="mt-1 text-orange-200/70 text-[11px] font-semibold tracking-[0.14em] uppercase">
             Dang tai trai nghiem

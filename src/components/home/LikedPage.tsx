@@ -33,7 +33,7 @@ function LikedCard({
   index: number;
   onRemove: () => void;
 }) {
-  const img = item.thumb_url || item.poster_url || "";
+  const img = item.poster_url || item.thumb_url || "";
 
   return (
     <motion.div
@@ -52,7 +52,8 @@ function LikedCard({
               alt={item.name}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 768px) 45vw, 200px"
+              sizes="(max-width: 768px) 45vw, 220px"
+              quality={95}
             />
           )}
           {/* Play overlay */}

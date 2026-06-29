@@ -1,5 +1,5 @@
-import { AppConfig } from "../../constants/config";
 import { Menu, Search } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function Header() {
@@ -13,7 +13,14 @@ export function Header() {
           </button>
 
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold sm:inline-block">{AppConfig.name}</span>
+            <Image
+              src="/icons/phim-ngan-hay-logo-alpha.png"
+              alt="Phim Ngắn Hay"
+              width={908}
+              height={299}
+              priority
+              className="h-auto w-36 sm:w-40"
+            />
           </Link>
         </div>
 

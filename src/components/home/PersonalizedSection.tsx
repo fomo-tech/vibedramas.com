@@ -26,6 +26,7 @@ export default function PersonalizedSection({ fallback }: { fallback: any[] }) {
     <DramaSection
       title="Dành Cho Bạn"
       icon={Sparkles}
+      subtitle="Gợi ý dựa trên xu hướng và phim bạn có thể thích"
       dramas={dramas}
       seeMoreHref="/foryou"
     />

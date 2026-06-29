@@ -39,9 +39,9 @@ export async function generateMetadata(): Promise<Metadata> {
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
-      title: "Vibe Drama",
+      title: "Phim ngắn hay",
     },
-    applicationName: "Vibe Drama",
+    applicationName: "Phim ngắn hay",
     formatDetection: {
       telephone: false,
     },

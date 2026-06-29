@@ -8,7 +8,7 @@ export const SEO_KEYWORDS = {
     "phim-ngan": {
       title: "Phim Ngắn - Xem Phim Ngắn Hay Nhất Miễn Phí Tại Việt Nam",
       description:
-        "Xem phim ngắn hay nhất tại Vibe Drama. Phim ngắn trung quốc, hàn quốc, thái lan. Cập nhật liên tục, chất lượng HD, hoàn toàn miễn phí.",
+        "Xem phim ngắn hay nhất tại Phim ngắn hay. Phim ngắn trung quốc, hàn quốc, thái lan. Cập nhật liên tục, chất lượng HD, hoàn toàn miễn phí.",
       keywords: [
         "phim ngắn",
         "xem phim ngắn",
@@ -20,7 +20,7 @@ export const SEO_KEYWORDS = {
     "phim-ngan-trung-quoc": {
       title: "Phim Ngắn Trung Quốc - Xem Phim Trung Quốc Hay 2026",
       description:
-        "Phim ngắn trung quốc hay nhất - Xem phim trung quốc chất lượng HD, cập nhật liên tục, phim ngắn trung quốc hot 2026 tại Vibe Drama.",
+        "Phim ngắn trung quốc hay nhất - Xem phim trung quốc chất lượng HD, cập nhật liên tục, phim ngắn trung quốc hot 2026 tại Phim ngắn hay.",
       keywords: [
         "phim ngắn trung quốc",
         "phim trung quốc hay",
@@ -31,7 +31,7 @@ export const SEO_KEYWORDS = {
     "xem-phim-ngan": {
       title: "Xem Phim Ngắn Online - Phim Ngắn Hay Miễn Phí",
       description:
-        "Xem phim ngắn online miễn phí tại Vibe Drama. Phim ngắn hay từ trung quốc, hàn quốc, thái lan. Cập nhật liên tục, chất lượng HD.",
+        "Xem phim ngắn online miễn phí tại Phim ngắn hay. Phim ngắn hay từ trung quốc, hàn quốc, thái lan. Cập nhật liên tục, chất lượng HD.",
       keywords: [
         "xem phim ngắn",
         "xem phim ngắn online",
@@ -42,7 +42,7 @@ export const SEO_KEYWORDS = {
     "phim-ngan-hay": {
       title: "Phim Ngắn Hay - Top Phim Ngắn Hot 2026",
       description:
-        "Phim ngắn hay nhất 2026 - Tuyển tập phim ngắn chất lượng cao, diễn viên nổi tiếng, kịch tính hấp dẫn. Cập nhật hằng ngày tại Vibe Drama.",
+        "Phim ngắn hay nhất 2026 - Tuyển tập phim ngắn chất lượng cao, diễn viên nổi tiếng, kịch tính hấp dẫn. Cập nhật hằng ngày tại Phim ngắn hay.",
       keywords: [
         "phim ngắn hay",
         "phim ngắn hay nhất",
@@ -53,7 +53,7 @@ export const SEO_KEYWORDS = {
     "phim-ngan-tong-tai": {
       title: "Phim Ngắn Tổng Tài - Xem Phim Tài Phiệt Trung Quốc Hay",
       description:
-        "Phim ngắn tổng tài - Xem phim tổng tài, phim tài phiệt trung quốc hay nhất. Câu chuyện về những nhà tài phiệt, tổng giám đốc quyền lực giàu có. Cập nhật tại Vibe Drama.",
+        "Phim ngắn tổng tài - Xem phim tổng tài, phim tài phiệt trung quốc hay nhất. Câu chuyện về những nhà tài phiệt, tổng giám đốc quyền lực giàu có. Cập nhật tại Phim ngắn hay.",
       keywords: [
         "phim ngắn tổng tài",
         "phim tài phiệt",
@@ -78,12 +78,12 @@ export const SEO_KEYWORDS = {
       question:
         "Phim ngắn trung quốc hay nhất là gì? Gợi ý một số phim ngắn trung quốc hot",
       answer:
-        "Có rất nhiều phim ngắn trung quốc hay nhất như những bộ phim tổng tài, phim tình cảm, phim hành động. Bạn có thể tìm kiếm phim ngắn trung quốc hay nhất trên Vibe Drama, được cập nhật hằng ngày với các bộ phim mới nhất.",
+        "Có rất nhiều phim ngắn trung quốc hay nhất như những bộ phim tổng tài, phim tình cảm, phim hành động. Bạn có thể tìm kiếm phim ngắn trung quốc hay nhất trên Phim ngắn hay, được cập nhật hằng ngày với các bộ phim mới nhất.",
     },
     "xem-phim-ngan-o-dau": {
       question: "Xem phim ngắn ở đâu miễn phí?",
       answer:
-        "Bạn có thể xem phim ngắn miễn phí tại Vibe Drama. Chúng tôi cung cấp hàng trăm bộ phim ngắn từ các quốc gia khác nhau, chất lượng HD, cập nhật liên tục, hoàn toàn miễn phí.",
+        "Bạn có thể xem phim ngắn miễn phí tại Phim ngắn hay. Chúng tôi cung cấp hàng trăm bộ phim ngắn từ các quốc gia khác nhau, chất lượng HD, cập nhật liên tục, hoàn toàn miễn phí.",
     },
   },
 };
@@ -115,7 +115,7 @@ export function generateFAQSchema(
 export function generateBreadcrumbSchema(
   tagName: string,
   tagSlug: string,
-  baseUrl: string = "https://vibedramas.com",
+  baseUrl: string = "https://phimnganhay.xyz",
 ) {
   return {
     "@context": "https://schema.org",
@@ -166,9 +166,9 @@ export const INTERNAL_LINKS = [
  */
 export const HEADING_TEMPLATES = {
   h1: (category: string) =>
-    `Xem Phim Ngắn ${category} Hay Nhất 2026 | Vibe Drama`,
+    `Xem Phim Ngắn ${category} Hay Nhất 2026 | Phim ngắn hay`,
   h2Section1: (category: string) => `Phim Ngắn ${category} Hot 2026`,
-  h2Section2: () => `Tại Sao Nên Xem Phim Ngắn Tại Vibe Drama Việt Nam?`,
+  h2Section2: () => `Tại Sao Nên Xem Phim Ngắn Tại Phim ngắn hay Việt Nam?`,
   h2Section3: (category: string) =>
     `Danh Sách Phim Ngắn ${category} Được Yêu Thích Nhất Hiện Nay`,
 };
@@ -177,13 +177,13 @@ export const HEADING_TEMPLATES = {
  * Mẫu mô tả Meta cho các trang khác nhau
  */
 export const META_DESCRIPTIONS = {
-  home: "Xem phim ngắn trung quốc, xem phim ngắn hay 2026. Phim ngắn tổng tài, phim hàn, phim thái. Chất lượng HD miễn phí tại Vibe Drama.",
+  home: "Xem phim ngắn trung quốc, xem phim ngắn hay 2026. Phim ngắn tổng tài, phim hàn, phim thái. Chất lượng HD miễn phí tại Phim ngắn hay.",
   tongtai:
-    "Phim ngắn tổng tài - Xem phim tài phiệt trung quốc hay nhất. Những câu chuyện về nhà tài phiệt, tổng giám đốc quyền lực giàu có. Cập nhật liên tục tại Vibe Drama.",
+    "Phim ngắn tổng tài - Xem phim tài phiệt trung quốc hay nhất. Những câu chuyện về nhà tài phiệt, tổng giám đốc quyền lực giàu có. Cập nhật liên tục tại Phim ngắn hay.",
   trungquoc:
-    "Phim ngắn trung quốc hay nhất - Xem phim trung quốc chất lượng HD. Cập nhật liên tục, phim ngắn trung quốc hot 2026 tại Vibe Drama.",
+    "Phim ngắn trung quốc hay nhất - Xem phim trung quốc chất lượng HD. Cập nhật liên tục, phim ngắn trung quốc hot 2026 tại Phim ngắn hay.",
   hanquoc:
-    "Phim ngắn hàn quốc hay - Xem phim hàn quốc 2026. Phim bộ hàn hot, phim ngắn hàn lý tưởng, tình cảm tại Vibe Drama.",
+    "Phim ngắn hàn quốc hay - Xem phim hàn quốc 2026. Phim bộ hàn hot, phim ngắn hàn lý tưởng, tình cảm tại Phim ngắn hay.",
   thailand:
-    "Phim ngắn thái lan hay - Xem phim thái lan 2026. Phim bộ thái hay, phim ngắn thái lý tưởng tại Vibe Drama.",
+    "Phim ngắn thái lan hay - Xem phim thái lan 2026. Phim bộ thái hay, phim ngắn thái lý tưởng tại Phim ngắn hay.",
 };

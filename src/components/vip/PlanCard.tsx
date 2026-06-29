@@ -5,38 +5,20 @@ import { Check, Trophy, CheckCircle2 } from "lucide-react";
 import { Zap, Star, Sparkles, Crown, Flame } from "lucide-react";
 import CoinIcon from "@/components/ui/CoinIcon";
 import type { VipPackage } from "@/hooks/useVipPackages";
+import type { GiftRankTier } from "@/hooks/useGiftRanks";
 
 // Keep Plan as alias of VipPackage for backward compat
 export type Plan = VipPackage;
 
-const RANK_TIER_INFO: Record<
-  number,
+// Visual config only (icons + colors) — business data (name/coins/secs) comes from admin API
+const RANK_VISUAL: Record<number, { Icon: React.ElementType; color: string }> =
   {
-    name: string;
-    coins: number;
-    secs: number;
-    Icon: React.ElementType;
-    color: string;
-  }
-> = {
-  1: { name: "Khán Giả", coins: 10, secs: 60, Icon: Flame, color: "#FF4500" },
-  2: { name: "Fan Cứng", coins: 20, secs: 55, Icon: Zap, color: "#FF8C00" },
-  3: { name: "Sao Nổi", coins: 35, secs: 50, Icon: Star, color: "#FFD700" },
-  4: {
-    name: "Minh Tinh",
-    coins: 55,
-    secs: 45,
-    Icon: Sparkles,
-    color: "#9B59B6",
-  },
-  5: {
-    name: "Huyền Thoại",
-    coins: 80,
-    secs: 40,
-    Icon: Crown,
-    color: "#00D4FF",
-  },
-};
+    1: { Icon: Flame, color: "#FF4500" },
+    2: { Icon: Zap, color: "#FF8C00" },
+    3: { Icon: Star, color: "#FFD700" },
+    4: { Icon: Sparkles, color: "#9B59B6" },
+    5: { Icon: Crown, color: "#00D4FF" },
+  };
 
 interface PlanCardProps {
   plan: VipPackage;
@@ -45,6 +27,7 @@ interface PlanCardProps {
   index: number;
   userCoins?: number;
   isOwned?: boolean;
+  ranks: GiftRankTier[];
 }
 
 export default function PlanCard({
@@ -54,12 +37,14 @@ export default function PlanCard({
   index,
   userCoins,
   isOwned = false,
+  ranks,
 }: PlanCardProps) {
   const isBest = plan.badgeVariant === "best";
   const canAfford = userCoins == null || userCoins >= plan.price;
   const giftRank = Math.max(1, Math.min(5, plan.giftRank ?? 1));
-  const tierInfo = RANK_TIER_INFO[giftRank] ?? RANK_TIER_INFO[1];
-  const { Icon: TierIcon, color: tierColor } = tierInfo;
+  const visual = RANK_VISUAL[giftRank] ?? RANK_VISUAL[1];
+  const rankData = ranks.find((r) => r.rank === giftRank);
+  const { Icon: TierIcon, color: tierColor } = visual;
 
   return (
     <motion.button
@@ -140,15 +125,15 @@ export default function PlanCard({
                 style={{ color: isSelected ? tierColor : undefined }}
                 className="font-bold"
               >
-                {tierInfo.name}
+                {rankData?.name ?? "..."}
               </span>
             </span>
             <span>·</span>
             <span className="inline-flex items-center gap-0.5">
-              <CoinIcon size={10} />+{tierInfo.coins} xu/hộp
+              <CoinIcon size={10} />+{rankData?.coinsReward ?? "?"} xu/hộp
             </span>
             <span>·</span>
-            <span>Xem {tierInfo.secs}s</span>
+            <span>Xem {rankData?.watchSeconds ?? "?"}s</span>
             <span>·</span>
             <span>{plan.days} ngày</span>
           </p>

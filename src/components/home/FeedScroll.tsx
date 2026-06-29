@@ -670,7 +670,7 @@ export default function FeedScroll() {
         <div className="flex flex-col items-center space-y-4">
           <div className="w-12 h-12 border-4 border-vibe-pink border-t-transparent rounded-full animate-spin" />
           <p className="text-vibe-pink font-bold animate-pulse tracking-widest text-xs uppercase">
-            VIBE DRAMA...
+            PHIM NGẮN HAY...
           </p>
         </div>
       </div>
@@ -684,11 +684,24 @@ export default function FeedScroll() {
     ? episodeName[panelItem._id] || panelItem.episode1.name || "1"
     : "1";
 
+  // Route KKPhim streams through our proxy so HLS.js never hits CDN CORS directly
+  const toProxiedSrc = useCallback((url: string) => {
+    if (url && url.includes("kkphimplayer6.com")) {
+      return `/api/proxy/stream?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  }, []);
+
   // Active video data for single HlsPlayer outside loop
   const activeItem = items[activeIndex];
   const activeSrc = activeItem
-    ? episodeSrc[activeItem._id] || activeItem.episode1?.link_m3u8
+    ? toProxiedSrc(
+        episodeSrc[activeItem._id] || activeItem.episode1?.link_m3u8 || "",
+      )
     : "";
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const handlePlayerFatalError = useCallback(() => {}, []);
   const activeEpId = activeItem
     ? episodeMeta[activeItem._id]?._id || activeItem.episode1?._id
     : "";
@@ -762,6 +775,7 @@ export default function FeedScroll() {
                     onTimeUpdate={(cur, dur) =>
                       updateTime(activeItem._id, cur, dur)
                     }
+                    onFatalError={handlePlayerFatalError}
                     className="absolute inset-0 w-full h-full"
                   />
                 )}
@@ -931,12 +945,12 @@ export default function FeedScroll() {
                             className="text-[10px] lg:text-sm font-bold text-white/80 flex space-x-12 whitespace-nowrap"
                           >
                             <span>
-                              🎵 Âm thanh gốc - Vibe Drama - {activeItem.name}{" "}
-                              (Tập {activeEpName}) 🎵{" "}
+                              🎵 Âm thanh gốc - Phim ngắn hay -{" "}
+                              {activeItem.name} (Tập {activeEpName}) 🎵{" "}
                             </span>
                             <span>
-                              🎵 Âm thanh gốc - Vibe Drama - {activeItem.name}{" "}
-                              (Tập {activeEpName}) 🎵{" "}
+                              🎵 Âm thanh gốc - Phim ngắn hay -{" "}
+                              {activeItem.name} (Tập {activeEpName}) 🎵{" "}
                             </span>
                           </motion.div>
                         </div>

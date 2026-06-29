@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 import connectDB from "@/lib/db";
 import Drama from "@/models/Drama";
 import Episode from "@/models/Episode";
@@ -9,20 +10,54 @@ import { rateLimit } from "@/lib/rateLimit";
 // ─── Resolve episode1 for a batch of dramas (single query, not N+1) ──────────
 async function attachEpisode1(dramas: any[]): Promise<any[]> {
   const dramaIds = dramas.map((d) => String(d._id));
+  const objectIds = dramaIds.map((id) => new mongoose.Types.ObjectId(id));
 
-  // One query for all ep-1 across all dramas
+  // Pass 1: look for common episode-1 names (OPhim + KKPhim formats)
+  const ep1Names = ["1", "01", "Tập 1", "Tập 01", "Episode 1", "Full"];
   const episodes = await Episode.find({
-    dramaId: { $in: dramaIds },
-    name: { $in: ["1", "01", "Tập 1", "Tập 01"] },
+    dramaId: { $in: objectIds },
+    $or: [
+      { name: { $in: ep1Names } },
+      { name: { $regex: /^(tập|tap|episode|ep|phần|phan)?\s*0*1\b/i } },
+    ],
+    link_m3u8: { $exists: true, $nin: [null, ""] },
   })
     .lean()
     .exec();
 
-  // Build lookup map: dramaId → episode
+  // When a drama has multiple ep-1 candidates (OPhim "1" + KKPhim "Tập 01"),
+  // prefer the one with pure-numeric name (OPhim) — typically lower bitrate,
+  // better mobile compatibility. Fall back to any match.
   const epMap = new Map<string, any>();
   for (const ep of episodes) {
     const key = String(ep.dramaId);
-    if (!epMap.has(key)) epMap.set(key, ep); // keep first match
+    const existing = epMap.get(key);
+    if (!existing) {
+      epMap.set(key, ep);
+    } else {
+      // Pure-numeric name wins (OPhim style: "1", "01")
+      const isNumeric = (name: string) => /^\d+$/.test(name.trim());
+      if (!isNumeric(existing.name) && isNumeric(ep.name)) {
+        epMap.set(key, ep);
+      }
+    }
+  }
+
+  // Pass 2: for dramas still missing episode1 — fall back to ANY episode with m3u8
+  const missingIds = objectIds.filter((id) => !epMap.has(String(id)));
+  if (missingIds.length > 0) {
+    const fallback = await Episode.find({
+      dramaId: { $in: missingIds },
+      link_m3u8: { $exists: true, $nin: [null, ""] },
+    })
+      .sort({ createdAt: 1 })
+      .lean()
+      .exec();
+
+    for (const ep of fallback) {
+      const key = String(ep.dramaId);
+      if (!epMap.has(key)) epMap.set(key, ep);
+    }
   }
 
   return dramas

@@ -1,9 +1,9 @@
-# 🎯 SEO Improvements - Vibe Drama
+# 🎯 SEO Improvements - Phim ngắn hay
 
 ## ✅ Đã cải thiện
 
 ### 1. **Metadata đầy đủ tiếng Việt**
-- ✅ Title: "Vibe Drama - Xem Phim Ngắn, Phim Bộ Hay 2026"
+- ✅ Title: "Phim ngắn hay - Xem Phim Ngắn, Phim Bộ Hay 2026"
 - ✅ Description: 160 ký tự, từ khóa tiếng Việt
 - ✅ Keywords: 13 keywords tiếng Việt + English
 - ✅ Author, Publisher metadata
@@ -24,8 +24,8 @@
 - ✅ twitter:title
 - ✅ twitter:description
 - ✅ twitter:image
-- ✅ twitter:creator - @vibedramas
-- ✅ twitter:site - @vibedramas
+- ✅ twitter:creator - @phimnganhay
+- ✅ twitter:site - @phimnganhay
 
 ### 4. **Schema.org Structured Data (JSON-LD)**
 - ✅ Organization Schema:
@@ -69,7 +69,7 @@ keywords: [
   "xem phim miễn phí",
   "phim HD",
   "vibe drama",
-  "vibedramas",
+  "phimnganhay",
 ]
 ```
 
@@ -83,7 +83,7 @@ keywords: [
   "@type": "Organization",
   "logo": {
     "@type": "ImageObject",
-    "url": "https://vibedramas.com/icons/icon-512.png",
+    "url": "https://phimnganhay.xyz/icons/icon-512.png",
     "width": 512,
     "height": 512
   }
@@ -96,7 +96,7 @@ keywords: [
   "@type": "WebSite",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://vibedramas.com/search?q={search_term_string}"
+    "target": "https://phimnganhay.xyz/search?q={search_term_string}"
   }
 }
 ```
@@ -137,7 +137,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
-    title: "Trang Cụ Thể - Vibe Drama",
+    title: "Trang Cụ Thể - Phim ngắn hay",
     description: "Mô tả trang...",
     keywords: ["từ khóa 1", "từ khóa 2"],
     canonicalUrl: "/trang-cu-the",
@@ -176,11 +176,11 @@ const breadcrumbs = generateBreadcrumbSchema([
 ### Tạo OG Image đẹp:
 1. Design 1200x630px
 2. Thêm:
-   - Logo Vibe Drama
+   - Logo Phim ngắn hay
    - Text: "Xem Phim Ngắn, Phim Bộ Hay 2026"
    - Gradient background (Dark #000000 → #1A0A06 → #0D0D0D)
    - Accent: Orange-red (#FF4500)
-   - Domain: vibedramas.com
+   - Domain: phimnganhay.xyz
 
 3. Save to `/public/icons/og-image.png`
 
@@ -203,7 +203,7 @@ ogImage: "/icons/og-image.png"
 ```
 https://search.google.com/test/rich-results
 ```
-Nhập URL: `https://vibedramas.com`
+Nhập URL: `https://phimnganhay.xyz`
 
 **Expected:**
 - ✅ Organization schema valid
@@ -214,7 +214,7 @@ Nhập URL: `https://vibedramas.com`
 ```
 https://developers.facebook.com/tools/debug/
 ```
-Nhập URL: `https://vibedramas.com`
+Nhập URL: `https://phimnganhay.xyz`
 
 **Expected:**
 - ✅ og:image preview
@@ -225,7 +225,7 @@ Nhập URL: `https://vibedramas.com`
 ```
 https://cards-dev.twitter.com/validator
 ```
-Nhập URL: `https://vibedramas.com`
+Nhập URL: `https://phimnganhay.xyz`
 
 **Expected:**
 - ✅ summary_large_image card
@@ -256,7 +256,7 @@ NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=your_code_here
 ```
 https://search.google.com/search-console/
 → Sitemaps
-→ Add: https://vibedramas.com/sitemap.xml
+→ Add: https://phimnganhay.xyz/sitemap.xml
 ```
 
 ### 3. Request indexing
@@ -285,10 +285,10 @@ https://search.google.com/search-console/
 
 ### Google Search:
 ```
-[LOGO] Vibe Drama
-vibedramas.com
+[LOGO] Phim ngắn hay
+phimnganhay.xyz
 
-Vibe Drama - Xem Phim Ngắn, Phim Bộ Hay 2026
+Phim ngắn hay - Xem Phim Ngắn, Phim Bộ Hay 2026
 Xem phim ngắn, phim bộ Trung Quốc, Hàn Quốc, Thái Lan HOT nhất 2026...
 
 [Sitelinks Searchbox]
@@ -299,9 +299,9 @@ Xem phim ngắn, phim bộ Trung Quốc, Hàn Quốc, Thái Lan HOT nhất 2026.
 ┌─────────────────────────────────┐
 │  [OG IMAGE 1200x630]            │
 │                                 │
-│  Vibe Drama - Xem Phim Ngắn... │
+│  Phim ngắn hay - Xem Phim Ngắn... │
 │  Xem phim ngắn, phim bộ...      │
-│  vibedramas.com                 │
+│  phimnganhay.xyz                 │
 └─────────────────────────────────┘
 ```
 
@@ -316,4 +316,4 @@ Nếu cần help với SEO:
 
 ---
 
-**Made with ❤️ for Vibe Drama SEO**
+**Made with ❤️ for Phim ngắn hay SEO**

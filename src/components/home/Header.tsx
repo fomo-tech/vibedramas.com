@@ -4,6 +4,7 @@ import { Search, LogOut, User, ChevronDown, Download } from "lucide-react";
 import CoinIcon from "@/components/ui/CoinIcon";
 import UserAvatar from "@/components/shared/UserAvatar";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -65,17 +66,19 @@ export default function Header({
       <div className="w-full flex items-center justify-between max-w-480 mx-auto">
         {/* ── Left: Logo ─────────────────────────────────────────── */}
         <div className="flex-1 flex items-center">
-          <Link href="/" className="flex items-center group">
-            <div className="flex items-center gap-2.5 transition-transform duration-300 group-hover:scale-105">
-              <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-2xl bg-zinc-950 border border-vibe-pink/30 shadow-[0_0_18px_rgba(255,69,0,0.25)] flex items-center justify-center">
-                <span className="text-base lg:text-lg font-black italic tracking-tighter text-white leading-none">
-                  V<span className="text-vibe-pink">D</span>
-                </span>
-              </div>
-              <span className="hidden lg:block text-xl font-black tracking-tighter text-white">
-                Vibe<span className="text-vibe-pink">Drama</span>
-              </span>
-            </div>
+          <Link
+            href="/"
+            aria-label="Phim Ngắn Hay - Trang chủ"
+            className="flex items-center group"
+          >
+            <Image
+              src="/icons/phim-ngan-hay-logo-alpha.png"
+              alt="Phim Ngắn Hay"
+              width={908}
+              height={299}
+              priority
+              className="h-auto w-30 sm:w-36 lg:w-44 transition-transform duration-300 group-hover:scale-[1.03]"
+            />
           </Link>
         </div>
 

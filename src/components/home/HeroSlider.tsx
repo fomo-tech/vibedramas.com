@@ -22,6 +22,47 @@ interface HeroSliderProps {
 }
 
 const DELAY = 6000;
+const OPHIM_CDN = "https://img.ophim.live/uploads/movies";
+
+function normalizeImageSrc(value: string | undefined) {
+  const src = value?.trim();
+  if (!src) return "";
+
+  if (
+    src.startsWith("http://") ||
+    src.startsWith("https://") ||
+    src.startsWith("/")
+  ) {
+    return src;
+  }
+
+  const cleanPath = src.replace(/^\/+/, "");
+  if (cleanPath.includes("uploads/movies")) {
+    return `https://img.ophim.live/${cleanPath}`;
+  }
+
+  return `${OPHIM_CDN}/${cleanPath}`;
+}
+
+function hasImageSrc(value: string | undefined) {
+  return !!value?.trim();
+}
+
+function getFallbackHeroSlides(dramas: any[]) {
+  return dramas.filter((drama) =>
+    hasImageSrc(drama?.poster_url) || hasImageSrc(drama?.thumb_url),
+  );
+}
+
+function getHeroImage(drama: any) {
+  const customPoster = normalizeImageSrc(drama?.heroPosterUrl);
+  if (customPoster) return customPoster;
+
+  const movieThumbnail = normalizeImageSrc(drama?.thumb_url);
+  if (movieThumbnail) return movieThumbnail;
+
+  return normalizeImageSrc(drama?.poster_url);
+}
 
 const contentVariants = {
   hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
@@ -60,17 +101,32 @@ export default function HeroSlider({ dramas }: HeroSliderProps) {
           const data = await res.json();
           if (data && data.length > 0) {
             // Use configured slides
-            setHeroSlides(data.map((s: any) => s.drama).filter(Boolean));
+            const configuredSlides = data
+                .map((s: any) =>
+                  s.drama
+                    ? {
+                        ...s.drama,
+                        heroPosterUrl: s.posterUrl || "",
+                      }
+                    : null,
+                )
+                .filter((drama: any) => drama && getHeroImage(drama));
+
+            setHeroSlides(
+              configuredSlides.length
+                ? configuredSlides
+                : getFallbackHeroSlides(dramas),
+            );
           } else {
             // Fallback to default dramas
-            setHeroSlides(dramas.filter((d) => d.poster_url || d.thumb_url));
+            setHeroSlides(getFallbackHeroSlides(dramas));
           }
         } else {
-          setHeroSlides(dramas.filter((d) => d.poster_url || d.thumb_url));
+          setHeroSlides(getFallbackHeroSlides(dramas));
         }
       } catch (error) {
         console.error("Error fetching hero slides:", error);
-        setHeroSlides(dramas.filter((d) => d.poster_url || d.thumb_url));
+        setHeroSlides(getFallbackHeroSlides(dramas));
       } finally {
         setLoading(false);
       }
@@ -128,13 +184,13 @@ export default function HeroSlider({ dramas }: HeroSliderProps) {
                 transition={{ duration: 7, ease: "linear" }}
               >
                 <Image
-                  src={drama.poster_url || drama.thumb_url || ""}
+                  src={getHeroImage(drama)}
                   alt={drama.name || "Drama"}
                   fill
                   priority={index === 0}
                   className="object-cover"
                   sizes="100vw"
-                  quality={85}
+                  quality={95}
                 />
               </motion.div>
 

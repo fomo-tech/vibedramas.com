@@ -6,15 +6,15 @@ import AllDramasClient from "@/components/home/AllDramasClient";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Tất Cả Phim | Vibe Drama",
+  title: "Tất Cả Phim | Phim ngắn hay",
   description:
     "Khám phá toàn bộ kho phim ngắn mới nhất: lọc theo thể loại, quốc gia, năm phát hành và độ phổ biến.",
   alternates: {
     canonical: "/all",
   },
   openGraph: {
-    title: "Tất Cả Phim | Vibe Drama",
-    description: "Khám phá toàn bộ kho phim ngắn mới nhất trên Vibe Drama.",
+    title: "Tất Cả Phim | Phim ngắn hay",
+    description: "Khám phá toàn bộ kho phim ngắn mới nhất trên Phim ngắn hay.",
     url: "/all",
     type: "website",
   },

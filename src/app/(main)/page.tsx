@@ -94,7 +94,7 @@ export default async function HomePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            name: "Vibe Drama",
+            name: "Phim ngắn hay",
             url: siteUrl,
             inLanguage: "vi-VN",
             potentialAction: {

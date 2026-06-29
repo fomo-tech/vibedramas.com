@@ -112,7 +112,7 @@ export default function HistoryPage() {
           <div className="px-4 lg:px-6 space-y-1">
             <AnimatePresence>
               {history.map((item, i) => {
-                const img = item.thumb_url || item.poster_url || "";
+                const img = item.poster_url || item.thumb_url || "";
                 return (
                   <motion.div
                     key={item._id}
@@ -135,6 +135,7 @@ export default function HistoryPage() {
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                             sizes="64px"
+                            quality={95}
                           />
                         )}
                         {/* Progress bar on thumb */}

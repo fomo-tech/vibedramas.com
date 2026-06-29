@@ -8,12 +8,12 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-const SITE_NAME = "Vibe Drama";
+const SITE_NAME = "Phim ngắn hay";
 const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
   process.env.APP_URL ||
-  "https://vibedramas.com"
+  "https://phimnganhay.xyz"
 )
   .trim()
   .replace(/\/+$/, "");
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   await connectDB();
   const drama = await Drama.findOne({ slug }).lean<any>();
-  if (!drama) return { title: "Không tìm thấy | Vibe Drama" };
+  if (!drama) return { title: "Không tìm thấy | Phim ngắn hay" };
 
   // Build titleHead: name - origin_name [quality-lang]
   const qualityTag = [drama.quality, drama.lang].filter(Boolean).join("-");

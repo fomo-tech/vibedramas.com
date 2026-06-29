@@ -17,7 +17,7 @@ export default function IOSInstallPage() {
     {
       title: "Mở Safari",
       description:
-        "Truy cập Vibe Drama bằng trình duyệt Safari trên iPhone/iPad của bạn",
+        "Truy cập Phim ngắn hay bằng trình duyệt Safari trên iPhone/iPad của bạn",
       icon: <Smartphone className="w-12 h-12 text-vibe-pink" />,
     },
     {
@@ -40,7 +40,7 @@ export default function IOSInstallPage() {
     {
       title: "Hoàn thành!",
       description:
-        "Biểu tượng Vibe Drama sẽ xuất hiện trên màn hình chính của bạn. Nhấn vào để mở app!",
+        "Biểu tượng Phim ngắn hay sẽ xuất hiện trên màn hình chính của bạn. Nhấn vào để mở app!",
       icon: <Home className="w-12 h-12 text-vibe-pink" />,
     },
   ];
@@ -54,7 +54,7 @@ export default function IOSInstallPage() {
             <Download className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl font-black text-white mb-4">
-            Cài đặt Vibe Drama trên iOS
+            Cài đặt Phim ngắn hay trên iOS
           </h1>
           <p className="text-lg text-white/70">
             Trải nghiệm xem phim như một ứng dụng native với PWA

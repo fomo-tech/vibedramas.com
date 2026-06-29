@@ -15,9 +15,9 @@ export async function getSeoConfig(page: string) {
 
 // Default SEO config - Tập trung thị trường Việt Nam
 export const DEFAULT_SEO = {
-  title: "Vibe Drama - Xem Phim Ngắn Trung Quốc Hay, Phim Tổng Tài 2026",
+  title: "Phim ngắn hay - Xem Phim Ngắn Trung Quốc Hay, Phim Tổng Tài 2026",
   description:
-    "Xem phim ngắn trung quốc, phim ngắn hay nhất 2026. Phim ngắn tổng tài, phim bộ hàn quốc, phim thái hay. Cập nhật liên tục, chất lượng HD, miễn phí tại Vibe Drama.",
+    "Xem phim ngắn trung quốc, phim ngắn hay nhất 2026. Phim ngắn tổng tài, phim bộ hàn quốc, phim thái hay. Cập nhật liên tục, chất lượng HD, miễn phí tại Phim ngắn hay.",
   keywords: [
     "phim ngắn",
     "phim ngắn trung quốc",
@@ -39,8 +39,8 @@ export const DEFAULT_SEO = {
   ogType: "website",
   twitterCard: "summary_large_image",
   canonicalUrl: "/",
-  author: "Vibe Drama",
-  siteName: "Vibe Drama",
+  author: "Phim ngắn hay",
+  siteName: "Phim ngắn hay",
 };
 
 type SeoMetadataConfig = {
@@ -57,7 +57,7 @@ type SeoMetadataConfig = {
   modifiedTime?: string;
 };
 
-export const DEFAULT_SITE_URL = "https://vibedramas.com";
+export const DEFAULT_SITE_URL = "https://phimnganhay.xyz";
 
 function isLocalHost(hostname: string) {
   const host = hostname.toLowerCase();
@@ -172,8 +172,8 @@ export function buildMetadata(config: SeoMetadataConfig | null = null) {
       title: seo.title,
       description: seo.description,
       images: [fullImageUrl],
-      creator: "@vibedramas",
-      site: "@vibedramas",
+      creator: "@phimnganhay",
+      site: "@phimnganhay",
     },
     alternates: {
       canonical,
@@ -191,8 +191,8 @@ export function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Vibe Drama",
-    alternateName: "Vibe Drama Việt",
+    name: "Phim ngắn hay",
+    alternateName: "Phim ngắn hay Việt Nam",
     url: siteUrl,
     logo: {
       "@type": "ImageObject",
@@ -201,13 +201,13 @@ export function generateOrganizationSchema() {
       height: 512,
     },
     sameAs: [
-      "https://facebook.com/vibedramas",
-      "https://tiktok.com/@vibedramas",
+      "https://facebook.com/phimnganhay",
+      "https://tiktok.com/@phimnganhay",
     ],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "hỗ trợ khách hàng",
-      email: "support@vibedramas.com",
+      email: "support@phimnganhay.xyz",
     },
   };
 }
@@ -219,7 +219,7 @@ export function generateWebSiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Vibe Drama",
+    name: "Phim ngắn hay",
     url: siteUrl,
     potentialAction: {
       "@type": "SearchAction",

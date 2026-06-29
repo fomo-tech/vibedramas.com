@@ -163,7 +163,7 @@ export function PWAProvider({ children }: { children: ReactNode }) {
 
                   {/* Title */}
                   <h3 className="text-3xl font-black text-center mb-3 bg-gradient-to-r from-white via-vibe-pink to-white bg-clip-text text-transparent leading-tight">
-                    Tải ứng dụng VibeDrama
+                    Tải ứng dụng Phim ngắn hay
                   </h3>
 
                   <p className="text-white/50 text-center mb-7 text-sm leading-relaxed">

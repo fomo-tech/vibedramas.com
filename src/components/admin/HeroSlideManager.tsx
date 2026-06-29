@@ -9,6 +9,8 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  ImageIcon,
+  Save,
 } from "lucide-react";
 import Image from "next/image";
 import { useAlert } from "@/hooks/useAlert";
@@ -24,8 +26,20 @@ interface Drama {
 interface HeroSlide {
   _id: string;
   drama: Drama;
+  posterUrl?: string;
   order: number;
   isActive: boolean;
+}
+
+function isValidImageSrc(value: string | undefined) {
+  if (!value) return false;
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/");
+}
+
+function getHeroPosterPreview(slide: HeroSlide, draft?: string) {
+  if (isValidImageSrc(draft)) return draft!;
+  if (isValidImageSrc(slide.posterUrl)) return slide.posterUrl!;
+  return slide.drama.thumb_url || slide.drama.poster_url || "/placeholder.jpg";
 }
 
 export default function HeroSlideManager() {
@@ -36,6 +50,8 @@ export default function HeroSlideManager() {
   const [searchResults, setSearchResults] = useState<Drama[]>([]);
   const [searching, setSearching] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [posterDrafts, setPosterDrafts] = useState<Record<string, string>>({});
+  const [savingPosterId, setSavingPosterId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSlides();
@@ -43,10 +59,15 @@ export default function HeroSlideManager() {
 
   const fetchSlides = async () => {
     try {
-      const res = await fetch("/api/admin/hero-slides");
+      const res = await fetch("/api/admin/hero-slides?all=1");
       if (res.ok) {
         const data = await res.json();
         setSlides(data);
+        setPosterDrafts(
+          Object.fromEntries(
+            data.map((slide: HeroSlide) => [slide._id, slide.posterUrl || ""]),
+          ),
+        );
       }
     } catch (error) {
       console.error("Error fetching hero slides:", error);
@@ -66,7 +87,7 @@ export default function HeroSlideManager() {
       const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
       if (res.ok) {
         const data = await res.json();
-        setSearchResults(data.dramas || []);
+        setSearchResults(Array.isArray(data) ? data : data.dramas || []);
       }
     } catch (error) {
       console.error("Error searching dramas:", error);
@@ -91,6 +112,25 @@ export default function HeroSlideManager() {
       }
     } catch (error) {
       console.error("Error adding slide:", error);
+    }
+  };
+
+  const savePoster = async (id: string) => {
+    setSavingPosterId(id);
+    try {
+      const res = await fetch("/api/admin/hero-slides", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, posterUrl: posterDrafts[id] || "" }),
+      });
+
+      if (res.ok) {
+        await fetchSlides();
+      }
+    } catch (error) {
+      console.error("Error saving hero poster:", error);
+    } finally {
+      setSavingPosterId(null);
     }
   };
 
@@ -226,9 +266,7 @@ export default function HeroSlideManager() {
                 className="flex items-center gap-3 p-2 bg-gray-900 hover:bg-gray-800 rounded-lg transition-all text-left"
               >
                 <Image
-                  src={
-                    drama.thumb_url || drama.poster_url || "/placeholder.jpg"
-                  }
+                  src={drama.thumb_url || drama.poster_url || "/placeholder.jpg"}
                   alt={drama.name}
                   width={60}
                   height={80}
@@ -283,24 +321,56 @@ export default function HeroSlideManager() {
                 <div className="text-2xl font-black text-gray-600 w-8 text-center">
                   {index + 1}
                 </div>
-                <Image
-                  src={
-                    slide.drama.poster_url ||
-                    slide.drama.thumb_url ||
-                    "/placeholder.jpg"
-                  }
-                  alt={slide.drama.name}
-                  width={80}
-                  height={120}
-                  className="rounded object-cover"
-                />
-                <div className="flex-1">
+                <div className="relative h-24 w-40 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-gray-900">
+                  <Image
+                    src={getHeroPosterPreview(slide, posterDrafts[slide._id])}
+                    alt={slide.drama.name}
+                    fill
+                    className="object-cover"
+                    sizes="160px"
+                    quality={90}
+                  />
+                  {slide.posterUrl && (
+                    <div className="absolute left-1.5 top-1.5 rounded bg-vibe-pink px-1.5 py-0.5 text-[9px] font-black uppercase text-white">
+                      Ảnh riêng
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
                   <h3 className="font-black text-white">{slide.drama.name}</h3>
                   {slide.drama.origin_name && (
                     <p className="text-sm text-gray-400">
                       {slide.drama.origin_name}
                     </p>
                   )}
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <ImageIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                      <input
+                        value={posterDrafts[slide._id] || ""}
+                        onChange={(e) =>
+                          setPosterDrafts((prev) => ({
+                            ...prev,
+                            [slide._id]: e.target.value,
+                          }))
+                        }
+                        placeholder="URL ảnh ngang riêng cho hero slide (để trống dùng thumbnail phim)"
+                        className="w-full rounded-lg border border-gray-700 bg-gray-950/70 py-2 pl-9 pr-3 text-sm text-white outline-none transition-colors placeholder:text-gray-600 focus:border-vibe-pink"
+                      />
+                    </div>
+                    <button
+                      onClick={() => savePoster(slide._id)}
+                      disabled={savingPosterId === slide._id}
+                      className="inline-flex items-center gap-2 rounded-lg bg-vibe-pink px-3 py-2 text-sm font-bold text-white transition-all hover:bg-vibe-pink/90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {savingPosterId === slide._id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4" />
+                      )}
+                      Lưu
+                    </button>
+                  </div>
                 </div>
               </div>
 

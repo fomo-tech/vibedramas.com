@@ -9,7 +9,7 @@
 
 ### 1. **Enhanced Keywords in Core Metadata** (`src/lib/seo.ts`)
 ```
-Title: "Vibe Drama - Xem Phim Ngắn Trung Quốc Hay 2026 | Phim Ngắn Tổng Tài"
+Title: "Phim ngắn hay - Xem Phim Ngắn Trung Quốc Hay 2026 | Phim Ngắn Tổng Tài"
 Description: Includes all target keywords naturally in 160 characters
 Keywords: 18 keywords including all 5 target keywords
 ```
@@ -48,7 +48,7 @@ Each page includes:
 ```xml
 <!-- Tag routes now included with high priority -->
 <url>
-  <loc>https://vibedramas.com/tag/tong-tai</loc>
+  <loc>https://phimnganhay.xyz/tag/tong-tai</loc>
   <priority>0.85</priority>
   <changefreq>daily</changefreq>
 </url>
@@ -83,7 +83,7 @@ const breadcrumbs = generateBreadcrumbSchema('Phim Ngắn Tổng Tài', 'tong-ta
 ```
 User-agent: *
 Allow: /
-Sitemap: https://vibedramas.com/sitemap.xml
+Sitemap: https://phimnganhay.xyz/sitemap.xml
 ```
 
 **Features:**
@@ -233,7 +233,7 @@ Blog posts targeting these keywords:
 #### 8. Implement Search Analytics Tracking
 **Google Search Console**
 
-1. Submit sitemap: `https://vibedramas.com/sitemap.xml`
+1. Submit sitemap: `https://phimnganhay.xyz/sitemap.xml`
 2. Request indexing for new tag pages
 3. Monitor in 4 weeks for these keywords:
    - phim ngắn trung quốc

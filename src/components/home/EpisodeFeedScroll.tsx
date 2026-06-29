@@ -450,6 +450,16 @@ export default function EpisodeFeedScroll({
   };
 
   const activeEp = episodes[activeIndex];
+  // Route KKPhim streams through the server proxy so HLS.js never hits CDN CORS directly
+  const toProxiedSrc = React.useCallback((url: string) => {
+    if (url && url.includes("kkphimplayer6.com")) {
+      return `/api/proxy/stream?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  }, []);
+  const handlePlayerFatalError = React.useCallback(() => {
+    // noop — proxy handles CORS; fatal errors are rare and transient
+  }, []);
 
   useEffect(() => {
     const ep = episodes[activeIndex];
@@ -579,7 +589,7 @@ export default function EpisodeFeedScroll({
               </AnimatePresence>
 
               <HlsPlayer
-                src={activeEp.link_m3u8}
+                src={toProxiedSrc(activeEp.link_m3u8)}
                 playing={!isPaused && gateReady}
                 muted={isMuted}
                 seekTo={targetSeek[activeEp._id]}
@@ -588,6 +598,7 @@ export default function EpisodeFeedScroll({
                 onTimeUpdate={(current, duration) =>
                   updateTime(activeEp._id, current, duration)
                 }
+                onFatalError={handlePlayerFatalError}
                 className="absolute inset-0 w-full h-full"
               />
 
@@ -779,11 +790,11 @@ export default function EpisodeFeedScroll({
                           className="text-[10px] lg:text-sm font-bold text-white/80 flex space-x-12 whitespace-nowrap"
                         >
                           <span>
-                            🎵 Âm thanh gốc - Vibe Drama - {drama.name} (Tập{" "}
+                            🎵 Âm thanh gốc - Phim ngắn hay - {drama.name} (Tập{" "}
                             {activeEp.name}) 🎵{" "}
                           </span>
                           <span>
-                            🎵 Âm thanh gốc - Vibe Drama - {drama.name} (Tập{" "}
+                            🎵 Âm thanh gốc - Phim ngắn hay - {drama.name} (Tập{" "}
                             {activeEp.name}) 🎵{" "}
                           </span>
                         </motion.div>

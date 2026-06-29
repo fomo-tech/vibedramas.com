@@ -1,4 +1,4 @@
-# 🎨 OG Image - Vibe Drama
+# 🎨 OG Image - Phim ngắn hay
 
 ## ✅ Cải thiện hoàn thành
 
@@ -15,11 +15,11 @@
 - ✅ Không còn màu hồng (#FF2A6D) ❌
 
 ### 3. **Nội dung đầy đủ**
-- ✅ Title: "Vibe Drama"
+- ✅ Title: "Phim ngắn hay"
 - ✅ Subtitle: "Xem Phim Ngắn, Phim Bộ Hay 2026"
 - ✅ Features: Chất lượng HD • Cập nhật liên tục • Miễn phí
 - ✅ Categories badges: Trung Quốc, Hàn Quốc, Thái Lan
-- ✅ Domain: vibedramas.com
+- ✅ Domain: phimnganhay.xyz
 
 ### 4. **Design chuyên nghiệp**
 - ✅ Dimensions: 1200x630px (Facebook/Twitter recommended)
@@ -129,7 +129,7 @@ ogImage: "/icons/og-image.png"
 ```
 https://developers.facebook.com/tools/debug/
 
-Test URL: https://vibedramas.com
+Test URL: https://phimnganhay.xyz
 ```
 
 **Expected:**
@@ -142,7 +142,7 @@ Test URL: https://vibedramas.com
 ```
 https://cards-dev.twitter.com/validator
 
-Test URL: https://vibedramas.com
+Test URL: https://phimnganhay.xyz
 ```
 
 **Expected:**
@@ -155,7 +155,7 @@ Test URL: https://vibedramas.com
 ```
 https://www.linkedin.com/post-inspector/
 
-Test URL: https://vibedramas.com
+Test URL: https://phimnganhay.xyz
 ```
 
 **Expected:**
@@ -176,14 +176,14 @@ Test URL: https://vibedramas.com
 │   Large                                    │
 │   180x180                                  │
 │                                            │
-│         Vibe Drama                         │
+│         Phim ngắn hay                         │
 │         Xem Phim Ngắn, Phim Bộ Hay 2026   │
 │                                            │
 │         ● HD  ● Liên tục  ● Miễn phí      │
 │         ─────────────────────────────      │
 │         [Trung Quốc] [Hàn Quốc] [Thái]    │
 │                                            │
-│         vibedramas.com                     │
+│         phimnganhay.xyz                     │
 └────────────────────────────────────────────┘
 ```
 
@@ -244,7 +244,7 @@ Sau khi update OG image, Facebook cache có thể cũ.
 **Fix:**
 ```
 1. Vào Facebook Debugger
-2. Nhập URL: https://vibedramas.com
+2. Nhập URL: https://phimnganhay.xyz
 3. Click "Scrape Again"
 4. Share lại để test
 ```
@@ -254,4 +254,4 @@ OG image 1200x630 sẽ tự động resize cho mobile. Logo VD đủ lớn để
 
 ---
 
-**Made with 🧡 for Vibe Drama Branding**
+**Made with 🧡 for Phim ngắn hay Branding**

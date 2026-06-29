@@ -1,7 +1,7 @@
 export const AppConfig = {
-  name: "Vibe Drama",
+  name: "Phim ngắn hay",
   description: "Ứng Dụng Xem Phim Ngắn Hàng Đầu Việt Nam",
-  url: process.env.NEXT_PUBLIC_APP_URL || "https://vibedramas.com",
+  url: process.env.NEXT_PUBLIC_APP_URL || "https://phimnganhay.xyz",
   social: {
     facebook: "https://facebook.com",
     tiktok: "https://tiktok.com",

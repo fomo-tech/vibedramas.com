@@ -210,7 +210,7 @@ export default function SeoConfigManager() {
                 }
                 required
                 className="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-vibe-pink outline-none"
-                placeholder="VibeDrama - Xem phim bộ ngắn miễn phí"
+                placeholder="Phim ngắn hay - Xem phim bộ ngắn miễn phí"
                 maxLength={60}
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -279,7 +279,7 @@ export default function SeoConfigManager() {
                   setFormData({ ...formData, canonicalUrl: e.target.value })
                 }
                 className="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-vibe-pink outline-none"
-                placeholder="https://vibedrama.com/about"
+                placeholder="https://phimnganhay.xyz/about"
               />
             </div>
 

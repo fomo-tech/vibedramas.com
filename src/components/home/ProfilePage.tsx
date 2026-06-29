@@ -682,7 +682,7 @@ export default function ProfilePage() {
         </div>
 
         <p className="text-center text-white/10 text-[10px] mt-6 pb-2 tracking-widest uppercase">
-          VibeDrama v{BUILD_VERSION}
+          Phim ngắn hay v{BUILD_VERSION}
         </p>
       </div>
     </div>

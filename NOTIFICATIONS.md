@@ -2,7 +2,7 @@
 
 ## Overview
 
-Vibe Drama uses custom Toast, Alert, and Confirm components with beautiful animations and Vibe tone styling. These replace native browser `alert()` and `confirm()` dialogs.
+Phim ngắn hay uses custom Toast, Alert, and Confirm components with beautiful animations and Vibe tone styling. These replace native browser `alert()` and `confirm()` dialogs.
 
 ## Toast Notifications
 

@@ -8,8 +8,17 @@ import { getSession } from "@/lib/auth";
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const includeInactive = searchParams.get("all") === "1";
 
-    const slides = await HeroSlide.find({ isActive: true })
+    if (includeInactive) {
+      const session = await getSession();
+      if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
+
+    const slides = await HeroSlide.find(includeInactive ? {} : { isActive: true })
       .sort({ order: 1 })
       .lean();
 
@@ -22,6 +31,8 @@ export async function GET(req: NextRequest) {
       .map((slide) => ({
         _id: slide._id,
         order: slide.order,
+        isActive: slide.isActive,
+        posterUrl: slide.posterUrl || "",
         drama: dramaMap.get(slide.dramaId),
       }))
       .filter((s) => s.drama); // Chỉ lấy slide có drama tồn tại
@@ -45,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     await dbConnect();
     const body = await req.json();
-    const { dramaId } = body;
+    const { dramaId, posterUrl } = body;
 
     if (!dramaId) {
       return NextResponse.json(
@@ -66,6 +77,7 @@ export async function POST(req: NextRequest) {
 
     const slide = await HeroSlide.create({
       dramaId,
+      posterUrl: typeof posterUrl === "string" ? posterUrl.trim() : "",
       order: newOrder,
       isActive: true,
     });
@@ -89,9 +101,10 @@ export async function PUT(req: NextRequest) {
 
     await dbConnect();
     const body = await req.json();
-    const { slideId, order, isActive } = body;
+    const { slideId, id, order, isActive, posterUrl } = body;
+    const targetId = slideId || id;
 
-    if (!slideId) {
+    if (!targetId) {
       return NextResponse.json(
         { error: "Slide ID is required" },
         { status: 400 },
@@ -101,8 +114,11 @@ export async function PUT(req: NextRequest) {
     const updateData: any = {};
     if (order !== undefined) updateData.order = order;
     if (isActive !== undefined) updateData.isActive = isActive;
+    if (posterUrl !== undefined) {
+      updateData.posterUrl = typeof posterUrl === "string" ? posterUrl.trim() : "";
+    }
 
-    const slide = await HeroSlide.findByIdAndUpdate(slideId, updateData, {
+    const slide = await HeroSlide.findByIdAndUpdate(targetId, updateData, {
       returnDocument: "after",
     });
 
@@ -129,7 +145,14 @@ export async function DELETE(req: NextRequest) {
 
     await dbConnect();
     const { searchParams } = new URL(req.url);
-    const slideId = searchParams.get("id");
+    let slideId = searchParams.get("id");
+
+    if (!slideId) {
+      try {
+        const body = await req.json();
+        slideId = body?.id || body?.slideId || null;
+      } catch {}
+    }
 
     if (!slideId) {
       return NextResponse.json(

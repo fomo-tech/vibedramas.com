@@ -38,7 +38,7 @@ export function getPublicOrigin(req: NextRequest) {
 
   if (process.env.NODE_ENV === "production") {
     const safe = candidates.find(isSafeOriginForProd);
-    return safe || "https://vibedramas.com";
+    return safe || "https://phimnganhay.xyz";
   }
 
   return candidates[0] || req.nextUrl.origin;

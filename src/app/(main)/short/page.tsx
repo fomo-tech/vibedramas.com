@@ -6,7 +6,7 @@ import { resolveSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-const SITE_NAME = "Vibe Drama";
+const SITE_NAME = "Phim ngắn hay";
 const CDN = "https://img.ophim.live/uploads/movies";
 
 function resolveThumb(thumb_url: string, fallback: string): string {
@@ -32,9 +32,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const ogImage = resolveThumb(featured?.thumb_url ?? "", fallbackOg);
 
   const title =
-    "Phim Ngắn Trung Quốc Hay Nhất 2026 - Phim Ngắn Tổng Tài, Cổ Trang | Vibe Drama";
+    "Phim Ngắn Trung Quốc Hay Nhất 2026 - Phim Ngắn Tổng Tài, Cổ Trang | Phim ngắn hay";
   const description =
-    "Xem phim ngắn trung quốc hay nhất 2026 miễn phí. Phim ngắn tổng tài, phim ngắn cổ trang, phim ngắn hay vietsub full HD. Cập nhật liên tục tại Vibe Drama.";
+    "Xem phim ngắn trung quốc hay nhất 2026 miễn phí. Phim ngắn tổng tài, phim ngắn cổ trang, phim ngắn hay vietsub full HD. Cập nhật liên tục tại Phim ngắn hay.";
 
   return {
     metadataBase: new URL(siteUrl),
@@ -78,14 +78,14 @@ export async function generateMetadata(): Promise<Metadata> {
           url: ogImage,
           width: 800,
           height: 450,
-          alt: "Phim Ngắn Trung Quốc Hay - Vibe Drama",
+          alt: "Phim Ngắn Trung Quốc Hay - Phim ngắn hay",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title:
-        "Phim Ngắn Trung Quốc Hay Nhất 2026 - Tổng Tài, Cổ Trang | Vibe Drama",
+        "Phim Ngắn Trung Quốc Hay Nhất 2026 - Tổng Tài, Cổ Trang | Phim ngắn hay",
       description:
         "Xem phim ngắn trung quốc, phim ngắn tổng tài, phim ngắn cổ trang hay nhất 2026. Vietsub full HD miễn phí.",
       images: [ogImage],

@@ -19,6 +19,7 @@ interface HlsPlayerProps {
   onPlay?: () => void;
   onPause?: () => void;
   onVideoElement?: (el: HTMLVideoElement | null) => void;
+  onFatalError?: () => void;
 }
 
 type HlsLevelController = {
@@ -45,9 +46,10 @@ const HLS_CONFIG = {
   manifestLoadingMaxRetry: 3,
   levelLoadingMaxRetry: 3,
   fragLoadingMaxRetry: 3,
-  // Start at auto quality, use conservative bandwidth estimate
+  // Start at auto quality; use higher default estimate so high-bitrate
+  // single-quality streams (KKPhim 3.5Mbps) start loading without ABR hesitation
   startLevel: -1,
-  abrEwmaDefaultEstimate: 800_000,
+  abrEwmaDefaultEstimate: 3_500_000,
   testBandwidth: false,
   progressive: true,
   // Sync / stall recovery tuning for audio-induced hitching
@@ -75,6 +77,7 @@ export default function HlsPlayer({
   onPlay,
   onPause,
   onVideoElement,
+  onFatalError,
 }: HlsPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,6 +91,11 @@ export default function HlsPlayer({
   // Stable refs to latest props — used in async callbacks/timeouts to avoid stale closures
   const playingRef = useRef(playing);
   const mutedRef = useRef(muted);
+  // Stable ref for onFatalError — keeps stall watchdog pointing to latest callback
+  const onFatalErrorRef = useRef(onFatalError);
+  useEffect(() => {
+    onFatalErrorRef.current = onFatalError;
+  }, [onFatalError]);
   // Track if we had to force-mute for autoplay — will try to unmute after user gesture
   const forceMutedRef = useRef(false);
   const unmuteQualityTimerRef = useRef<number | null>(null);
@@ -387,15 +395,37 @@ export default function HlsPlayer({
 
       hls.on(
         Hls.Events.ERROR,
-        (_: unknown, data: { fatal: boolean; type: string }) => {
+        (
+          _: unknown,
+          data: { fatal: boolean; type: string; details?: string },
+        ) => {
           if (data.fatal) {
             if (data.type === "networkError") {
-              // Restart loading from current video position on network recovery
-              const currentTime = videoRef.current?.currentTime ?? 0;
-              hls.startLoad(currentTime);
-              hlsEverStartedRef.current = true;
+              // Manifest load failures should not retry forever — give up immediately
+              if (
+                data.details === "manifestLoadError" ||
+                data.details === "manifestParsingError"
+              ) {
+                destroyHls();
+                onFatalError?.();
+              } else {
+                // Segment network error — restart loading from current position
+                const currentTime = videoRef.current?.currentTime ?? 0;
+                hls.startLoad(currentTime);
+                hlsEverStartedRef.current = true;
+              }
+            } else if (data.type === "mediaError") {
+              // Try HLS.js built-in media recovery before giving up
+              try {
+                hls.recoverMediaError();
+              } catch {
+                destroyHls();
+                onFatalError?.();
+              }
             } else {
+              // Fatal error (keySystemError, muxError, etc.) — give up
               destroyHls();
+              onFatalError?.();
             }
           }
         },
@@ -548,9 +578,15 @@ export default function HlsPlayer({
                 setTimeout(() => {
                   if (playingRef.current && videoRef.current?.paused) {
                     videoRef.current.muted = true;
-                    videoRef.current.play().catch(() => {});
+                    videoRef.current.play().catch(() => {
+                      // Second attempt failed — trigger fallback
+                      onFatalErrorRef.current?.();
+                    });
                   }
                 }, 150);
+              } else {
+                // NotSupportedError, NotReadableError, etc. — codec/format rejected
+                onFatalErrorRef.current?.();
               }
             });
           }
@@ -590,6 +626,9 @@ export default function HlsPlayer({
     let lastTime = video.currentTime;
     let lastCheckTime = Date.now();
     let consecutiveStalls = 0;
+    let nuclearRecoverCount = 0;
+    // How many consecutive checks has currentTime been exactly 0 (never started)
+    let zeroProgressTicks = 0;
 
     const recover = () => {
       if (!playingRef.current || !videoRef.current) return;
@@ -625,6 +664,14 @@ export default function HlsPlayer({
     // Full nuclear recovery: destroy HLS and reinitialize
     const nuclearRecover = async () => {
       if (!playingRef.current || !videoRef.current) return;
+
+      nuclearRecoverCount++;
+      // After 1 nuclear recovery still stuck → give up, trigger iframe fallback
+      if (nuclearRecoverCount > 1) {
+        onFatalErrorRef.current?.();
+        return;
+      }
+
       const v = videoRef.current;
       const currentTime = v.currentTime;
 
@@ -661,7 +708,7 @@ export default function HlsPlayer({
         const hls = new Hls({ ...HLS_CONFIG, autoStartLoad: true });
         hlsRef.current = hls;
         hlsEverStartedRef.current = true;
-        hls.loadSource(v.src || src);
+        hls.loadSource(src);
         hls.attachMedia(v);
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -684,6 +731,8 @@ export default function HlsPlayer({
                 hls.destroy();
               } catch {}
               if (hlsRef.current === hls) hlsRef.current = null;
+              // Fatal error during nuclear recovery — trigger iframe fallback
+              onFatalErrorRef.current?.();
             }
           },
         );
@@ -722,6 +771,17 @@ export default function HlsPlayer({
       if (elapsed > 1000 && Math.abs(video.currentTime - lastTime) < 0.1) {
         consecutiveStalls++;
 
+        // If video has NEVER started (currentTime still 0) for >8s → give up
+        if (video.currentTime === 0) {
+          zeroProgressTicks++;
+          if (zeroProgressTicks >= 8) {
+            onFatalErrorRef.current?.();
+            return;
+          }
+        } else {
+          zeroProgressTicks = 0;
+        }
+
         if (consecutiveStalls <= 3) {
           // Soft recovery: restart HLS loading
           recover();
@@ -737,8 +797,9 @@ export default function HlsPlayer({
           nuclearRecover();
         }
       } else {
-        // Video is progressing — reset counter
+        // Video is progressing — reset counters
         consecutiveStalls = 0;
+        zeroProgressTicks = 0;
       }
 
       lastTime = video.currentTime;
@@ -925,6 +986,10 @@ export default function HlsPlayer({
         }}
         onPlay={onPlay}
         onPause={onPause}
+        onError={() => {
+          // Native video element error (covers iOS HLS failures, unsupported codec, etc.)
+          onFatalError?.();
+        }}
       />
     </div>
   );

@@ -2,7 +2,7 @@
 
 ## Tổng quan
 
-VibeDrama app có hỗ trợ cài đặt PWA (Progressive Web App) trên cả iOS và Android với giao diện hướng dẫn đẹp mắt theo Vibe tone style.
+Phim ngắn hay app có hỗ trợ cài đặt PWA (Progressive Web App) trên cả iOS và Android với giao diện hướng dẫn đẹp mắt theo Vibe tone style.
 
 ## Component: PWAInstallPrompt
 
@@ -148,8 +148,8 @@ export default function RootLayout({ children }) {
 Ensure your `/public/manifest.json` có:
 ```json
 {
-  "name": "Vibe Drama",
-  "short_name": "VibeDrama",
+  "name": "Phim ngắn hay",
+  "short_name": "Phim ngắn hay",
   "description": "Ứng dụng xem phim ngắn",
   "start_url": "/",
   "display": "standalone",
@@ -188,9 +188,9 @@ export async function generateMetadata(): Promise<Metadata> {
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
-      title: "Vibe Drama",
+      title: "Phim ngắn hay",
     },
-    applicationName: "Vibe Drama",
+    applicationName: "Phim ngắn hay",
     icons: {
       apple: [
         {

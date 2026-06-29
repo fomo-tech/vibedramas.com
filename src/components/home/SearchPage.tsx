@@ -60,7 +60,7 @@ const ALL_DRAMAS_PREVIEW_LIMIT = 20;
 // ─── ResultCard ───────────────────────────────────────────────────────────────
 
 function ResultCard({ drama, index }: { drama: Drama; index: number }) {
-  const img = drama.thumb_url || drama.poster_url || "";
+  const img = drama.poster_url || drama.thumb_url || "";
 
   return (
     <motion.div
@@ -81,6 +81,7 @@ function ResultCard({ drama, index }: { drama: Drama; index: number }) {
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="56px"
+              quality={95}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -261,48 +262,50 @@ export default function SearchPage() {
       className="h-full bg-black flex flex-col overflow-hidden"
     >
       {/* ── Top bar ── */}
-      <div className="shrink-0 pt-safe flex items-center gap-3 px-4 pt-4 pb-3 border-b border-white/6">
-        <motion.button
-          whileTap={{ scale: 0.88 }}
-          onClick={() => router.back()}
-          className="w-9 h-9 rounded-full bg-white/6 border border-white/8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all shrink-0"
-        >
-          <ArrowLeft size={18} />
-        </motion.button>
+      <div className="shrink-0 pt-safe border-b border-white/6">
+        <div className="mx-auto flex w-full max-w-5xl items-center gap-3 px-4 pt-4 pb-3 lg:px-8 lg:pt-7 lg:pb-5">
+          <motion.button
+            whileTap={{ scale: 0.88 }}
+            onClick={() => router.back()}
+            className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-white/6 border border-white/8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all shrink-0"
+          >
+            <ArrowLeft size={18} />
+          </motion.button>
 
-        {/* Search input */}
-        <form onSubmit={handleSubmit} className="flex-1 relative">
-          <div className="flex items-center gap-2.5 bg-zinc-900/80 border border-white/8 hover:border-vibe-pink/30 focus-within:border-vibe-pink/50 rounded-xl px-3.5 py-2.5 transition-all">
-            <Search size={15} className="text-white/30 shrink-0" />
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => handleChange(e.target.value)}
-              placeholder="Tìm kiếm phim, diễn viên..."
-              className="flex-1 bg-transparent text-white text-sm placeholder:text-white/25 outline-none"
-              autoComplete="off"
-            />
-            <AnimatePresence>
-              {query && (
-                <motion.button
-                  type="button"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.5 }}
-                  onClick={() => {
-                    setQuery("");
-                    setResults([]);
-                    inputRef.current?.focus();
-                  }}
-                  className="text-white/30 hover:text-white/60 transition-colors"
-                >
-                  <X size={14} />
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
-        </form>
+          {/* Search input */}
+          <form onSubmit={handleSubmit} className="flex-1 relative">
+            <div className="flex items-center gap-2.5 bg-zinc-900/80 border border-white/8 hover:border-vibe-pink/30 focus-within:border-vibe-pink/50 rounded-xl lg:rounded-2xl px-3.5 lg:px-4 py-2.5 lg:py-3 transition-all">
+              <Search size={15} className="text-white/30 shrink-0" />
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => handleChange(e.target.value)}
+                placeholder="Tìm kiếm phim, diễn viên..."
+                className="flex-1 bg-transparent text-white text-sm lg:text-base placeholder:text-white/25 outline-none"
+                autoComplete="off"
+              />
+              <AnimatePresence>
+                {query && (
+                  <motion.button
+                    type="button"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    onClick={() => {
+                      setQuery("");
+                      setResults([]);
+                      inputRef.current?.focus();
+                    }}
+                    className="text-white/30 hover:text-white/60 transition-colors"
+                  >
+                    <X size={14} />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
+          </form>
+        </div>
       </div>
 
       {/* ── Body ── */}
@@ -316,7 +319,7 @@ export default function SearchPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="px-4 pt-5 space-y-7 pb-24"
+              className="mx-auto w-full max-w-5xl px-4 pt-5 space-y-7 pb-24 lg:px-8 lg:pt-8 lg:space-y-9"
             >
               {/* Recent searches */}
               {recentSearches.length > 0 && (
@@ -454,11 +457,11 @@ export default function SearchPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="pt-2 pb-24"
+              className="mx-auto w-full max-w-5xl px-4 pt-4 pb-24 lg:px-8 lg:pt-6"
             >
               {/* Loading shimmer */}
               {isLoading && (
-                <div className="px-4 space-y-3 pt-2">
+                <div className="space-y-3 pt-2">
                   {[...Array(6)].map((_, i) => (
                     <div
                       key={i}
@@ -497,7 +500,7 @@ export default function SearchPage() {
               {/* Result list */}
               {!isLoading && results.length > 0 && (
                 <>
-                  <p className="px-4 py-2 text-white/25 text-xs font-bold">
+                  <p className="py-2 text-white/25 text-xs font-bold">
                     {results.length} kết quả cho &ldquo;{query}&rdquo;
                   </p>
                   <div>
