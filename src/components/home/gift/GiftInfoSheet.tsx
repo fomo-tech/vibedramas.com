@@ -21,6 +21,10 @@ interface GiftInfoSheetProps {
   rankName: string;
   nextRankName: string | null;
   coinsReward: number;
+  expReward: number;
+  giftExp: number;
+  currentRankExp: number;
+  nextRankExp: number | null;
   coinsToday: number;
   coinsTotal: number;
   watchExp: number;
@@ -46,6 +50,10 @@ export default function GiftInfoSheet({
   rankName,
   nextRankName,
   coinsReward,
+  expReward,
+  giftExp,
+  currentRankExp,
+  nextRankExp,
   coinsToday,
   coinsTotal,
   watchExp,
@@ -66,6 +74,22 @@ export default function GiftInfoSheet({
   const isReady = state === "ready" && !locked;
 
   const safeCoinsReward = toFiniteNumber(coinsReward, 0);
+  const safeExpReward = toFiniteNumber(expReward, 0);
+  const safeGiftExp = Math.max(0, toFiniteNumber(giftExp, 0));
+  const safeCurrentRankExp = Math.max(0, toFiniteNumber(currentRankExp, 0));
+  const safeNextRankExp =
+    nextRankExp === null ? null : Math.max(0, toFiniteNumber(nextRankExp, 0));
+  const levelProgress =
+    safeNextRankExp === null
+      ? 1
+      : Math.max(
+          0,
+          Math.min(
+            1,
+            (safeGiftExp - safeCurrentRankExp) /
+              Math.max(1, safeNextRankExp - safeCurrentRankExp),
+          ),
+        );
   const safeCoinsToday = toFiniteNumber(coinsToday, 0);
   const safeCoinsTotal = toFiniteNumber(coinsTotal, 0);
   const safeWatchExp = Math.max(0, toFiniteNumber(watchExp, 0));
@@ -280,18 +304,18 @@ export default function GiftInfoSheet({
             }}
           >
             <span className="text-[11px] text-white/40 font-medium">
-              Trạng thái bậc
+              EXP nhận được
             </span>
             <div className="flex items-center gap-1">
               <span className="text-lg font-black" style={{ color: SECONDARY }}>
-                {locked ? "???" : `Bậc ${safeRank}`}
+                {locked ? "???" : `+${safeExpReward}`}
               </span>
-              <span className="text-[11px] text-white/40">cố định</span>
+              <span className="text-[11px] text-white/40">EXP</span>
             </div>
           </div>
         </div>
 
-        {/* Fixed tier note */}
+        {/* Level EXP */}
         <div
           className="mx-4 mt-3 rounded-2xl p-4"
           style={{
@@ -302,28 +326,27 @@ export default function GiftInfoSheet({
           <div className="flex items-center gap-2 mb-3">
             <Star size={14} style={{ color: PRIMARY }} />
             <span className="text-white/80 text-sm font-bold">
-              Hệ thống bậc cố định
+              Tiến độ level
             </span>
             <span className="ml-auto text-white/50 text-xs font-mono">
-              {nextRankName ? `Tiếp theo: ${nextRankName}` : "Đang cao nhất"}
+              {safeGiftExp.toLocaleString("vi-VN")} EXP
             </span>
           </div>
-          <div className="space-y-1.5">
-            <p className="text-[11px] text-white/45">
-              Mua gói bậc nào thì tài khoản được áp dụng ngay bậc đó.
-            </p>
-            <p className="text-[11px] text-white/35">
-              Hệ thống chỉ dùng thời gian xem để mở hộp và nhận xu theo bậc hiện
-              tại.
-            </p>
-            <div className="mt-1 flex justify-between text-[10px] text-white/30">
-              <span>Bậc hiện tại: {safeRankName}</span>
-              <span>
-                {nextRankName
-                  ? `Bậc kế tiếp: ${nextRankName}`
-                  : "Đang ở bậc cao nhất"}
-              </span>
-            </div>
+          <div className="h-2 overflow-hidden rounded-full bg-white/8">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${levelProgress * 100}%` }}
+              className="h-full rounded-full"
+              style={{ background: `linear-gradient(90deg, ${PRIMARY}, ${SECONDARY})` }}
+            />
+          </div>
+          <div className="mt-2 flex justify-between text-[10px] text-white/40">
+            <span>{safeRankName}</span>
+            <span>
+              {safeNextRankExp === null
+                ? "Đã đạt cấp cao nhất"
+                : `${Math.max(0, safeNextRankExp - safeGiftExp).toLocaleString("vi-VN")} EXP đến ${nextRankName}`}
+            </span>
           </div>
         </div>
 
@@ -344,22 +367,22 @@ export default function GiftInfoSheet({
           <div className="space-y-1.5">
             {(
               [
-                { rank: 1, name: "Khán Giả", coins: 10, secs: 60, free: true },
-                { rank: 2, name: "Fan Cứng", coins: 20, secs: 55, free: false },
-                { rank: 3, name: "Sao Nổi", coins: 35, secs: 50, free: false },
+                { rank: 1, name: "Khán Giả", coins: 10, secs: 60, exp: 0 },
+                { rank: 2, name: "Fan Cứng", coins: 20, secs: 55, exp: 100 },
+                { rank: 3, name: "Sao Nổi", coins: 35, secs: 50, exp: 300 },
                 {
                   rank: 4,
                   name: "Minh Tinh",
                   coins: 55,
                   secs: 45,
-                  free: false,
+                  exp: 700,
                 },
                 {
                   rank: 5,
                   name: "Huyền Thoại",
                   coins: 80,
                   secs: 40,
-                  free: false,
+                  exp: 1500,
                 },
               ] as const
             ).map((tier) => {
@@ -408,14 +431,9 @@ export default function GiftInfoSheet({
                           ĐANG DÙNG
                         </span>
                       )}
-                      {tier.free && !isCurrent && (
-                        <span className="text-[7px] font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">
-                          MIỄN PHÍ
-                        </span>
-                      )}
                     </div>
                     <span className="text-[10px] text-white/30">
-                      Xem {tier.secs}s để mở hộp
+                      {tier.exp.toLocaleString("vi-VN")} EXP · Xem {tier.secs}s/hộp
                     </span>
                   </div>
                   <div

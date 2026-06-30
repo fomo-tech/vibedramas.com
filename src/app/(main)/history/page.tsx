@@ -1,14 +1,11 @@
 import HistoryPage from "@/components/home/HistoryPage";
-import type { Metadata } from "next";
+import { buildPrivateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Lịch Sử Xem | Phim ngắn hay",
-  description: "Xem lại danh sách phim bạn đã theo dõi gần đây.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+export const metadata = buildPrivateMetadata(
+  "Lịch Sử Xem | Phim ngắn hay",
+  "/history",
+  "Xem lại danh sách phim bạn đã theo dõi gần đây.",
+);
 
 export default function HistoryRoute() {
   return <HistoryPage />;

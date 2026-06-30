@@ -3,7 +3,6 @@ import Drama from "@/models/Drama";
 import MainLayoutSwitcher from "@/components/home/MainLayoutSwitcher";
 import BackgroundDecor from "@/components/home/BackgroundDecor";
 import { getCache, setCache } from "@/lib/cache";
-import { resolveSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +11,6 @@ const HOME_CACHE_TTL = 300; // 5 minutes
 
 export default async function HomePage() {
   await connectDB();
-  const siteUrl = resolveSiteUrl();
 
   // Try cache first — avoids 5 parallel DB queries on every SSR render
   const cached = await getCache<{
@@ -88,23 +86,9 @@ export default async function HomePage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Phim ngắn hay",
-            url: siteUrl,
-            inLanguage: "vi-VN",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: `${siteUrl}/search?q={search_term_string}`,
-              "query-input": "required name=search_term_string",
-            },
-          }),
-        }}
-      />
+      <h1 className="sr-only">
+        Phim ngắn hay - Xem phim ngắn Trung Quốc miễn phí
+      </h1>
       <BackgroundDecor />
       <MainLayoutSwitcher
         featuredDramas={featuredDramas}

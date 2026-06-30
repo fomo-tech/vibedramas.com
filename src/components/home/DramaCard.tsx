@@ -17,7 +17,7 @@ export default function DramaCard({
   rank,
   fluid,
 }: DramaCardProps) {
-  const img = drama.poster_url || drama.thumb_url || "";
+  const img = drama.thumb_url || drama.poster_url || "";
 
   return (
     <Link

@@ -7,6 +7,11 @@ import GiftLog from "@/models/GiftLog";
 import { getUserSession } from "@/lib/auth";
 import { rateLimit } from "@/lib/rateLimit";
 import { deleteCache } from "@/lib/cache";
+import {
+  expRewardForRank,
+  findRankForExp,
+  requiredExpForRank,
+} from "@/lib/giftRanks";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +45,9 @@ export async function POST(req: NextRequest) {
     const count = await RankConfig.countDocuments();
     if (count === 0) await RankConfig.insertMany(DEFAULT_RANKS);
 
-    const user = await User.findById(session.userId).select("coins giftLevel");
+    const user = await User.findById(session.userId).select(
+      "coins giftLevel giftExp",
+    );
 
     if (!user) {
       return NextResponse.json(
@@ -49,7 +56,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const currentLevel = toFiniteNumber(user.giftLevel, 1);
     const ranks = await RankConfig.find().sort({ rank: 1 }).lean();
 
     if (!Array.isArray(ranks) || ranks.length === 0) {
@@ -59,17 +65,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const currentRank =
-      ranks.find((r) => toFiniteNumber(r.rank, -1) === currentLevel) ??
-      ranks[0];
-
-    // Award coins only; tier is set directly by purchased package
+    const savedLevel = Math.max(1, toFiniteNumber(user.giftLevel, 1));
+    const savedRank =
+      ranks.find((r) => toFiniteNumber(r.rank, -1) === savedLevel) ?? ranks[0];
+    const currentExp = Math.max(
+      toFiniteNumber(user.giftExp, 0),
+      requiredExpForRank(savedRank),
+    );
+    const currentRank = findRankForExp(ranks, currentExp) ?? ranks[0];
     const normalizedLevel = Math.max(1, toFiniteNumber(currentRank.rank, 1));
     const coinsEarned = Math.max(0, toFiniteNumber(currentRank.coinsReward, 0));
-    const newLevel = normalizedLevel;
+    const expEarned = expRewardForRank(currentRank);
+    const newGiftExp = currentExp + expEarned;
+    const newRank = findRankForExp(ranks, newGiftExp) ?? currentRank;
+    const newLevel = Math.max(1, toFiniteNumber(newRank.rank, 1));
+    const leveledUp = newLevel > normalizedLevel;
 
     const currentCoins = toFiniteNumber(user.coins, 0);
-    user.giftLevel = normalizedLevel;
+    user.giftLevel = newLevel;
+    user.giftExp = newGiftExp;
     user.coins = currentCoins + coinsEarned;
     await user.save();
 
@@ -85,20 +99,26 @@ export async function POST(req: NextRequest) {
       giftLevel: normalizedLevel,
       rank: normalizedLevel,
       coinsEarned,
-      expEarned: 0,
-      leveledUp: false,
+      expEarned,
+      leveledUp,
       ip,
       ua,
     }).catch(() => {});
 
     // Invalidate per-user gift config cache so next poll reflects updated coinsToday/Total
-    deleteCache(`gift:cfg:${String(session.userId)}`).catch(() => {});
+    deleteCache(`gift:cfg:v2:${String(session.userId)}`).catch(() => {});
 
-    // Determine rank after potential level-up
-    const newRank =
-      ranks.find((r) => toFiniteNumber(r.rank, -1) === newLevel) ?? currentRank;
+    const newRankIndex = ranks.findIndex(
+      (rank) => toFiniteNumber(rank.rank, -1) === newLevel,
+    );
+    const nextRank =
+      newRankIndex >= 0 ? (ranks[newRankIndex + 1] ?? null) : null;
     return NextResponse.json({
       coinsEarned,
+      expEarned,
+      giftExp: newGiftExp,
+      nextRankExp: nextRank ? requiredExpForRank(nextRank) : null,
+      leveledUp,
       newLevel,
       newCoins: user.coins,
       rankName: String(newRank.name ?? "Khán Giả"),

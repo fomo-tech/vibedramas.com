@@ -8,10 +8,8 @@ import {
   Clock,
   Heart,
   User,
-  Crown,
+  Gift,
   Search,
-  CheckCircle2,
-  Timer,
   Sparkles,
 } from "lucide-react";
 
@@ -30,54 +28,7 @@ export default function Sidebar({
   onTabChange,
 }: SidebarProps) {
   const pathname = usePathname();
-  const { user, vipStatus, vipExpiry, openLoginModal } = useAuthStore();
-
-  // ✅ mounted guard: tránh Zustand persist (localStorage) gây mismatch server/client
-  const [mounted, setMounted] = React.useState(false);
-  const [now, setNow] = React.useState(0);
-
-  React.useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      setMounted(true);
-      setNow(Date.now());
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, []);
-
-  const isActiveVip =
-    mounted &&
-    !!vipStatus &&
-    !!vipExpiry &&
-    new Date(vipExpiry).getTime() > now;
-
-  React.useEffect(() => {
-    if (!mounted || !isActiveVip) return;
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(timer);
-  }, [mounted, isActiveVip]);
-
-  const formatCountdown = (target: string | null | undefined) => {
-    if (!target) return null;
-    const remainingMs = new Date(target).getTime() - now;
-    if (remainingMs <= 0) return "Đã hết hạn";
-
-    const totalSeconds = Math.floor(remainingMs / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600)
-      .toString()
-      .padStart(2, "0");
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-      .toString()
-      .padStart(2, "0");
-    const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-
-    return days > 0
-      ? `${days} ngày ${hours}:${minutes}:${seconds}`
-      : `${hours}:${minutes}:${seconds}`;
-  };
-
-  const countdownLabel = formatCountdown(vipExpiry);
+  const { user, openLoginModal } = useAuthStore();
 
   const navGroups = [
     {
@@ -191,57 +142,34 @@ export default function Sidebar({
         </Link>
       </div>
 
-      {/* CTA: đúng logic tính năng theo trạng thái người dùng */}
+      {/* Watch rewards */}
       <div className="mx-0.5 xl:mx-1 mb-4 xl:mb-6 space-y-2">
-        {!mounted ? null : (
           <>
             <Link href="/vip" className="block">
-              <div
-                className={`rounded-2xl p-3 xl:p-4 relative overflow-hidden border transition-all duration-300 ${
-                  isActiveVip
-                    ? "bg-linear-to-br from-[#1a0f09] via-zinc-900/90 to-[#1b120a] border-orange-400/35 hover:border-orange-300/65"
-                    : "bg-linear-to-br from-[#1a0a07] via-zinc-900/85 to-[#1a0f05] border-vibe-pink/25 hover:border-orange-400/65"
-                }`}
-              >
+              <div className="rounded-2xl p-3 xl:p-4 relative overflow-hidden border transition-all duration-300 bg-linear-to-br from-[#1a0a07] via-zinc-900/85 to-[#1a0f05] border-vibe-pink/25 hover:border-orange-400/65">
                 <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-vibe-pink/18 blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-6 -left-5 w-20 h-20 rounded-full bg-orange-500/18 blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-start gap-3">
                   <div className="w-8 h-8 xl:w-9 xl:h-9 rounded-xl bg-linear-to-br from-vibe-pink to-orange-500 flex items-center justify-center shrink-0 shadow-[0_0_14px_rgba(255,69,0,0.35)]">
-                    <Crown size={15} className="text-white" />
+                    <Gift size={15} className="text-white" />
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
                       <p className="text-white font-black text-xs xl:text-sm tracking-tight truncate">
-                        {isActiveVip ? "Cấp hộp quà" : "Nâng cấp hộp quà"}
+                        Phần thưởng xem phim
                       </p>
-
-                      {isActiveVip && (
-                        <span className="hidden xl:inline-flex shrink-0 items-center gap-0.5 bg-orange-500/20 border border-orange-400/35 text-orange-200 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">
-                          <CheckCircle2 size={7} />
-                          Đang dùng
-                        </span>
-                      )}
                     </div>
 
                     <p className="text-white/55 text-[10px] xl:text-[11px] mt-1 leading-tight">
-                      {isActiveVip
-                        ? ""
-                        : "Tăng bậc hộp quà để nhận nhiều xu hơn"}
+                      Xem phim, nhận xu và tích EXP lên cấp
                     </p>
-
-                    {isActiveVip && countdownLabel && (
-                      <p className="text-white/60 text-[10px] mt-1.5 flex items-center gap-1">
-                        <Timer size={9} className="text-orange-300/80" />
-                        Hết hạn sau {countdownLabel}
-                      </p>
-                    )}
                   </div>
                 </div>
 
                 <div className="relative mt-2.5 w-full py-1.5 rounded-lg text-center text-[10px] xl:text-[11px] font-black tracking-widest uppercase border transition-all duration-300 bg-linear-to-r from-vibe-pink to-orange-500 text-white border-transparent">
-                  {isActiveVip ? "Gia hạn" : "Tăng quà ngay"}
+                  Xem tiến độ
                 </div>
               </div>
             </Link>
@@ -260,7 +188,6 @@ export default function Sidebar({
               </button>
             )}
           </>
-        )}
       </div>
 
       {/* Nav Groups */}

@@ -58,10 +58,10 @@ function getHeroImage(drama: any) {
   const customPoster = normalizeImageSrc(drama?.heroPosterUrl);
   if (customPoster) return customPoster;
 
-  const movieThumbnail = normalizeImageSrc(drama?.thumb_url);
-  if (movieThumbnail) return movieThumbnail;
+  const moviePoster = normalizeImageSrc(drama?.poster_url);
+  if (moviePoster) return moviePoster;
 
-  return normalizeImageSrc(drama?.poster_url);
+  return normalizeImageSrc(drama?.thumb_url);
 }
 
 const contentVariants = {

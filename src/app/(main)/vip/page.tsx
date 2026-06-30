@@ -1,10 +1,11 @@
 import VipPage from "@/components/vip/VipPage";
+import { buildPrivateMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Gói Bậc Hộp Quà | Đăng ký hội viên",
-  description:
-    "Mua gói bậc hộp quà để tăng xu mỗi phút xem và tối ưu thưởng theo cấp độ hộp quà theo cấu hình admin.",
-};
+export const metadata = buildPrivateMetadata(
+  "Phần Thưởng Xem Phim | Phim ngắn hay",
+  "/vip",
+  "Xem phim, mở hộp nhận xu và tích lũy EXP để tự động lên cấp.",
+);
 
 export default function VipRoutePage() {
   return <VipPage />;

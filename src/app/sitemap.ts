@@ -3,7 +3,7 @@ import connectDB from "@/lib/db";
 import Drama from "@/models/Drama";
 import { resolveSiteUrl } from "@/lib/seo";
 
-type DramaTaxonomy = { slug: string };
+type DramaTaxonomy = { slug: string; name?: string };
 type DramaSitemapDoc = {
   slug: string;
   updatedAt?: Date;
@@ -14,64 +14,21 @@ type DramaSitemapDoc = {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = resolveSiteUrl();
 
-  // Keyword-targeted tag pages for better SEO
-  const tagRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${siteUrl}/tag/tong-tai`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${siteUrl}/tag/trung-quoc`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${siteUrl}/tag/han-quoc`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/tag/thai-lan`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-  ];
-
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${siteUrl}/`,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${siteUrl}/all`,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/foryou`,
-      lastModified: new Date(),
+      url: `${siteUrl}/short`,
       changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/search`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/vip`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.6,
+      priority: 0.9,
     },
   ];
 
@@ -87,27 +44,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       dramas as DramaSitemapDoc[]
     ).map((drama) => ({
       url: `${siteUrl}/short/${drama.slug}`,
-      lastModified: drama.updatedAt ? new Date(drama.updatedAt) : new Date(),
+      lastModified: drama.updatedAt ? new Date(drama.updatedAt) : undefined,
       changeFrequency: "daily",
       priority: 0.85,
     }));
 
     const categorySlugs = new Set<string>();
     const countrySlugs = new Set<string>();
+    let hasTongTai = false;
 
     for (const drama of dramas as DramaSitemapDoc[]) {
       for (const cat of drama.category || []) {
         if (cat?.slug) categorySlugs.add(cat.slug);
+        if (
+          cat?.slug === "tong-tai" ||
+          String(cat?.name ?? "")
+            .toLocaleLowerCase("vi-VN")
+            .includes("tổng tài")
+        ) {
+          hasTongTai = true;
+        }
       }
       for (const country of drama.country || []) {
         if (country?.slug) countrySlugs.add(country.slug);
       }
     }
 
+    const tagSlugs = [
+      ...(hasTongTai ? ["tong-tai"] : []),
+      ...["trung-quoc", "han-quoc", "thai-lan"].filter((slug) =>
+        countrySlugs.has(slug),
+      ),
+    ];
+    const tagRoutes: MetadataRoute.Sitemap = tagSlugs.map((slug) => ({
+      url: `${siteUrl}/tag/${slug}`,
+      changeFrequency: "daily",
+      priority: slug === "tong-tai" || slug === "trung-quoc" ? 0.85 : 0.8,
+    }));
+
     const categoryRoutes: MetadataRoute.Sitemap = Array.from(categorySlugs).map(
       (slug) => ({
         url: `${siteUrl}/category/${slug}`,
-        lastModified: new Date(),
         changeFrequency: "weekly",
         priority: 0.75,
       }),
@@ -116,7 +93,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const countryRoutes: MetadataRoute.Sitemap = Array.from(countrySlugs).map(
       (slug) => ({
         url: `${siteUrl}/country/${slug}`,
-        lastModified: new Date(),
         changeFrequency: "weekly",
         priority: 0.75,
       }),
@@ -130,6 +106,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...dramaRoutes,
     ];
   } catch {
-    return [...staticRoutes, ...tagRoutes];
+    return staticRoutes;
   }
 }

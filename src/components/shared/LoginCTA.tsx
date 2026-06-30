@@ -29,7 +29,7 @@ interface LoginCTAProps {
 
 const PERKS: { icon: LucideIcon; label: string }[] = [
   { icon: Play, label: "8.000+ phim" },
-  { icon: Crown, label: "Ưu đãi VIP" },
+  { icon: Crown, label: "Tích EXP lên cấp" },
   { icon: ShieldCheck, label: "Lưu tiến trình" },
   { icon: Sparkles, label: "Đề xuất riêng" },
 ];

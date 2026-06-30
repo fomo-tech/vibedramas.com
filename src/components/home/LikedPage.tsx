@@ -33,7 +33,7 @@ function LikedCard({
   index: number;
   onRemove: () => void;
 }) {
-  const img = item.poster_url || item.thumb_url || "";
+  const img = item.thumb_url || item.poster_url || "";
 
   return (
     <motion.div

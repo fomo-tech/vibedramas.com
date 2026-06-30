@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import RankConfig, { DEFAULT_RANKS } from "@/models/RankConfig";
 import { getSession } from "@/lib/auth";
+import { expRewardForRank, requiredExpForRank } from "@/lib/giftRanks";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,13 @@ export async function GET() {
   await connectDB();
   await ensureSeeded();
   const ranks = await RankConfig.find().sort({ rank: 1 }).lean();
-  return NextResponse.json(ranks);
+  return NextResponse.json(
+    ranks.map((rank) => ({
+      ...rank,
+      expReward: expRewardForRank(rank),
+      requiredExp: requiredExpForRank(rank),
+    })),
+  );
 }
 
 /** PUT /api/admin/ranks — update a single rank */
@@ -34,10 +41,9 @@ export async function PUT(req: NextRequest) {
     rank,
     name,
     coinsReward,
+    expReward,
+    requiredExp,
     watchSeconds,
-    price,
-    days,
-    coinsPerMinute,
     isActive,
     order,
     badge,
@@ -46,10 +52,9 @@ export async function PUT(req: NextRequest) {
 
   const rankNum = Number(rank);
   const coinsRewardNum = Number(coinsReward);
+  const expRewardNum = Number(expReward);
+  const requiredExpNum = Number(requiredExp);
   const watchSecondsNum = Number(watchSeconds);
-  const priceNum = Number(price);
-  const daysNum = Number(days);
-  const coinsPerMinuteNum = Number(coinsPerMinute);
 
   if (!name || Number.isNaN(rankNum)) {
     return NextResponse.json({ error: "Thiếu thông tin" }, { status: 400 });
@@ -62,15 +67,14 @@ export async function PUT(req: NextRequest) {
   }
   if (
     !Number.isFinite(coinsRewardNum) ||
+    !Number.isFinite(expRewardNum) ||
+    !Number.isFinite(requiredExpNum) ||
     !Number.isFinite(watchSecondsNum) ||
-    !Number.isFinite(priceNum) ||
-    !Number.isFinite(daysNum) ||
-    !Number.isFinite(coinsPerMinuteNum) ||
     coinsRewardNum < 1 ||
+    expRewardNum < 1 ||
+    requiredExpNum < 0 ||
     watchSecondsNum < 10 ||
-    priceNum < 0 ||
-    daysNum < 1 ||
-    coinsPerMinuteNum < 0
+    !Number.isInteger(requiredExpNum)
   ) {
     return NextResponse.json(
       { error: "Giá trị không hợp lệ" },
@@ -86,10 +90,9 @@ export async function PUT(req: NextRequest) {
     {
       name: String(name).trim(),
       coinsReward: coinsRewardNum,
+      expReward: expRewardNum,
+      requiredExp: requiredExpNum,
       watchSeconds: watchSecondsNum,
-      price: priceNum,
-      days: daysNum,
-      coinsPerMinute: coinsPerMinuteNum,
       isActive: isActive !== false,
       order: Number(order ?? rankNum),
       badge: String(badge ?? "").trim() || undefined,

@@ -156,7 +156,7 @@ export default function DramaDetailSheet({
             <div className="flex items-start gap-3 px-4 pb-4 shrink-0">
               <div className="w-16 h-20 rounded-xl overflow-hidden shrink-0 bg-white/5 border border-white/5">
                 <Image
-                  src={drama.poster_url || drama.thumb_url || ""}
+                  src={drama.thumb_url || drama.poster_url || ""}
                   alt={drama.name}
                   width={64}
                   height={80}
@@ -370,9 +370,9 @@ function RelatedCard({ drama }: { drama: RelatedDrama }) {
   return (
     <div className="cursor-pointer group">
       <div className="relative aspect-2/3 rounded-xl overflow-hidden bg-white/5">
-        {(drama.poster_url || drama.thumb_url) && (
+        {(drama.thumb_url || drama.poster_url) && (
           <Image
-            src={drama.poster_url || drama.thumb_url || ""}
+            src={drama.thumb_url || drama.poster_url || ""}
             alt={drama.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

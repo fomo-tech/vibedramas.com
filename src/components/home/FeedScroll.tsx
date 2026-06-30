@@ -664,6 +664,17 @@ export default function FeedScroll() {
     };
   }, []);
 
+  // Route KKPhim streams through our proxy so HLS.js never hits CDN CORS directly
+  const toProxiedSrc = useCallback((url: string) => {
+    if (url && url.includes("kkphimplayer6.com")) {
+      return `/api/proxy/stream?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const handlePlayerFatalError = useCallback(() => {}, []);
+
   if (loading) {
     return (
       <div className="flex-1 h-screen bg-black flex items-center justify-center text-white">
@@ -684,14 +695,6 @@ export default function FeedScroll() {
     ? episodeName[panelItem._id] || panelItem.episode1.name || "1"
     : "1";
 
-  // Route KKPhim streams through our proxy so HLS.js never hits CDN CORS directly
-  const toProxiedSrc = useCallback((url: string) => {
-    if (url && url.includes("kkphimplayer6.com")) {
-      return `/api/proxy/stream?url=${encodeURIComponent(url)}`;
-    }
-    return url;
-  }, []);
-
   // Active video data for single HlsPlayer outside loop
   const activeItem = items[activeIndex];
   const activeSrc = activeItem
@@ -699,9 +702,6 @@ export default function FeedScroll() {
         episodeSrc[activeItem._id] || activeItem.episode1?.link_m3u8 || "",
       )
     : "";
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const handlePlayerFatalError = useCallback(() => {}, []);
   const activeEpId = activeItem
     ? episodeMeta[activeItem._id]?._id || activeItem.episode1?._id
     : "";

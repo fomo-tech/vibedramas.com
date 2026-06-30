@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Crown, Flame } from "lucide-react";
+import { Flame, LockKeyhole } from "lucide-react";
 import GiftBoxIcon from "./GiftBoxIcon";
 import { RANK_COLORS, RANK_BADGES } from "./giftConstants";
 import type { GiftBoxState } from "@/hooks/useGiftBox";
@@ -32,12 +32,6 @@ export default function GiftBoxButton({
   const isReady = !locked && state === "ready";
   const isOpening = !locked && state === "opening";
   const shouldHighlight = locked || isReady;
-  const statusLabel = locked
-    ? "VIP · Kiếm Xu Mỗi Ngày"
-    : isReady
-      ? "Nhận Quà"
-      : "Đang tích lũy...";
-
   return (
     <div className="flex flex-col items-center gap-2">
       <motion.div
@@ -164,7 +158,7 @@ export default function GiftBoxButton({
           transition={{ repeat: Infinity, duration: 1.8 }}
         >
           {locked ? (
-            <Crown size={10} className="text-white" />
+            <LockKeyhole size={10} className="text-white" />
           ) : (
             <RankBadge size={10} className="text-white" />
           )}

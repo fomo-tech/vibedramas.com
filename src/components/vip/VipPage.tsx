@@ -1,395 +1,571 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
-  ShieldCheck,
-  CheckCircle2,
-  Coins,
-  PlayCircle,
+  ArrowUpRight,
+  Check,
+  ChevronRight,
+  Clock3,
   Gift,
-  TrendingUp,
+  LockKeyhole,
+  Play,
+  Sparkles,
+  Trophy,
+  WalletCards,
+  Zap,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import VipHero from "@/components/vip/VipHero";
-import PlanSelector, { usePlanSelection } from "@/components/vip/PlanSelector";
-import BenefitList from "@/components/vip/BenefitList";
-import VipCTA from "@/components/vip/VipCTA";
-import VipDesktop from "@/components/vip/VipDesktop";
-import PurchaseConfirmModal from "@/components/vip/PurchaseConfirmModal";
-import BackgroundDecor from "@/components/home/BackgroundDecor";
-import { useVipPackages, getVisibleVipPackages } from "@/hooks/useVipPackages";
-import { useGiftRanks } from "@/hooks/useGiftRanks";
+import CoinIcon from "@/components/ui/CoinIcon";
+import GiftBoxIcon from "@/components/home/gift/GiftBoxIcon";
+import { useGiftRanks, type GiftRankTier } from "@/hooks/useGiftRanks";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_ROUTES } from "@/lib/api";
 import {
-  RANK_COLORS,
   RANK_BADGES,
-  RANK_BG,
+  RANK_COLORS,
 } from "@/components/home/gift/giftConstants";
 
-const VIP_GUIDE_STEPS = [
-  {
-    icon: Gift,
-    title: "1. Chọn bậc hộp quà phù hợp",
-    desc: "Mỗi bậc có xu thưởng khi mở hộp và thời gian xem cần thiết khác nhau.",
-  },
-  {
-    icon: PlayCircle,
-    title: "2. Xem video để tích lũy thời gian",
-    desc: "Mỗi giây xem phim được tính vào bộ đếm. Đủ thời gian → hộp quà mở khóa.",
-  },
-  {
-    icon: Coins,
-    title: "3. Mở hộp nhận xu theo bậc",
-    desc: "Hộp sẵn sàng thì mở ngay để nhận xu. Xu được cộng vào ví của bạn.",
-  },
-  {
-    icon: TrendingUp,
-    title: "4. Bậc càng cao, xu nhận càng nhiều",
-    desc: "Bậc Huyền Thoại nhận 80 xu/hộp — gấp 8 lần so với bậc Khán Giả.",
-  },
-] as const;
+interface RewardConfig {
+  rank: number;
+  rankName: string;
+  nextRankName: string | null;
+  watchMax: number;
+  coinsReward: number;
+  expReward: number;
+  giftExp: number;
+  currentRankExp: number;
+  nextRankExp: number | null;
+  coinsToday: number;
+  coinsTotal: number;
+}
+
+function numberValue(value: unknown, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
 
 export default function VipPage() {
   const router = useRouter();
-  const {
-    user,
-    coins,
-    setCoins,
-    setVip,
-    setGiftLevel,
-    openLoginModal,
-    vipStatus,
-    vipExpiry,
-    vipPackageName,
-    giftLevel,
-  } = useAuthStore();
-  const isActiveVip =
-    vipStatus && vipExpiry && new Date(vipExpiry) > new Date();
-  const { packages } = useVipPackages();
-  const visiblePackages = getVisibleVipPackages(packages);
-  const { ranks } = useGiftRanks();
-
-  const { selectedId, setSelectedId, selectedPlan } =
-    usePlanSelection(visiblePackages);
-  const selectedPlanByState = useMemo(
-    () => visiblePackages.find((p) => p._id === selectedId) ?? null,
-    [visiblePackages, selectedId],
-  );
+  const { user, coins, openLoginModal } = useAuthStore();
+  const { ranks, loading: ranksLoading } = useGiftRanks();
+  const [config, setConfig] = useState<RewardConfig | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!visiblePackages.length) return;
-    if (selectedPlanByState) return;
+    if (!user) return;
+    let cancelled = false;
 
-    const preferred =
-      visiblePackages.find((p) => p.name === vipPackageName) ??
-      visiblePackages[0];
-    setSelectedId(preferred._id);
-  }, [visiblePackages, selectedPlanByState, vipPackageName, setSelectedId]);
-
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pendingPlanId, setPendingPlanId] = useState<string | null>(null);
-  const [purchaseLoading, setPurchaseLoading] = useState(false);
-  const [purchaseError, setPurchaseError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-
-  const handleSubscribe = async (planId: string) => {
-    if (!user) {
-      openLoginModal();
-      return;
-    }
-    setPendingPlanId(planId);
-    setPurchaseError("");
-    setConfirmOpen(true);
-  };
-
-  const handleConfirmPurchase = async () => {
-    if (!pendingPlanId) return;
-    setPurchaseLoading(true);
-    setPurchaseError("");
-    try {
-      const res = await fetch("/api/vip/purchase", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ packageId: pendingPlanId }),
+    fetch(API_ROUTES.gift.config, { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("reward config failed");
+        return (await response.json()) as RewardConfig;
+      })
+      .then((data) => {
+        if (!cancelled) setConfig(data);
+      })
+      .catch(() => {
+        if (!cancelled) setConfig(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
-      const data = await res.json();
-      if (!res.ok) {
-        if (res.status === 402) {
-          const required = Number(data?.required ?? 0);
-          const current = Number(data?.current ?? 0);
-          const missing = Math.max(0, required - current);
-          setPurchaseError(
-            `Không đủ xu. Bạn cần thêm ${missing.toLocaleString("vi-VN")} xu để mua gói này.`,
-          );
-          return;
-        }
-        setPurchaseError(data.error ?? "Có lỗi xảy ra");
-        return;
-      }
-      setCoins(data.newCoins);
-      setVip(true, data.vipExpiry, data.coinsPerMinute, data.packageName);
-      if (typeof data.newGiftLevel === "number") {
-        setGiftLevel(data.newGiftLevel);
-      }
-      setConfirmOpen(false);
-      setSuccessMsg(`Kích hoạt ${data.packageName} thành công!`);
-      setTimeout(() => setSuccessMsg(""), 4000);
-    } catch {
-      setPurchaseError("Không thể kết nối server");
-    } finally {
-      setPurchaseLoading(false);
-    }
-  };
 
-  const pendingPkg =
-    visiblePackages.find((p) => p._id === pendingPlanId) ?? null;
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
-  function renderRankTier(tier: {
-    rank: number;
-    name: string;
-    coinsReward: number;
-    watchSeconds: number;
-  }) {
-    const [PRIMARY, SECONDARY] = RANK_COLORS[tier.rank] ?? RANK_COLORS[1];
-    const RankIcon = RANK_BADGES[tier.rank];
-    const isUserRank = giftLevel === tier.rank;
-    const isFree = tier.rank === 1;
-    return (
-      <motion.div
-        key={tier.rank}
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: tier.rank * 0.05 }}
-        className="rounded-xl px-3 py-2.5 flex items-center gap-3"
-        style={{
-          background: isUserRank
-            ? `linear-gradient(135deg, ${PRIMARY}22, ${SECONDARY}0e)`
-            : (RANK_BG[tier.rank] ?? "rgba(255,255,255,0.03)"),
-          border: `1px solid ${isUserRank ? PRIMARY + "55" : PRIMARY + "22"}`,
-        }}
-      >
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-          style={{
-            background: `linear-gradient(135deg, ${PRIMARY}44, ${SECONDARY}22)`,
-            border: `1px solid ${PRIMARY}44`,
-          }}
-        >
-          {RankIcon && <RankIcon size={16} style={{ color: PRIMARY }} />}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
-            <p className="text-white/90 text-xs font-bold">{tier.name}</p>
-            {isUserRank && (
-              <span
-                className="text-[8px] font-black px-1.5 py-0.5 rounded-full"
-                style={{
-                  background: `linear-gradient(135deg, ${PRIMARY}, ${SECONDARY})`,
-                  color: "#fff",
-                }}
-              >
-                ĐANG DÙNG
-              </span>
-            )}
-            {isFree && !isUserRank && (
-              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-white/40">
-                MIỄN PHÍ
-              </span>
-            )}
-          </div>
-          <p className="text-white/40 text-[10px] mt-0.5">
-            Xem {tier.watchSeconds}s để đầy hộp
-          </p>
-        </div>
-        <div className="text-sm font-black shrink-0" style={{ color: PRIMARY }}>
-          +{tier.coinsReward} xu
-        </div>
-      </motion.div>
+  const levelProgress = useMemo(() => {
+    if (!config || config.nextRankExp === null) return 1;
+    const span = Math.max(1, config.nextRankExp - config.currentRankExp);
+    return Math.max(
+      0,
+      Math.min(1, (config.giftExp - config.currentRankExp) / span),
     );
-  }
+  }, [config]);
+
+  const rank = Math.max(1, Math.min(5, numberValue(config?.rank, 1)));
+  const [primary, secondary] = RANK_COLORS[rank] ?? RANK_COLORS[1];
+  const RankIcon = RANK_BADGES[rank] ?? Trophy;
+  const remainingExp =
+    config?.nextRankExp === null
+      ? 0
+      : Math.max(
+          0,
+          numberValue(config?.nextRankExp) - numberValue(config?.giftExp),
+        );
 
   return (
-    <div className="h-full">
-      {/* ── Desktop layout (lg+) ── */}
-      <div className="hidden lg:block h-full">
-        <VipDesktop onSubscribe={handleSubscribe} />
-      </div>
-
-      {/* ── Mobile layout (< lg) ── */}
-      <div className="lg:hidden relative h-full bg-black flex flex-col overflow-hidden">
-        <BackgroundDecor />
-
-        {/* Header bar */}
-        <div className="sticky top-0 z-30 flex items-center justify-between px-4 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3 bg-black/80 backdrop-blur-xl border-b border-white/5">
+    <div
+      data-testid="vip-scroll"
+      className="h-full min-h-0 overflow-y-auto overscroll-y-contain bg-[#050403] text-white [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch]"
+      style={{ backgroundColor: "#050403" }}
+    >
+      <header className="sticky top-0 z-30 border-b border-orange-500/15 bg-[#070504]/92 backdrop-blur-xl">
+        <div className="mx-auto flex min-h-16 max-w-6xl items-center gap-3 px-4 py-3 lg:px-8">
           <button
+            type="button"
             onClick={() => router.back()}
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-orange-400/15 bg-orange-500/5 text-white/65 transition hover:border-orange-400/30 hover:bg-orange-500/10 hover:text-white"
+            aria-label="Quay lại"
           >
-            <ArrowLeft size={18} className="text-white" />
+            <ArrowLeft size={18} />
           </button>
-          <h2 className="text-white font-black text-base tracking-tight">
-            {isActiveVip ? "Gói bậc đang dùng" : "Nâng cấp bậc hộp quà"}
-          </h2>
-          <div className="w-9" />
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-base font-black lg:text-lg">
+              Phần thưởng
+            </h1>
+            <p className="truncate text-[11px] text-white/38">
+              Xem phim · Mở hộp · Tăng level
+            </p>
+          </div>
+          <div className="flex h-9 shrink-0 items-center gap-2 rounded-lg border border-orange-400/25 bg-linear-to-r from-orange-500/12 to-amber-300/8 px-3 shadow-[0_0_24px_rgba(255,69,0,0.08)]">
+            <CoinIcon size={18} />
+            <span className="text-sm font-black text-amber-100">
+              {numberValue(coins).toLocaleString("vi-VN")}
+            </span>
+          </div>
         </div>
+      </header>
 
-        {/* Scrollable content */}
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 180, damping: 24 }}
-          className={`flex-1 overflow-y-auto ${
-            selectedPlan
-              ? "pb-[calc(10.5rem+env(safe-area-inset-bottom,0px))]"
-              : "pb-[calc(6rem+env(safe-area-inset-bottom,0px))]"
-          }`}
-        >
-          <VipHero
-            isActiveVip={!!isActiveVip}
-            vipExpiry={vipExpiry}
-            selectedPlan={selectedPlan}
-          />
-
-          {/* Free earn callout */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
+      {!user ? (
+        <GuestState onLogin={openLoginModal} />
+      ) : loading ? (
+        <RewardSkeleton />
+      ) : (
+        <main className="mx-auto max-w-6xl px-4 pb-32 pt-5 lg:px-8 lg:pb-12 lg:pt-8">
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.03, duration: 0.3 }}
-            className="mx-4 mt-1 mb-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/8 p-4 flex items-start gap-3"
+            className="relative overflow-hidden rounded-lg border border-orange-500/25 bg-linear-to-br from-[#210b05] via-[#120806] to-[#090807] shadow-[0_24px_80px_-46px_rgba(255,69,0,0.8)]"
           >
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
-              <PlayCircle size={16} className="text-emerald-400" />
-            </div>
-            <div>
-              <p className="text-emerald-400 font-black text-[11px] uppercase tracking-[0.14em]">
-                {ranks[0]
-                  ? `Miễn phí — ${ranks[0].name}: +${ranks[0].coinsReward} xu/hộp`
-                  : "Miễn phí — Bậc cơ bản"}
-              </p>
-              <p className="text-white/55 text-[11px] mt-1 leading-relaxed">
-                Xem video là tích thời gian. Đủ thời gian → mở hộp nhận xu. Nâng
-                bậc để nhận nhiều xu hơn mỗi lần mở.
-              </p>
-            </div>
-          </motion.div>
+            <div
+              className="h-1 w-full"
+              style={{
+                background:
+                  "linear-gradient(90deg, " +
+                  primary +
+                  ", " +
+                  secondary +
+                  ", #fbbf24)",
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 opacity-25"
+              style={{
+                backgroundImage:
+                  "linear-gradient(115deg, transparent 0%, rgba(255,69,0,.12) 38%, transparent 39%), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px)",
+                backgroundSize: "100% 100%, 42px 42px",
+              }}
+            />
 
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0.85 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ delay: 0.04, duration: 0.28 }}
-            className="mx-4 border-t border-white/5 mb-4 origin-left"
-          />
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.07, duration: 0.26 }}
-            className="px-4 text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-3"
-          >
-            Chọn gói bậc
-          </motion.p>
-          <PlanSelector
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-            userCoins={coins}
-            ranks={ranks}
-          />
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0.9 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ delay: 0.1, duration: 0.28 }}
-            className="mx-4 border-t border-white/5 mt-6 origin-left"
-          />
-          <BenefitList selectedPlan={selectedPlan} />
-          <div className="px-4 pt-1 pb-3">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <p className="text-white/85 text-[11px] font-black uppercase tracking-[0.16em]">
-                Cách nhận xu từ hộp quà
-              </p>
-              <div className="mt-3 grid grid-cols-1 gap-2.5">
-                {VIP_GUIDE_STEPS.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <motion.div
-                      key={step.title}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.06, duration: 0.3 }}
-                      className="rounded-xl border border-white/10 bg-black/35 px-3 py-3"
-                    >
-                      <div className="flex items-start gap-2.5">
-                        <div className="h-7 w-7 shrink-0 rounded-lg bg-linear-to-br from-vibe-pink/30 to-orange-500/20 border border-vibe-pink/35 flex items-center justify-center">
-                          <Icon size={14} className="text-vibe-pink" />
-                        </div>
-                        <div>
-                          <p className="text-white/90 text-xs font-bold">
-                            {step.title}
-                          </p>
-                          <p className="mt-0.5 text-white/55 text-[11px] leading-relaxed">
-                            {step.desc}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+            <div className="grid items-center gap-6 px-5 py-6 sm:px-7 lg:grid-cols-[220px_1fr_auto] lg:gap-8 lg:px-9 lg:py-8">
+              <div className="flex justify-center lg:justify-start">
+                <LevelVisual
+                  rank={rank}
+                  progress={levelProgress}
+                  primary={primary}
+                  secondary={secondary}
+                />
               </div>
 
-              <div className="mt-4 border-t border-white/10 pt-3">
-                <p className="text-white/75 text-[11px] font-black uppercase tracking-[0.16em] mb-1">
-                  Xu nhận theo bậc hộp quà
+              <div className="min-w-0 text-center lg:text-left">
+                <div className="flex items-center justify-center gap-2 lg:justify-start">
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[10px] font-black uppercase"
+                    style={{
+                      borderColor: primary + "55",
+                      background: primary + "15",
+                      color: primary,
+                    }}
+                  >
+                    <RankIcon size={12} />
+                    Level {rank}
+                  </span>
+                  {config?.nextRankExp === null && (
+                    <span className="rounded-md border border-amber-300/25 bg-amber-300/10 px-2 py-1 text-[10px] font-black uppercase text-amber-200">
+                      Tối đa
+                    </span>
+                  )}
+                </div>
+
+                <h2 className="mt-3 text-3xl font-black lg:text-4xl">
+                  {config?.rankName ?? "Khán Giả"}
+                </h2>
+                <p className="mt-2 text-sm text-white/45">
+                  Mỗi hộp nhận{" "}
+                  <strong className="text-amber-200">
+                    {numberValue(config?.coinsReward)} xu
+                  </strong>{" "}
+                  và{" "}
+                  <strong className="text-orange-200">
+                    {numberValue(config?.expReward)} EXP
+                  </strong>
                 </p>
-                <p className="text-white/40 text-[11px] leading-relaxed mb-3">
-                  Xem đủ thời gian → mở hộp → nhận xu. Bậc càng cao, xu nhận mỗi
-                  lần càng nhiều.
-                </p>
-                <div className="space-y-2">
-                  {ranks.map((tier) => renderRankTier(tier))}
+
+                <div className="mx-auto mt-6 max-w-xl lg:mx-0">
+                  <div className="mb-2 flex items-center justify-between gap-3 text-xs">
+                    <span className="font-bold text-white/65">
+                      {config?.nextRankName
+                        ? "Tiến tới " + config.nextRankName
+                        : "Đã đạt level cao nhất"}
+                    </span>
+                    <span className="shrink-0 font-bold text-white/38">
+                      {config?.nextRankExp === null
+                        ? numberValue(config?.giftExp).toLocaleString("vi-VN") +
+                          " EXP"
+                        : remainingExp.toLocaleString("vi-VN") +
+                          " EXP còn lại"}
+                    </span>
+                  </div>
+                  <div className="h-3 overflow-hidden rounded-full border border-white/5 bg-black/50 p-0.5">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: levelProgress * 100 + "%" }}
+                      transition={{ duration: 0.75, ease: "easeOut" }}
+                      className="h-full rounded-full"
+                      style={{
+                        background:
+                          "linear-gradient(90deg, " +
+                          primary +
+                          ", " +
+                          secondary +
+                          ")",
+                        boxShadow: "0 0 14px " + primary + "80",
+                      }}
+                    />
+                  </div>
+                  <div className="mt-2 flex justify-between text-[10px] font-bold text-white/28">
+                    <span>
+                      {numberValue(config?.giftExp).toLocaleString("vi-VN")} EXP
+                    </span>
+                    <span>
+                      {config?.nextRankExp === null
+                        ? "MAX"
+                        : numberValue(config?.nextRankExp).toLocaleString(
+                            "vi-VN",
+                          ) + " EXP"}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="px-4 pb-4 flex items-center justify-center gap-2 text-white/25 text-[10px]">
-            <ShieldCheck size={12} className="text-vibe-pink/50" />
-            Mua gói mới sẽ thay thế gói hiện tại. Thưởng hộp quà luôn theo bậc
-            đang áp dụng.
-          </div>
-        </motion.div>
 
-        {/* Sticky CTA */}
-        <VipCTA
-          plan={selectedPlan}
-          onSubscribe={handleSubscribe}
-          hidden={confirmOpen}
+              <Link
+                href="/foryou"
+                className="group mx-auto flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-linear-to-r from-[#ff4500] to-[#ff6b2b] px-5 text-sm font-black text-white shadow-[0_10px_28px_-12px_rgba(255,69,0,0.9)] transition hover:brightness-110 lg:mx-0 lg:w-auto"
+              >
+                <Play size={17} fill="currentColor" />
+                Xem phim ngay
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </Link>
+            </div>
+          </motion.section>
+
+          <section className="mt-4 grid grid-cols-2 overflow-hidden rounded-lg border border-orange-500/15 bg-[#0d0806] sm:grid-cols-4">
+            <RewardStat
+              icon={<CoinIcon size={21} />}
+              label="Xu hôm nay"
+              value={numberValue(config?.coinsToday).toLocaleString("vi-VN")}
+            />
+            <RewardStat
+              icon={<WalletCards size={20} className="text-orange-300" />}
+              label="Tổng xu nhận"
+              value={numberValue(config?.coinsTotal).toLocaleString("vi-VN")}
+            />
+            <RewardStat
+              icon={<Clock3 size={20} className="text-rose-300" />}
+              label="Thời gian / hộp"
+              value={numberValue(config?.watchMax, 60) + " giây"}
+            />
+            <RewardStat
+              icon={<Zap size={20} className="text-amber-300" />}
+              label="EXP / hộp"
+              value={"+" + numberValue(config?.expReward)}
+            />
+          </section>
+
+          <section className="mt-8">
+            <div className="mb-4 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-black uppercase text-vibe-pink">
+                  Lộ trình phần thưởng
+                </p>
+                <h2 className="mt-1 text-xl font-black lg:text-2xl">
+                  Các mốc level
+                </h2>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-orange-200/45">
+                <Sparkles size={14} />
+                Tự động nâng cấp
+              </div>
+            </div>
+
+            {ranksLoading ? (
+              <div className="h-48 animate-pulse rounded-lg bg-white/5" />
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                {ranks.map((tier) => (
+                  <RankCard
+                    key={tier.rank}
+                    tier={tier}
+                    currentRank={rank}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="mt-8 flex flex-col gap-4 border-t border-orange-500/15 py-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                <Gift size={18} className="text-amber-200" />
+              </div>
+              <div>
+                <p className="text-sm font-black">Hộp quà đang chờ bạn</p>
+                <p className="mt-0.5 text-xs text-white/38">
+                  Tiến độ được tính khi video đang phát
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/foryou"
+              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-orange-500/40 bg-orange-500/10 px-5 text-sm font-black text-orange-300 transition hover:bg-orange-500 hover:text-white"
+            >
+              Bắt đầu xem
+              <ChevronRight size={16} />
+            </Link>
+          </section>
+        </main>
+      )}
+    </div>
+  );
+}
+
+function LevelVisual({
+  rank,
+  progress,
+  primary,
+  secondary,
+}: {
+  rank: number;
+  progress: number;
+  primary: string;
+  secondary: string;
+}) {
+  const radius = 76;
+  const circumference = 2 * Math.PI * radius;
+
+  return (
+    <div className="relative h-44 w-44 shrink-0 lg:h-48 lg:w-48">
+      <svg
+        viewBox="0 0 176 176"
+        className="absolute inset-0 h-full w-full -rotate-90"
+        aria-hidden="true"
+      >
+        <circle
+          cx="88"
+          cy="88"
+          r={radius}
+          fill="none"
+          stroke="rgba(255,255,255,0.07)"
+          strokeWidth="5"
         />
+        <motion.circle
+          cx="88"
+          cy="88"
+          r={radius}
+          fill="none"
+          stroke={primary}
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset: circumference * (1 - progress) }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          style={{ filter: "drop-shadow(0 0 5px " + primary + ")" }}
+        />
+      </svg>
+      <div
+        className="absolute inset-4 flex items-center justify-center rounded-full border"
+        style={{
+          borderColor: primary + "35",
+          background:
+            "linear-gradient(145deg, " +
+            primary +
+            "18, #0b0b0b 58%, " +
+            secondary +
+            "12)",
+        }}
+      >
+        <GiftBoxIcon size={104} rank={rank} openProgress={0.08} />
+      </div>
+      <div
+        className="absolute bottom-1 left-1/2 flex h-7 min-w-14 -translate-x-1/2 items-center justify-center rounded-md border bg-[#0b0b0b] px-2 text-xs font-black"
+        style={{ borderColor: primary + "55", color: primary }}
+      >
+        LV.{rank}
+      </div>
+    </div>
+  );
+}
+
+function RewardStat({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex min-h-24 items-center gap-3 border-b border-r border-white/8 p-4 last:border-r-0 sm:border-b-0 lg:px-5">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-orange-400/15 bg-orange-500/6">
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-[10px] font-bold uppercase text-white/32">
+          {label}
+        </p>
+        <p className="mt-1 truncate text-lg font-black text-white">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function RankCard({
+  tier,
+  currentRank,
+}: {
+  tier: GiftRankTier;
+  currentRank: number;
+}) {
+  const current = tier.rank === currentRank;
+  const unlocked = tier.rank <= currentRank;
+  const [primary, secondary] = RANK_COLORS[tier.rank] ?? RANK_COLORS[1];
+  const Icon = RANK_BADGES[tier.rank] ?? Trophy;
+
+  return (
+    <motion.article
+      whileHover={{ y: -3 }}
+      className="relative overflow-hidden rounded-lg border bg-linear-to-b from-[#160b07] to-[#0b0807] p-4"
+      style={{
+        borderColor: current ? primary + "66" : "rgba(255,255,255,0.09)",
+        boxShadow: current ? "0 14px 36px -24px " + primary : "none",
+      }}
+    >
+      {current && (
+        <div
+          className="absolute inset-x-0 top-0 h-0.5"
+          style={{
+            background:
+              "linear-gradient(90deg, " + primary + ", " + secondary + ")",
+          }}
+        />
+      )}
+      <div className="flex items-start justify-between gap-3">
+        <div
+          className="relative flex h-16 w-16 items-center justify-center"
+          style={{
+            filter: unlocked ? "none" : "grayscale(0.7)",
+            opacity: unlocked ? 1 : 0.62,
+          }}
+        >
+          <GiftBoxIcon size={62} rank={tier.rank} />
+          <div
+            className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-md border bg-[#100806]"
+            style={{ borderColor: primary + "45", color: primary }}
+          >
+            <Icon size={12} />
+          </div>
+        </div>
+        <div
+          className="flex h-6 items-center gap-1 rounded-md border px-2 text-[9px] font-black uppercase"
+          style={{
+            borderColor: current
+              ? primary + "45"
+              : "rgba(255,255,255,.08)",
+            background: current ? primary + "12" : "rgba(255,255,255,.03)",
+            color: current ? primary : "rgba(255,255,255,.38)",
+          }}
+        >
+          {current ? (
+            <>
+              <Check size={10} /> Hiện tại
+            </>
+          ) : unlocked ? (
+            "Đã mở"
+          ) : (
+            <>
+              <LockKeyhole size={10} /> Chưa mở
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Confirm modal */}
-      <PurchaseConfirmModal
-        open={confirmOpen}
-        pkg={pendingPkg}
-        userCoins={coins}
-        loading={purchaseLoading}
-        error={purchaseError}
-        onConfirm={handleConfirmPurchase}
-        onClose={() => setConfirmOpen(false)}
-      />
+      <p className="mt-3 text-[10px] font-black uppercase text-orange-200/35">
+        Level {tier.rank}
+      </p>
+      <h3 className="mt-1 truncate text-base font-black">{tier.name}</h3>
+      <p className="mt-1 text-[11px] text-white/38">
+        {numberValue(tier.requiredExp).toLocaleString("vi-VN")} EXP để mở khóa
+      </p>
 
-      {/* Success toast */}
-      <AnimatePresence>
-        {successMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 32 }}
-            className="fixed bottom-24 lg:bottom-8 left-1/2 -translate-x-1/2 z-200 flex items-center gap-2.5 bg-green-500 text-white font-bold text-sm px-5 py-3 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
-          >
-            <CheckCircle2 size={18} />
-            {successMsg}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      <div className="mt-4 flex items-center justify-between border-t border-white/8 pt-3">
+        <div className="flex items-center gap-1.5 text-xs font-black text-amber-200">
+          <CoinIcon size={16} />+{numberValue(tier.coinsReward)}
+        </div>
+        <div className="flex items-center gap-1 text-[11px] font-bold text-orange-300">
+          <Zap size={13} />+{numberValue(tier.expReward)} EXP
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-1 text-[10px] text-white/28">
+        <Clock3 size={11} />
+        {numberValue(tier.watchSeconds)} giây mỗi hộp
+      </div>
+    </motion.article>
+  );
+}
+
+function GuestState({ onLogin }: { onLogin: () => void }) {
+  return (
+    <main className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl items-center justify-center px-5 pb-24 text-center">
+      <div className="max-w-sm">
+        <div className="mx-auto flex h-24 w-24 items-center justify-center">
+          <GiftBoxIcon size={92} rank={1} locked />
+        </div>
+        <h2 className="mt-5 text-2xl font-black">Đăng nhập để tích EXP</h2>
+        <p className="mt-2 text-sm leading-6 text-white/42">
+          Tiến độ xem, xu và level sẽ được lưu theo tài khoản của bạn.
+        </p>
+        <button
+          type="button"
+          onClick={onLogin}
+          className="mt-6 inline-flex h-11 items-center gap-2 rounded-lg bg-white px-5 text-sm font-black text-black transition hover:bg-amber-100"
+        >
+          Đăng nhập
+          <ChevronRight size={17} />
+        </button>
+      </div>
+    </main>
+  );
+}
+
+function RewardSkeleton() {
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-6 lg:px-8">
+      <div className="h-80 animate-pulse rounded-lg bg-white/5" />
+      <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {[0, 1, 2, 3].map((item) => (
+          <div key={item} className="h-24 animate-pulse rounded-lg bg-white/5" />
+        ))}
+      </div>
+    </main>
   );
 }

@@ -97,6 +97,10 @@ export interface GiftConfig {
   nextRankName: string | null;
   watchMax: number;
   coinsReward: number;
+  expReward: number;
+  giftExp: number;
+  currentRankExp: number;
+  nextRankExp: number | null;
   coinsToday: number;
   coinsTotal: number;
   isFirstClaim?: boolean;
@@ -110,10 +114,16 @@ export interface UseGiftBoxReturn {
   rankName: string;
   nextRankName: string | null;
   coinsReward: number;
+  expReward: number;
+  giftExp: number;
+  currentRankExp: number;
+  nextRankExp: number | null;
   coinsToday: number;
   coinsTotal: number;
   state: GiftBoxState;
   reward: number;
+  rewardExp: number;
+  leveledUp: boolean;
   open: () => Promise<void>;
   dismissReward: () => void;
 }
@@ -144,6 +154,8 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
   });
 
   const [reward, setReward] = useState(0);
+  const [rewardExp, setRewardExp] = useState(0);
+  const [leveledUp, setLeveledUp] = useState(false);
   const [rankName, setRankName] = useState("");
   const [nextRankName, setNextRankName] = useState<string | null>(null);
   const [coinsToday, setCoinsToday] = useState(0);
@@ -186,7 +198,6 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
         }
       })
       .catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, giftLevel, user?.id]);
 
   // Restore user-scoped session whenever current user changes
@@ -198,6 +209,8 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
         setWatchExp(0);
         setState("idle");
         setReward(0);
+        setRewardExp(0);
+        setLeveledUp(false);
       });
       return () => window.cancelAnimationFrame(raf);
     }
@@ -281,6 +294,10 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
         coinsEarned: number;
         newLevel: number;
         newCoins: number;
+        expEarned: number;
+        giftExp: number;
+        nextRankExp: number | null;
+        leveledUp: boolean;
         rankName?: string;
         rank?: number;
       };
@@ -288,6 +305,19 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
       if (claimSeqRef.current !== claimSeq) return;
 
       setReward(data.coinsEarned);
+      setRewardExp(data.expEarned ?? 0);
+      setLeveledUp(Boolean(data.leveledUp));
+      setConfig((current) =>
+        current
+          ? {
+              ...current,
+              rank: data.newLevel,
+              rankName: data.rankName ?? current.rankName,
+              giftExp: data.giftExp ?? current.giftExp,
+              nextRankExp: data.nextRankExp,
+            }
+          : current,
+      );
       setGiftLevel(data.newLevel);
       setCoins(data.newCoins);
       if (data.rankName) setRankName(data.rankName);
@@ -301,6 +331,8 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
         if (claimSeqRef.current !== claimSeq) return;
         setWatchExp(0);
         setReward(0);
+        setRewardExp(0);
+        setLeveledUp(false);
         setState("idle");
         dismissTimerRef.current = null;
       }, 3500);
@@ -320,6 +352,8 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
     }
     setWatchExp(0);
     setReward(0);
+    setRewardExp(0);
+    setLeveledUp(false);
     setState("idle");
   }, []);
 
@@ -331,10 +365,16 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
     rankName,
     nextRankName,
     coinsReward: config?.coinsReward ?? 0,
+    expReward: config?.expReward ?? 0,
+    giftExp: config?.giftExp ?? 0,
+    currentRankExp: config?.currentRankExp ?? 0,
+    nextRankExp: config?.nextRankExp ?? null,
     coinsToday,
     coinsTotal,
     state,
     reward,
+    rewardExp,
+    leveledUp,
     open,
     dismissReward,
   };

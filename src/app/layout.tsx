@@ -12,6 +12,7 @@ import {
   DEFAULT_SEO,
   generateOrganizationSchema,
   generateWebSiteSchema,
+  serializeJsonLd,
 } from "@/lib/seo";
 import SplashScreen from "@/components/home/SplashScreen";
 import PWAUpdateBanner from "@/components/PWAUpdateBanner";
@@ -95,13 +96,13 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
+            __html: serializeJsonLd(organizationSchema),
           }}
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema),
+            __html: serializeJsonLd(websiteSchema),
           }}
         />
         {/* Google Analytics (chỉ chạy ở production) */}

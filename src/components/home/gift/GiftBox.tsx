@@ -131,10 +131,16 @@ export default function GiftBox() {
     watchExp,
     watchMax,
     coinsReward,
+    expReward,
+    giftExp,
+    currentRankExp,
+    nextRankExp,
     coinsToday,
     coinsTotal,
     state,
     reward,
+    rewardExp,
+    leveledUp,
     open,
     dismissReward,
   } = useGiftBox({
@@ -245,6 +251,10 @@ export default function GiftBox() {
         rankName={rankName}
         nextRankName={nextRankName}
         coinsReward={coinsReward}
+        expReward={expReward}
+        giftExp={giftExp}
+        currentRankExp={currentRankExp}
+        nextRankExp={nextRankExp}
         coinsToday={coinsToday}
         coinsTotal={coinsTotal}
         watchExp={watchExp}
@@ -257,6 +267,8 @@ export default function GiftBox() {
       <GiftBoxOpenModal
         visible={showOpenModal}
         reward={reward}
+        rewardExp={rewardExp}
+        leveledUp={leveledUp}
         rank={rank}
         canDismiss={state === "collected"}
         onDismiss={dismissReward}

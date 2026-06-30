@@ -4,6 +4,8 @@ export interface IRankConfig extends Document {
   rank: number; // 1–5, fixed
   name: string; // "Tân Binh", "Chiến Binh", ...
   coinsReward: number; // coins awarded when opening gift box
+  expReward: number; // level EXP awarded when opening gift box
+  requiredExp: number; // cumulative EXP required to unlock this rank
   watchSeconds: number; // seconds of watching to fill gift bar (base, before VIP multiplier)
   price: number; // purchase price for this tier
   days: number; // membership duration in days
@@ -21,6 +23,8 @@ const RankConfigSchema: Schema = new Schema(
     rank: { type: Number, required: true, unique: true, min: 1, max: 5 },
     name: { type: String, required: true },
     coinsReward: { type: Number, required: true, min: 1 },
+    expReward: { type: Number, required: true, min: 1, default: 10 },
+    requiredExp: { type: Number, required: true, min: 0, default: 0 },
     watchSeconds: { type: Number, required: true, min: 10 },
     price: { type: Number, required: true, min: 0, default: 0 },
     days: { type: Number, required: true, min: 1, default: 30 },
@@ -32,8 +36,6 @@ const RankConfigSchema: Schema = new Schema(
   },
   { timestamps: true },
 );
-
-RankConfigSchema.index({ rank: 1 });
 
 const RankConfig: Model<IRankConfig> =
   mongoose.models.RankConfig ||
@@ -47,6 +49,8 @@ export const DEFAULT_RANKS = [
     rank: 1,
     name: "Khán Giả",
     coinsReward: 10,
+    expReward: 10,
+    requiredExp: 0,
     watchSeconds: 60,
     price: 0,
     days: 30,
@@ -58,6 +62,8 @@ export const DEFAULT_RANKS = [
     rank: 2,
     name: "Fan Cứng",
     coinsReward: 20,
+    expReward: 15,
+    requiredExp: 100,
     watchSeconds: 55,
     price: 500,
     days: 30,
@@ -71,6 +77,8 @@ export const DEFAULT_RANKS = [
     rank: 3,
     name: "Sao Nổi",
     coinsReward: 35,
+    expReward: 20,
+    requiredExp: 300,
     watchSeconds: 50,
     price: 1200,
     days: 30,
@@ -82,6 +90,8 @@ export const DEFAULT_RANKS = [
     rank: 4,
     name: "Minh Tinh",
     coinsReward: 55,
+    expReward: 30,
+    requiredExp: 700,
     watchSeconds: 45,
     price: 2500,
     days: 30,
@@ -93,6 +103,8 @@ export const DEFAULT_RANKS = [
     rank: 5,
     name: "Huyền Thoại",
     coinsReward: 80,
+    expReward: 40,
+    requiredExp: 1500,
     watchSeconds: 40,
     price: 5000,
     days: 30,

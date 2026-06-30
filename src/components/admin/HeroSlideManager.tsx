@@ -39,7 +39,7 @@ function isValidImageSrc(value: string | undefined) {
 function getHeroPosterPreview(slide: HeroSlide, draft?: string) {
   if (isValidImageSrc(draft)) return draft!;
   if (isValidImageSrc(slide.posterUrl)) return slide.posterUrl!;
-  return slide.drama.thumb_url || slide.drama.poster_url || "/placeholder.jpg";
+  return slide.drama.poster_url || slide.drama.thumb_url || "/placeholder.jpg";
 }
 
 export default function HeroSlideManager() {

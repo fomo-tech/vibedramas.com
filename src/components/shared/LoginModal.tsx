@@ -8,7 +8,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 const PERKS = [
   { icon: Play, text: "Xem phim không giới hạn" },
-  { icon: Crown, text: "Ưu đãi hội viên VIP" },
+  { icon: Crown, text: "Xem phim nhận xu và EXP" },
   { icon: ShieldCheck, text: "Lưu lịch sử & yêu thích" },
   { icon: Sparkles, text: "Đề xuất cá nhân hoá" },
 ];

@@ -2,33 +2,6 @@
 
 import Image from "next/image";
 
-const GRADIENT_PALETTE = [
-  "from-pink-500 to-rose-600",
-  "from-violet-500 to-purple-600",
-  "from-blue-500 to-cyan-500",
-  "from-emerald-500 to-teal-600",
-  "from-amber-500 to-orange-600",
-  "from-red-500 to-rose-500",
-  "from-indigo-500 to-blue-600",
-  "from-fuchsia-500 to-pink-600",
-];
-
-function getGradient(name: string): string {
-  if (!name) return GRADIENT_PALETTE[0];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
-  }
-  return GRADIENT_PALETTE[Math.abs(hash) % GRADIENT_PALETTE.length];
-}
-
-function getInitials(name: string): string {
-  if (!name) return "?";
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
 interface UserAvatarProps {
   name: string;
   avatar?: string | null;
@@ -42,11 +15,10 @@ export default function UserAvatar({
   size = 40,
   className = "",
 }: UserAvatarProps) {
-  const gradient = getGradient(name);
-  const initials = getInitials(name);
-  const fontSize = size < 32 ? 10 : size < 48 ? 13 : size < 72 ? 18 : 24;
+  // If avatar is empty or contains dicebear, we use our premium default avatar
+  const isDefaultOrDicebear = !avatar || avatar.includes("dicebear.com");
 
-  if (avatar) {
+  if (!isDefaultOrDicebear && avatar) {
     return (
       <Image
         src={avatar}
@@ -58,17 +30,49 @@ export default function UserAvatar({
     );
   }
 
+  // Professional gradient generator based on name
+  const getGradient = (str: string) => {
+    if (!str || str === "?") return "from-slate-700 to-slate-900";
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const gradients = [
+      "from-indigo-600 to-violet-800",
+      "from-rose-600 to-pink-800",
+      "from-cyan-600 to-blue-800",
+      "from-emerald-600 to-teal-800",
+      "from-amber-600 to-orange-800",
+      "from-fuchsia-600 to-purple-800",
+    ];
+    return gradients[Math.abs(hash) % gradients.length];
+  };
+
+  const gradient = getGradient(name);
+
+  // We can render a clean, premium silhouette avatar inside a gradient background
   return (
     <div
-      className={`w-full h-full bg-linear-to-br ${gradient} flex items-center justify-center ${className}`}
+      className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden select-none ${className}`}
       aria-label={name}
     >
-      <span
-        className="font-black text-white select-none leading-none"
-        style={{ fontSize }}
+      {/* Visual highlights for depth */}
+      <div className="absolute inset-0 bg-white/5 mix-blend-overlay" />
+      <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-white/10 rounded-full blur-lg pointer-events-none" />
+      
+      {/* Premium user silhouette icon */}
+      <svg
+        className="w-[48%] h-[48%] text-white/90 drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        {initials}
-      </span>
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
     </div>
   );
 }

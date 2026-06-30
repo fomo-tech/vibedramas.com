@@ -1,14 +1,11 @@
 import LikedPage from "@/components/home/LikedPage";
-import type { Metadata } from "next";
+import { buildPrivateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Yêu Thích | Phim ngắn hay",
-  description: "Danh sách phim ngắn bạn đã thả tim và lưu lại.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+export const metadata = buildPrivateMetadata(
+  "Yêu Thích | Phim ngắn hay",
+  "/liked",
+  "Danh sách phim ngắn bạn đã thả tim và lưu lại.",
+);
 
 export default function LikedRoute() {
   return <LikedPage />;

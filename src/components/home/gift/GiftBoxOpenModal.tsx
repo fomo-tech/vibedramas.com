@@ -10,6 +10,8 @@ import { RANK_COLORS } from "./giftConstants";
 interface GiftBoxOpenModalProps {
   visible: boolean;
   reward: number;
+  rewardExp?: number;
+  leveledUp?: boolean;
   rank?: number;
   canDismiss?: boolean;
   onDismiss: () => void;
@@ -68,6 +70,8 @@ const PARTICLES = [
 export default function GiftBoxOpenModal({
   visible,
   reward,
+  rewardExp = 0,
+  leveledUp = false,
   rank = 1,
   canDismiss = true,
   onDismiss,
@@ -76,6 +80,7 @@ export default function GiftBoxOpenModal({
   const [mounted] = useState<boolean>(() => typeof document !== "undefined");
   const safeRank = Number(rank ?? 1);
   const safeReward = Number(reward ?? 0);
+  const safeRewardExp = Number(rewardExp ?? 0);
   const [PRIMARY, SECONDARY] = RANK_COLORS[safeRank] ?? RANK_COLORS[1];
 
   if (!mounted) return null;
@@ -213,6 +218,22 @@ export default function GiftBoxOpenModal({
               >
                 +{safeReward}
               </motion.span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38, duration: 0.28, ease: EASE }}
+              className="mt-2 flex items-center gap-2"
+            >
+              <span className="rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1 text-xs font-black text-sky-300">
+                +{safeRewardExp} EXP
+              </span>
+              {leveledUp && (
+                <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-black text-amber-200">
+                  LÊN CẤP
+                </span>
+              )}
             </motion.div>
 
             {/* Caption */}

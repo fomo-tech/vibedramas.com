@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import RankConfig, { DEFAULT_RANKS } from "@/models/RankConfig";
+import { expRewardForRank, requiredExpForRank } from "@/lib/giftRanks";
 
 export const dynamic = "force-dynamic";
 
@@ -15,8 +16,16 @@ export async function GET() {
 
   const ranks = await RankConfig.find()
     .sort({ rank: 1 })
-    .select("rank name coinsReward watchSeconds")
+    .select("rank name coinsReward expReward requiredExp watchSeconds")
     .lean();
 
-  return NextResponse.json(Array.isArray(ranks) ? ranks : []);
+  return NextResponse.json(
+    Array.isArray(ranks)
+      ? ranks.map((rank) => ({
+          ...rank,
+          expReward: expRewardForRank(rank),
+          requiredExp: requiredExpForRank(rank),
+        }))
+      : [],
+  );
 }

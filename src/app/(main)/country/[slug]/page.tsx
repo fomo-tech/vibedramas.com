@@ -53,13 +53,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       siteName: "Phim ngắn hay",
       locale: "vi_VN",
-      images: [{ url: "/og-image.jpg" }],
+      images: [{ url: "/icons/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/og-image.jpg"],
+      images: ["/icons/og-image.png"],
     },
     robots: { index: true, follow: true },
   };
@@ -88,8 +88,8 @@ export default async function CountryPage({ params }: Props) {
     <main className="h-full bg-black">
       <AllDramasClient
         dramas={JSON.parse(JSON.stringify(dramas))}
-        pageTitle={`Quoc Gia: ${countryName}`}
-        pageDescription={`Danh sach phim ngan tu ${countryName}.`}
+        pageTitle={`Quốc Gia: ${countryName}`}
+        pageDescription={`Danh sách phim ngắn từ ${countryName}, vietsub chất lượng cao.`}
         initialFilters={{ country: slug }}
       />
     </main>

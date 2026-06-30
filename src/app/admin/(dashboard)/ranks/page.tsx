@@ -22,7 +22,8 @@ export default function AdminRanksPage() {
   }, []);
 
   useEffect(() => {
-    fetchRanks();
+    const timer = window.setTimeout(fetchRanks, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchRanks]);
 
   return (
@@ -32,8 +33,7 @@ export default function AdminRanksPage() {
         <div>
           <h1 className="text-2xl font-black text-white">Cấp độ người dùng</h1>
           <p className="text-gray-400 text-sm mt-0.5">
-            Hệ thống đã gộp VIP + cấp độ: mỗi bậc vừa là bậc thưởng hộp quà, vừa
-            là gói mua với giá/thời hạn/xu-phút riêng.
+            Cấu hình mốc EXP và phần thưởng cho từng level.
           </p>
         </div>
         <button
@@ -50,20 +50,15 @@ export default function AdminRanksPage() {
         <Info size={16} className="text-orange-400 mt-0.5 shrink-0" />
         <div className="text-sm text-gray-300 space-y-1">
           <p>
-            <strong className="text-white">Thời gian xem cơ bản (giây)</strong>{" "}
-            là thời gian cần để hộp quà đầy cho mỗi lần mở quà, áp dụng trực
-            tiếp theo cấu hình cấp hiện tại.
+            <strong className="text-white">Mốc EXP</strong> là tổng EXP cần có
+            để tự động mở khóa level tương ứng.
           </p>
           <p>
-            <strong className="text-white">Giá / Thời hạn / Xu-phút</strong>{" "}
-            quyết định chi phí mua bậc, thời gian hiệu lực và tốc độ kiếm xu khi
-            xem trong thời gian kích hoạt.
+            <strong className="text-white">EXP / hộp và Xu / hộp</strong> được
+            cộng sau mỗi lần người dùng xem đủ thời gian và mở hộp quà.
           </p>
           <p>
-            Hệ hiện tại dùng{" "}
-            <strong className="text-white">set thẳng bậc</strong>, tức mua bậc
-            nào thì user được gán ngay bậc đó; không còn cơ chế tăng bậc tự
-            động.
+            Level tăng tự động theo EXP, không có mua gói hoặc thời hạn sử dụng.
           </p>
         </div>
       </div>

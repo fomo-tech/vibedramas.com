@@ -2,7 +2,9 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/db";
 import Drama from "@/models/Drama";
+import Episode from "@/models/Episode";
 import DramaDetailClient from "./DramaDetailClient";
+import { serializeJsonLd } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -48,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .filter(Boolean)
     .join(" ");
 
-  const title = `${titleHead} | ${SITE_NAME}`;
+  const title = `${drama.name} Vietsub | ${SITE_NAME}`;
 
   const plainDesc = stripHtml(drama.content || "").slice(0, 160);
 
@@ -133,9 +135,26 @@ export default async function ShortPage({ params }: Props) {
       type: 1,
       category: 1,
       actor: 1,
+      createdAt: 1,
+      updatedAt: 1,
     },
   ).lean<any>();
   if (!drama) notFound();
+
+  const firstEpisode = await Episode.findOne({
+    dramaId: drama._id,
+    $or: [
+      { link_m3u8: { $exists: true, $ne: "" } },
+      { link_embed: { $exists: true, $ne: "" } },
+    ],
+  })
+    .select("link_m3u8 link_embed createdAt")
+    .sort({ createdAt: 1 })
+    .lean<{
+      link_m3u8?: string;
+      link_embed?: string;
+      createdAt?: Date;
+    }>();
 
   const qualityTag = [drama.quality, drama.lang].filter(Boolean).join("-");
   const titleHead = [
@@ -147,7 +166,9 @@ export default async function ShortPage({ params }: Props) {
     .join(" ");
 
   const canonicalUrl = `${SITE_URL}/short/${slug}`;
-  const description = stripHtml(drama.content || "").slice(0, 300);
+  const description =
+    stripHtml(drama.content || "").slice(0, 300) ||
+    `Xem phim ${drama.name} vietsub chất lượng cao tại ${SITE_NAME}.`;
   const firstCategory = (drama.category || [])[0] || null;
 
   const mediaSchema = {
@@ -157,8 +178,8 @@ export default async function ShortPage({ params }: Props) {
     description,
     image: getOgImage(drama.thumb_url),
     url: canonicalUrl,
-    datePublished: drama.year
-      ? `${drama.year}-01-01T00:00:00+07:00`
+    datePublished: drama.createdAt
+      ? new Date(drama.createdAt).toISOString()
       : undefined,
     actor: (drama.actor || [])
       .slice(0, 8)
@@ -167,23 +188,31 @@ export default async function ShortPage({ params }: Props) {
     inLanguage: "vi",
   };
 
-  const videoSchema = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    name: titleHead,
-    description,
-    thumbnailUrl: [getOgImage(drama.thumb_url)],
-    uploadDate: drama.year
-      ? `${drama.year}-01-01T00:00:00+07:00`
-      : new Date().toISOString(),
-    contentUrl: canonicalUrl,
-    embedUrl: canonicalUrl,
-    url: canonicalUrl,
-    potentialAction: {
-      "@type": "WatchAction",
-      target: canonicalUrl,
-    },
-  };
+  const uploadDate = firstEpisode?.createdAt ?? drama.createdAt;
+  const contentUrl = firstEpisode?.link_m3u8?.startsWith("http")
+    ? firstEpisode.link_m3u8
+    : undefined;
+  const embedUrl = firstEpisode?.link_embed?.startsWith("http")
+    ? firstEpisode.link_embed
+    : undefined;
+  const videoSchema =
+    uploadDate && (contentUrl || embedUrl)
+      ? {
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          name: titleHead,
+          description,
+          thumbnailUrl: [getOgImage(drama.thumb_url)],
+          uploadDate: new Date(uploadDate).toISOString(),
+          ...(contentUrl ? { contentUrl } : {}),
+          ...(embedUrl ? { embedUrl } : {}),
+          url: canonicalUrl,
+          potentialAction: {
+            "@type": "WatchAction",
+            target: canonicalUrl,
+          },
+        }
+      : null;
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -223,10 +252,13 @@ export default async function ShortPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([mediaSchema, videoSchema, breadcrumbSchema]),
+          __html: serializeJsonLd(
+            [mediaSchema, videoSchema, breadcrumbSchema].filter(Boolean),
+          ),
         }}
       />
       <div className="h-full">
+        <h1 className="sr-only">{titleHead}</h1>
         <DramaDetailClient
           slug={slug}
           initialDrama={{

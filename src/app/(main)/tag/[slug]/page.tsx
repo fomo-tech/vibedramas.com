@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import dbConnect from "@/lib/db";
 import Drama from "@/models/Drama";
-import { buildMetadata } from "@/lib/seo";
-import { generateBreadcrumbSchema } from "@/lib/seoKeywords";
+import {
+  buildMetadata,
+  generateBreadcrumbSchema,
+  resolveSiteUrl,
+  serializeJsonLd,
+} from "@/lib/seo";
 import AllDramasGrid from "@/components/home/AllDramasGrid";
 
 interface PageProps {
@@ -73,6 +77,7 @@ export async function generateMetadata({
   if (!tagMeta) {
     return {
       title: "Tag không tìm thấy",
+      robots: { index: false, follow: false },
     };
   }
 
@@ -100,22 +105,26 @@ export default async function TagPage({ params }: PageProps) {
   }
 
   await dbConnect();
+  const siteUrl = resolveSiteUrl();
 
-  // Map slug to category filter
-  const categoryMap: Record<string, string> = {
-    "tong-tai": "Tổng Tài",
-    "trung-quoc": "Trung Quốc",
-    "han-quoc": "Hàn Quốc",
-    "thai-lan": "Thái Lan",
+  const filters: Record<string, Record<string, unknown>> = {
+    "tong-tai": {
+      $or: [
+        { "category.slug": "tong-tai" },
+        { "category.name": { $regex: /tổng tài/i } },
+      ],
+    },
+    "trung-quoc": { "country.slug": "trung-quoc" },
+    "han-quoc": { "country.slug": "han-quoc" },
+    "thai-lan": { "country.slug": "thai-lan" },
   };
 
-  const categoryName = categoryMap[slug];
-  const dramas = await Drama.find({
-    category: { $elemMatch: { name: categoryName } },
-  })
+  const dramas = await Drama.find(filters[slug] ?? {})
     .sort({ createdAt: -1, view: -1 })
     .limit(100)
     .lean();
+
+  if (!dramas.length) notFound();
 
   return (
     <main className="min-h-screen bg-background">
@@ -143,20 +152,22 @@ export default async function TagPage({ params }: PageProps) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: serializeJsonLd({
               "@context": "https://schema.org",
               "@type": "CollectionPage",
               name: tagMeta.title,
               description: tagMeta.description,
-              url: `https://phimnganhay.xyz/tag/${slug}`,
+              url: `${siteUrl}/tag/${slug}`,
               mainEntity: {
                 "@type": "ItemList",
                 itemListElement: dramas.slice(0, 10).map((drama, index) => ({
                   "@type": "ListItem",
                   position: index + 1,
                   name: drama.name,
-                  url: `https://phimnganhay.xyz/short/${drama.slug}`,
-                  image: drama.poster_url,
+                  url: `${siteUrl}/short/${drama.slug}`,
+                  image: String(drama.poster_url || "").startsWith("http")
+                    ? drama.poster_url
+                    : `${siteUrl}/icons/og-image.png`,
                 })),
               },
             }),
@@ -167,8 +178,11 @@ export default async function TagPage({ params }: PageProps) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(
-              generateBreadcrumbSchema(tagMeta.title.split(" - ")[0], slug),
+            __html: serializeJsonLd(
+              generateBreadcrumbSchema([
+                { name: "Trang chủ", url: "/" },
+                { name: tagMeta.title.split(" - ")[0], url: `/tag/${slug}` },
+              ]),
             ),
           }}
         />

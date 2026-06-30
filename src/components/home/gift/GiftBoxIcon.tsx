@@ -10,304 +10,235 @@ interface GiftBoxIconProps {
   rank?: number;
 }
 
-type P = { box1: string; box2: string; lid1: string; lid2: string; rib1: string; rib2: string; bow1: string; bow2: string };
+interface GiftPalette {
+  bodyTop: string;
+  bodyBottom: string;
+  lidTop: string;
+  lidBottom: string;
+  ribbonTop: string;
+  ribbonBottom: string;
+  metal: string;
+  glow: string;
+  jewel: string;
+}
 
-const PALETTES: Record<number, P> = {
-  1: { box1:"#FF6B2B",box2:"#CC3300",lid1:"#FF8C4A",lid2:"#E04500",rib1:"#FFD166",rib2:"#FFAD00",bow1:"#FFE566",bow2:"#FFB300" },
-  2: { box1:"#FF9500",box2:"#E05A00",lid1:"#FFAA22",lid2:"#E06800",rib1:"#FFE566",rib2:"#FFB300",bow1:"#FFF0A0",bow2:"#FFCC00" },
-  3: { box1:"#FFD700",box2:"#B8860B",lid1:"#FFE44D",lid2:"#CCA800",rib1:"#FFF5CC",rib2:"#FFDD00",bow1:"#FFFACD",bow2:"#FFD700" },
-  4: { box1:"#9B59B6",box2:"#6C3483",lid1:"#B17ACC",lid2:"#8E44AD",rib1:"#DDA0DD",rib2:"#9932CC",bow1:"#E8BBFF",bow2:"#C04080" },
-  5: { box1:"#00D4FF",box2:"#0077AA",lid1:"#66E5FF",lid2:"#00AADD",rib1:"#E0F8FF",rib2:"#00CCFF",bow1:"#FFFFFF",bow2:"#88EEFF" },
+const PALETTES: Record<number, GiftPalette> = {
+  1: {
+    bodyTop: "#FF5A1F",
+    bodyBottom: "#8F1900",
+    lidTop: "#FF7A38",
+    lidBottom: "#C52A00",
+    ribbonTop: "#FFD875",
+    ribbonBottom: "#E89300",
+    metal: "#FFB42B",
+    glow: "#FF4500",
+    jewel: "#FFEDB2",
+  },
+  2: {
+    bodyTop: "#FF315D",
+    bodyBottom: "#9C0B24",
+    lidTop: "#FF644F",
+    lidBottom: "#D11A36",
+    ribbonTop: "#FFD56A",
+    ribbonBottom: "#F08A00",
+    metal: "#FFC247",
+    glow: "#FF2D55",
+    jewel: "#FFF1B7",
+  },
+  3: {
+    bodyTop: "#FFB800",
+    bodyBottom: "#A83D00",
+    lidTop: "#FFD35A",
+    lidBottom: "#E85B00",
+    ribbonTop: "#FFF2B2",
+    ribbonBottom: "#FF9D00",
+    metal: "#FFE08A",
+    glow: "#FF8A00",
+    jewel: "#FFFFFF",
+  },
+  4: {
+    bodyTop: "#FF375F",
+    bodyBottom: "#5B0714",
+    lidTop: "#FF7440",
+    lidBottom: "#A70D2B",
+    ribbonTop: "#FFE49A",
+    ribbonBottom: "#FF9F0A",
+    metal: "#FFD36A",
+    glow: "#FF4D21",
+    jewel: "#FFF8DD",
+  },
+  5: {
+    bodyTop: "#3A2418",
+    bodyBottom: "#090706",
+    lidTop: "#6A321D",
+    lidBottom: "#1A0B08",
+    ribbonTop: "#FFF0B5",
+    ribbonBottom: "#E89600",
+    metal: "#FFE08A",
+    glow: "#FF5A1F",
+    jewel: "#FFFFFF",
+  },
 };
-const LOCKED: P = { box1:"#444",box2:"#222",lid1:"#555",lid2:"#333",rib1:"#888",rib2:"#555",bow1:"#999",bow2:"#666" };
 
-function Rank1({ id, p, lidY, lidRotate }: { id: string; p: P; lidY: number; lidRotate: number }) {
-  return (
-    <>
-      <defs>
-        <linearGradient id={`${id}-b`} x1="6" y1="26" x2="42" y2="50" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.box1}/><stop offset="100%" stopColor={p.box2}/>
-        </linearGradient>
-        <linearGradient id={`${id}-l`} x1="2" y1="14" x2="46" y2="28" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.lid1}/><stop offset="100%" stopColor={p.lid2}/>
-        </linearGradient>
-        <linearGradient id={`${id}-r`} x1="22" y1="0" x2="26" y2="52" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.rib1}/><stop offset="100%" stopColor={p.rib2}/>
-        </linearGradient>
-        <filter id={`${id}-sh`} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="rgba(0,0,0,0.5)"/>
-        </filter>
-      </defs>
-      <g filter={`url(#${id}-sh)`}>
-        <path d="M6 27 Q6 25 9 25 H39 Q42 25 42 27 V47 Q42 50 39 50 H9 Q6 50 6 47 Z" fill={`url(#${id}-b)`}/>
-        <path d="M6 27 Q6 25 9 25 H24 V50 H9 Q6 50 6 47 Z" fill="rgba(0,0,0,0.1)"/>
-        <rect x="21" y="25" width="6" height="25" fill={`url(#${id}-r)`} rx="1"/>
-        <ellipse cx="13" cy="33" rx="5" ry="3" fill="rgba(255,255,255,0.1)" transform="rotate(-15 13 33)"/>
-      </g>
-      <motion.g
-        animate={{ y: lidY, rotate: lidRotate }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        style={{ transformOrigin: "24px 26px" }}
-      >
-        <g filter={`url(#${id}-sh)`}>
-          <path d="M2 16 Q2 14 5 14 H43 Q46 14 46 16 V26 Q46 28 43 28 H5 Q2 28 2 26 Z" fill={`url(#${id}-l)`}/>
-          <rect x="2" y="19" width="44" height="6" fill={`url(#${id}-r)`} rx="1"/>
-          <ellipse cx="11" cy="17" rx="6" ry="2.2" fill="rgba(255,255,255,0.2)" transform="rotate(-8 11 17)"/>
-        </g>
-        <path d="M24 13 Q18 4 9 7 Q5 11 10 14 Q17 15 24 13 Z" fill={p.bow1}/>
-        <path d="M24 13 Q30 4 39 7 Q43 11 38 14 Q31 15 24 13 Z" fill={p.bow1}/>
-        <circle cx="24" cy="13" r="5" fill={p.bow1} stroke={p.bow2} strokeWidth="1.5"/>
-        <circle cx="24" cy="13" r="2.5" fill={p.bow2}/>
-        <circle cx="22.5" cy="11.5" r="1.2" fill="rgba(255,255,255,0.5)"/>
-      </motion.g>
-    </>
-  );
-}
+const LOCKED: GiftPalette = {
+  bodyTop: "#4B4B4B",
+  bodyBottom: "#191919",
+  lidTop: "#616161",
+  lidBottom: "#292929",
+  ribbonTop: "#969696",
+  ribbonBottom: "#555555",
+  metal: "#8A8A8A",
+  glow: "#555555",
+  jewel: "#D0D0D0",
+};
 
-function Rank2({ id, p, lidY, lidRotate }: { id: string; p: P; lidY: number; lidRotate: number }) {
-  return (
-    <>
-      <defs>
-        <linearGradient id={`${id}-b`} x1="4" y1="25" x2="44" y2="52" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.box1}/><stop offset="100%" stopColor={p.box2}/>
-        </linearGradient>
-        <linearGradient id={`${id}-l`} x1="0" y1="12" x2="48" y2="28" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.lid1}/><stop offset="100%" stopColor={p.lid2}/>
-        </linearGradient>
-        <filter id={`${id}-sh`} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="rgba(0,0,0,0.5)"/>
-        </filter>
-      </defs>
-      <g filter={`url(#${id}-sh)`}>
-        <rect x="5" y="25" width="38" height="25" rx="5" fill={`url(#${id}-b)`}/>
-        <rect x="5" y="25" width="19" height="25" rx="5" fill="rgba(0,0,0,0.1)"/>
-        <rect x="20" y="25" width="8" height="25" fill={p.rib1} opacity="0.9"/>
-      </g>
-      <motion.g
-        animate={{ y: lidY, rotate: lidRotate }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        style={{ transformOrigin: "24px 26px" }}
-      >
-        <g filter={`url(#${id}-sh)`}>
-          <rect x="1" y="14" width="46" height="13" rx="4" fill={`url(#${id}-l)`}/>
-          <rect x="20" y="14" width="8" height="13" fill={p.rib1} opacity="0.9"/>
-        </g>
-        <g transform="translate(24,12)">
-          {[0,60,120,180,240,300].map((a,i) => {
-            const r=(a*Math.PI)/180;
-            return <circle key={i} cx={Math.cos(r)*6} cy={Math.sin(r)*6} r="2" fill={p.bow1}/>;
-          })}
-          <line x1="-7" y1="0" x2="7" y2="0" stroke={p.bow1} strokeWidth="2.5" strokeLinecap="round"/>
-          <line x1="-3.5" y1="-6" x2="3.5" y2="6" stroke={p.bow1} strokeWidth="2.5" strokeLinecap="round"/>
-          <line x1="3.5" y1="-6" x2="-3.5" y2="6" stroke={p.bow1} strokeWidth="2.5" strokeLinecap="round"/>
-          <circle cx="0" cy="0" r="4" fill={p.bow1} stroke={p.bow2} strokeWidth="1.5"/>
-          <circle cx="0" cy="0" r="2" fill={p.bow2}/>
-        </g>
-      </motion.g>
-    </>
-  );
-}
-
-function Rank3({ id, p, lidY, lidRotate }: { id: string; p: P; lidY: number; lidRotate: number }) {
-  return (
-    <>
-      <defs>
-        <linearGradient id={`${id}-b`} x1="4" y1="28" x2="44" y2="52" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.box1}/><stop offset="100%" stopColor={p.box2}/>
-        </linearGradient>
-        <linearGradient id={`${id}-l`} x1="2" y1="14" x2="46" y2="30" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.lid1}/><stop offset="100%" stopColor={p.lid2}/>
-        </linearGradient>
-        <filter id={`${id}-glow`} x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor={p.box1} floodOpacity="0.6"/>
-        </filter>
-      </defs>
-      <g filter={`url(#${id}-glow)`}>
-        <path d="M4 30 Q4 28 7 28 H41 Q44 28 44 30 V48 Q44 51 41 51 H7 Q4 51 4 48 Z" fill={`url(#${id}-b)`}/>
-        <rect x="4" y="28" width="6" height="6" rx="1" fill={p.rib2} opacity="0.8"/>
-        <rect x="38" y="28" width="6" height="6" rx="1" fill={p.rib2} opacity="0.8"/>
-        <rect x="4" y="45" width="6" height="6" rx="1" fill={p.rib2} opacity="0.8"/>
-        <rect x="38" y="45" width="6" height="6" rx="1" fill={p.rib2} opacity="0.8"/>
-        <rect x="20" y="36" width="8" height="7" rx="2" fill={p.rib1} stroke={p.rib2} strokeWidth="1"/>
-        <path d="M22 36 Q22 32 24 32 Q26 32 26 36" fill="none" stroke={p.rib2} strokeWidth="1.5" strokeLinecap="round"/>
-        <circle cx="24" cy="39.5" r="1.2" fill={p.rib2}/>
-      </g>
-      <motion.g
-        animate={{ y: lidY, rotate: lidRotate }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        style={{ transformOrigin: "24px 29px" }}
-      >
-        <g filter={`url(#${id}-glow)`}>
-          <path d="M4 28 Q4 14 24 12 Q44 14 44 28 Z" fill={`url(#${id}-l)`}/>
-          <rect x="4" y="23" width="5" height="5" rx="1" fill={p.rib2} opacity="0.8"/>
-          <rect x="39" y="23" width="5" height="5" rx="1" fill={p.rib2} opacity="0.8"/>
-          <polygon points="16,18 18,12 20,18" fill={p.bow1} stroke={p.bow2} strokeWidth="0.5"/>
-          <polygon points="22,18 24,10 26,18" fill={p.bow1} stroke={p.bow2} strokeWidth="0.5"/>
-          <polygon points="28,18 30,12 32,18" fill={p.bow1} stroke={p.bow2} strokeWidth="0.5"/>
-          <line x1="14" y1="18" x2="34" y2="18" stroke={p.bow2} strokeWidth="1"/>
-        </g>
-      </motion.g>
-    </>
-  );
-}
-
-function Rank4({ id, p, lidY, lidRotate }: { id: string; p: P; lidY: number; lidRotate: number }) {
-  return (
-    <>
-      <defs>
-        <linearGradient id={`${id}-b`} x1="4" y1="26" x2="44" y2="52" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.box1}/><stop offset="100%" stopColor={p.box2}/>
-        </linearGradient>
-        <linearGradient id={`${id}-l`} x1="2" y1="12" x2="46" y2="28" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.lid1}/><stop offset="100%" stopColor={p.lid2}/>
-        </linearGradient>
-        <radialGradient id={`${id}-gem`} cx="50%" cy="35%" r="60%">
-          <stop offset="0%" stopColor={p.bow1}/><stop offset="100%" stopColor={p.bow2}/>
-        </radialGradient>
-        <filter id={`${id}-glow`} x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor={p.box1} floodOpacity="0.7"/>
-        </filter>
-      </defs>
-      <g filter={`url(#${id}-glow)`}>
-        <path d="M10 27 L6 32 L6 44 L10 49 L38 49 L42 44 L42 32 L38 27 Z" fill={`url(#${id}-b)`}/>
-        <path d="M10 27 L6 32 L6 44 L10 49 L24 49 L24 27 Z" fill="rgba(0,0,0,0.12)"/>
-        <circle cx="24" cy="38" r="9" fill="none" stroke={p.bow1} strokeWidth="0.8" strokeDasharray="2 3" opacity="0.5"/>
-        <polygon points="24,31 30,38 24,45 18,38" fill={`url(#${id}-gem)`}/>
-        <polygon points="24,31 30,38 24,37" fill="rgba(255,255,255,0.35)"/>
-      </g>
-      <motion.g
-        animate={{ y: lidY, rotate: lidRotate }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        style={{ transformOrigin: "24px 27px" }}
-      >
-        <g filter={`url(#${id}-glow)`}>
-          <path d="M10 27 L6 22 H42 L38 27 Z" fill={`url(#${id}-l)`}/>
-          <path d="M6 22 H42 L42 17 H6 Z" fill={p.lid1}/>
-          <polygon points="24,10 28,15 24,14 20,15" fill={p.bow1} stroke={p.bow2} strokeWidth="0.5"/>
-          <circle cx="24" cy="8" r="3" fill={p.bow1} stroke={p.bow2} strokeWidth="1"/>
-          <circle cx="23" cy="7" r="1.2" fill="rgba(255,255,255,0.6)"/>
-        </g>
-      </motion.g>
-    </>
-  );
-}
-
-function Rank5({ id, p, lidY, lidRotate }: { id: string; p: P; lidY: number; lidRotate: number }) {
-  return (
-    <>
-      <defs>
-        <linearGradient id={`${id}-b`} x1="4" y1="24" x2="44" y2="52" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.box1} stopOpacity="0.9"/><stop offset="100%" stopColor={p.box2}/>
-        </linearGradient>
-        <linearGradient id={`${id}-l`} x1="2" y1="10" x2="46" y2="28" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={p.lid1}/><stop offset="100%" stopColor={p.lid2}/>
-        </linearGradient>
-        <radialGradient id={`${id}-crystal`} cx="40%" cy="30%" r="70%">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.8)"/><stop offset="100%" stopColor={p.box1} stopOpacity="0.3"/>
-        </radialGradient>
-        <filter id={`${id}-glow`} x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor={p.box1} floodOpacity="0.8"/>
-        </filter>
-        <filter id={`${id}-bright`} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="white" floodOpacity="0.5"/>
-        </filter>
-      </defs>
-      <g stroke={p.bow2} strokeLinecap="round" opacity="0.6">
-        <line x1="24" y1="-2" x2="24" y2="-8" strokeWidth="2"/>
-        <line x1="35" y1="1" x2="39" y2="-3" strokeWidth="1.5"/>
-        <line x1="13" y1="1" x2="9" y2="-3" strokeWidth="1.5"/>
-        <line x1="43" y1="13" x2="48" y2="10" strokeWidth="1.5"/>
-        <line x1="5" y1="13" x2="0" y2="10" strokeWidth="1.5"/>
-        <line x1="44" y1="38" x2="49" y2="38" strokeWidth="1.5"/>
-        <line x1="4" y1="38" x2="-1" y2="38" strokeWidth="1.5"/>
-      </g>
-      <g filter={`url(#${id}-glow)`}>
-        <path d="M12 26 L5 30 L5 44 L12 50 L36 50 L43 44 L43 30 L36 26 Z" fill={`url(#${id}-b)`}/>
-        <path d="M12 26 L5 30 L5 37 L24 32 Z" fill="rgba(255,255,255,0.15)"/>
-        <path d="M36 26 L43 30 L43 37 L24 32 Z" fill="rgba(255,255,255,0.08)"/>
-        <path d="M12 26 L5 30 L5 44 L12 50" stroke={p.bow2} strokeWidth="1.2" fill="none" opacity="0.6"/>
-        <path d="M36 26 L43 30 L43 44 L36 50" stroke={p.bow1} strokeWidth="1.2" fill="none" opacity="0.6"/>
-        <g filter={`url(#${id}-bright)`}>
-          <polygon points="24,30 27,37 24,44 21,37" fill={p.bow2} opacity="0.8"/>
-          <polygon points="24,30 31,33 24,36 17,33" fill={p.bow1} opacity="0.8"/>
-          <circle cx="24" cy="37" r="3.5" fill={`url(#${id}-crystal)`}/>
-          <circle cx="23" cy="36" r="1.5" fill="rgba(255,255,255,0.9)"/>
-        </g>
-      </g>
-      <motion.g
-        animate={{ y: lidY, rotate: lidRotate }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        style={{ transformOrigin: "24px 26px" }}
-      >
-        <g filter={`url(#${id}-glow)`}>
-          <path d="M12 26 L4 18 L44 18 L36 26 Z" fill={`url(#${id}-l)`}/>
-          <path d="M12 26 L4 18 L24 22 Z" fill="rgba(255,255,255,0.2)"/>
-          <path d="M36 26 L44 18 L24 22 Z" fill="rgba(255,255,255,0.1)"/>
-          <path d="M18 18 L24 6 L30 18 Z" fill={p.lid1} stroke={p.bow1} strokeWidth="0.8"/>
-          <path d="M18 18 L24 6 L24 18 Z" fill="rgba(255,255,255,0.3)"/>
-          <circle cx="24" cy="6" r="2.5" fill={p.bow1} filter={`url(#${id}-bright)`}/>
-          <circle cx="23.2" cy="5.2" r="1" fill="white"/>
-        </g>
-        <circle cx="4" cy="18" r="2" fill={p.bow2} opacity="0.8"/>
-        <circle cx="44" cy="18" r="2" fill={p.bow1} opacity="0.8"/>
-      </motion.g>
-      <g fill={p.bow2} opacity="0.8">
-        <circle cx="4" cy="26" r="1.5"/>
-        <circle cx="44" cy="26" r="1.5"/>
-        <circle cx="24" cy="-2" r="1.5"/>
-      </g>
-    </>
-  );
-}
-
-function LockedIcon({ id, p, lidY, lidRotate }: { id: string; p: P; lidY: number; lidRotate: number }) {
-  return (
-    <>
-      <defs>
-        <filter id={`${id}-sh`} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="rgba(0,0,0,0.5)"/>
-        </filter>
-      </defs>
-      <g filter={`url(#${id}-sh)`} opacity="0.7">
-        <path d="M6 27 Q6 25 9 25 H39 Q42 25 42 27 V47 Q42 50 39 50 H9 Q6 50 6 47 Z" fill={p.box1}/>
-        <rect x="21" y="25" width="6" height="25" fill={p.rib1} rx="1"/>
-      </g>
-      <motion.g
-        animate={{ y: lidY, rotate: lidRotate }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        style={{ transformOrigin: "24px 26px" }}
-      >
-        <g filter={`url(#${id}-sh)`} opacity="0.7">
-          <path d="M2 16 Q2 14 5 14 H43 Q46 14 46 16 V26 Q46 28 43 28 H5 Q2 28 2 26 Z" fill={p.lid1}/>
-          <rect x="2" y="19" width="44" height="6" fill={p.rib1} rx="1"/>
-        </g>
-        <circle cx="24" cy="13" r="5" fill={p.bow1} stroke={p.bow2} strokeWidth="1.5" opacity="0.7"/>
-        <circle cx="24" cy="13" r="2.5" fill={p.bow2} opacity="0.7"/>
-      </motion.g>
-    </>
-  );
-}
-
-export default function GiftBoxIcon({ openProgress = 0, size = 40, locked = false, rank = 1 }: GiftBoxIconProps) {
+export default function GiftBoxIcon({
+  openProgress = 0,
+  size = 40,
+  locked = false,
+  rank = 1,
+}: GiftBoxIconProps) {
   const id = useId().replace(/:/g, "");
-  const lidY = -openProgress * 26;
-  const lidRotate = openProgress * 20;
-  const p = locked ? LOCKED : (PALETTES[rank] ?? PALETTES[1]);
+  const safeRank = Math.max(1, Math.min(5, Number(rank) || 1));
+  const open = Math.max(0, Math.min(1, Number(openProgress) || 0));
+  const palette = locked ? LOCKED : (PALETTES[safeRank] ?? PALETTES[1]);
+  const bodyGradient = id + "-body";
+  const lidGradient = id + "-lid";
+  const ribbonGradient = id + "-ribbon";
+  const jewelGradient = id + "-jewel";
+  const shadowFilter = id + "-shadow";
+  const glowFilter = id + "-glow";
+
   return (
-    <svg width={size} height={size} viewBox="0 0 48 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ overflow: "visible" }}>
-      {locked ? (
-        <LockedIcon id={id} p={p} lidY={lidY} lidRotate={lidRotate} />
-      ) : rank === 1 ? (
-        <Rank1 id={id} p={p} lidY={lidY} lidRotate={lidRotate} />
-      ) : rank === 2 ? (
-        <Rank2 id={id} p={p} lidY={lidY} lidRotate={lidRotate} />
-      ) : rank === 3 ? (
-        <Rank3 id={id} p={p} lidY={lidY} lidRotate={lidRotate} />
-      ) : rank === 4 ? (
-        <Rank4 id={id} p={p} lidY={lidY} lidRotate={lidRotate} />
-      ) : (
-        <Rank5 id={id} p={p} lidY={lidY} lidRotate={lidRotate} />
+    <motion.svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      style={{ overflow: "visible" }}
+      animate={locked ? undefined : { y: [0, -1.2, 0] }}
+      transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <defs>
+        <linearGradient id={bodyGradient} x1="12" y1="27" x2="50" y2="59">
+          <stop stopColor={palette.bodyTop} />
+          <stop offset="0.55" stopColor={palette.bodyBottom} />
+          <stop offset="1" stopColor="#080504" />
+        </linearGradient>
+        <linearGradient id={lidGradient} x1="8" y1="16" x2="54" y2="34">
+          <stop stopColor={palette.lidTop} />
+          <stop offset="1" stopColor={palette.lidBottom} />
+        </linearGradient>
+        <linearGradient id={ribbonGradient} x1="24" y1="8" x2="39" y2="59">
+          <stop stopColor={palette.ribbonTop} />
+          <stop offset="0.5" stopColor={palette.metal} />
+          <stop offset="1" stopColor={palette.ribbonBottom} />
+        </linearGradient>
+        <radialGradient id={jewelGradient} cx="38%" cy="30%" r="70%">
+          <stop stopColor="#FFFFFF" />
+          <stop offset="0.35" stopColor={palette.jewel} />
+          <stop offset="1" stopColor={palette.ribbonBottom} />
+        </radialGradient>
+        <filter id={shadowFilter} x="-30%" y="-30%" width="160%" height="180%">
+          <feDropShadow dx="0" dy="5" stdDeviation="4" floodColor="#000" floodOpacity="0.7" />
+        </filter>
+        <filter id={glowFilter} x="-60%" y="-60%" width="220%" height="220%">
+          <feDropShadow dx="0" dy="0" stdDeviation={safeRank >= 4 ? "5" : "3"} floodColor={palette.glow} floodOpacity={safeRank >= 4 ? "0.75" : "0.45"} />
+        </filter>
+      </defs>
+
+      <motion.g opacity={open}>
+        {[14, 24, 32, 40, 50].map((x, index) => (
+          <motion.path
+            key={x}
+            d={"M32 27 L" + x + " " + (4 + (index % 2) * 5)}
+            stroke={index % 2 ? palette.ribbonTop : palette.glow}
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: open, opacity: open * 0.8 }}
+          />
+        ))}
+      </motion.g>
+
+      <ellipse cx="32" cy="57" rx="23" ry="4.5" fill="#000" opacity="0.42" />
+
+      <g filter={"url(#" + shadowFilter + ")"}>
+        <path d="M10 28 L14 25 H50 L54 28 V51 L49 57 H15 L10 51 Z" fill={"url(#" + bodyGradient + ")"} />
+        <path d="M10 28 L15 32 H49 L54 28" stroke={palette.metal} strokeWidth="1.1" opacity="0.65" />
+        <path d="M14 25 L19 31 V55 L15 57 L10 51 V28 Z" fill="#000" opacity="0.17" />
+        <path d="M50 25 L45 31 V55 L49 57 L54 51 V28 Z" fill="#FFF" opacity="0.05" />
+        <path d="M28 26 H36 V57 H28 Z" fill={"url(#" + ribbonGradient + ")"} />
+        <path d="M29.5 27 H31.5 V55" stroke="#FFF" strokeWidth="1.2" opacity="0.34" />
+        <path d="M15 52 H49" stroke={palette.metal} strokeWidth="1" opacity="0.55" />
+
+        {safeRank >= 3 && !locked && (
+          <>
+            <path d="M13 34 L17 30" stroke={palette.metal} strokeWidth="1.2" />
+            <path d="M51 34 L47 30" stroke={palette.metal} strokeWidth="1.2" />
+            <path d="M13 48 L17 53" stroke={palette.metal} strokeWidth="1.2" />
+            <path d="M51 48 L47 53" stroke={palette.metal} strokeWidth="1.2" />
+          </>
+        )}
+
+        <g filter={"url(#" + glowFilter + ")"}>
+          <circle cx="32" cy="42" r={safeRank >= 4 ? "8" : "7"} fill="#100907" stroke={palette.metal} strokeWidth="1.3" />
+          <circle cx="32" cy="42" r="4.5" fill={"url(#" + jewelGradient + ")"} />
+          {locked ? (
+            <path d="M29.2 42 V39.8 A2.8 2.8 0 0 1 34.8 39.8 V42 M28.2 42 H35.8 V47 H28.2 Z" fill={palette.jewel} />
+          ) : (
+            <text x="32" y="44.5" textAnchor="middle" fill="#5B2600" fontSize="7" fontWeight="900">
+              {safeRank}
+            </text>
+          )}
+          <circle cx="30.5" cy="40.5" r="1.2" fill="#FFF" opacity="0.8" />
+        </g>
+      </g>
+
+      <motion.g
+        animate={{ y: -open * 22, rotate: -open * 9 }}
+        transition={{ type: "spring", stiffness: 280, damping: 21 }}
+        style={{ transformOrigin: "32px 28px" }}
+        filter={"url(#" + glowFilter + ")"}
+      >
+        <path d="M7 20 L12 16 H52 L57 20 V29 L52 33 H12 L7 29 Z" fill={"url(#" + lidGradient + ")"} stroke={palette.metal} strokeWidth="1" />
+        <path d="M8 21 H56" stroke="#FFF" strokeWidth="1.3" opacity="0.28" />
+        <path d="M28 16 H36 V33 H28 Z" fill={"url(#" + ribbonGradient + ")"} />
+        <path d="M30 17 H31.5 V31" stroke="#FFF" strokeWidth="1" opacity="0.4" />
+
+        <path d="M32 16 C26 12 20 8 16 12 C13 15 17 19 22 19 C26 19 29 17 32 16 Z" fill={"url(#" + ribbonGradient + ")"} stroke={palette.metal} strokeWidth="0.8" />
+        <path d="M32 16 C38 12 44 8 48 12 C51 15 47 19 42 19 C38 19 35 17 32 16 Z" fill={"url(#" + ribbonGradient + ")"} stroke={palette.metal} strokeWidth="0.8" />
+        <circle cx="32" cy="16" r="4.6" fill={"url(#" + jewelGradient + ")"} stroke={palette.metal} strokeWidth="1" />
+        <circle cx="30.5" cy="14.5" r="1.2" fill="#FFF" opacity="0.85" />
+
+        {safeRank >= 4 && !locked && (
+          <path d="M24 11 L27 5 L32 10 L37 5 L40 11" fill="none" stroke={palette.ribbonTop} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        )}
+      </motion.g>
+
+      {!locked && (
+        <>
+          <motion.path
+            d="M17 30 L24 28"
+            stroke="#FFF"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            animate={{ opacity: [0.15, 0.9, 0.15], x: [-2, 5, -2] }}
+            transition={{ duration: 2.2, repeat: Infinity }}
+          />
+          {safeRank >= 3 && (
+            <g fill={palette.ribbonTop} filter={"url(#" + glowFilter + ")"}>
+              <motion.circle cx="8" cy="17" r="1.2" animate={{ opacity: [0.2, 1, 0.2], scale: [0.7, 1.3, 0.7] }} transition={{ duration: 1.8, repeat: Infinity }} />
+              <motion.circle cx="56" cy="11" r="1" animate={{ opacity: [1, 0.2, 1], scale: [1.2, 0.7, 1.2] }} transition={{ duration: 2.1, repeat: Infinity }} />
+              {safeRank === 5 && (
+                <motion.path d="M54 38 H62 M58 34 V42" stroke={palette.jewel} strokeWidth="1.3" animate={{ opacity: [0.2, 1, 0.2], rotate: [0, 45, 0] }} transition={{ duration: 2.4, repeat: Infinity }} />
+              )}
+            </g>
+          )}
+        </>
       )}
-    </svg>
+    </motion.svg>
   );
 }

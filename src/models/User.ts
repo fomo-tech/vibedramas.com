@@ -13,6 +13,7 @@ export interface IUser extends Document {
   vipCoinsPerMinute: number;
   vipPackageName: string;
   giftLevel: number;
+  giftExp: number;
   unlockedEpisodes: mongoose.Types.ObjectId[];
   referralCode: string;
   referredBy?: string;
@@ -40,6 +41,7 @@ const UserSchema: Schema = new Schema(
     vipCoinsPerMinute: { type: Number, default: 0 },
     vipPackageName: { type: String, default: "" },
     giftLevel: { type: Number, default: 1 },
+    giftExp: { type: Number, default: 0, min: 0 },
     unlockedEpisodes: [{ type: Schema.Types.ObjectId, ref: "Episode" }],
     googleId: { type: String, sparse: true, unique: true },
     referralCode: { type: String, unique: true, sparse: true },

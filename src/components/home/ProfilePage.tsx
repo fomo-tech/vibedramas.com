@@ -43,6 +43,10 @@ interface GiftProgressData {
   rankName: string;
   nextRankName: string | null;
   coinsReward: number;
+  expReward: number;
+  giftExp: number;
+  currentRankExp: number;
+  nextRankExp: number | null;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -60,37 +64,58 @@ function formatExpiry(iso: string | null) {
 
 // ─── ProfileHeader ────────────────────────────────────────────────────────────
 function ProfileHeader() {
-  const { user, openLoginModal, logout } = useAuthStore();
+  const { user, openLoginModal, logout, vipStatus, vipExpiry } = useAuthStore();
+  const isVip = vipStatus && vipExpiry && new Date(vipExpiry) > new Date();
 
   return (
-    <div className="flex items-center justify-between px-4 lg:px-6 pt-6 lg:pt-8 pb-2">
+    <div className="flex items-center justify-between px-4 lg:px-6 pt-6 lg:pt-8 pb-4">
       <div className="flex items-center gap-4">
+        {/* Avatar Container with Glow & Gradient Ring */}
         <div className="relative shrink-0">
-          <div className="w-16 h-16 lg:w-18 lg:h-18 rounded-full overflow-hidden border border-white/10">
-            <UserAvatar
-              name={user?.name ?? "?"}
-              avatar={user?.avatar}
-              size={72}
-            />
+          <div className={`w-16 h-16 lg:w-18 lg:h-18 rounded-full overflow-hidden p-[2px] bg-gradient-to-br ${
+            isVip 
+              ? "from-amber-400 via-yellow-300 to-orange-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]" 
+              : "from-white/10 to-white/5 border border-white/10"
+          }`}>
+            <div className="w-full h-full rounded-full overflow-hidden bg-zinc-950">
+              <UserAvatar
+                name={user?.name ?? "?"}
+                avatar={user?.avatar}
+                size={72}
+              />
+            </div>
           </div>
-          <div className="absolute inset-0 rounded-full ring-2 ring-vibe-pink/20" />
+          {isVip && (
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 flex items-center justify-center border-2 border-black shadow-lg">
+              <Crown size={11} className="text-black font-extrabold" />
+            </div>
+          )}
         </div>
-        <div>
+
+        {/* User Details */}
+        <div className="flex flex-col justify-center">
           {user ? (
             <>
-              <p className="text-white font-black text-xl lg:text-2xl tracking-tight leading-none">
-                {user.name}
-              </p>
-              <p className="text-white/30 text-[11px] mt-1.5 truncate max-w-45">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-white font-extrabold text-lg lg:text-xl tracking-tight leading-none">
+                  {user.name}
+                </span>
+                {isVip && (
+                  <span className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-400 text-[9px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wider">
+                    VIP
+                  </span>
+                )}
+              </div>
+              <span className="text-white/40 text-xs mt-1 font-medium truncate max-w-[200px] lg:max-w-[250px]">
                 {user.email}
-              </p>
+              </span>
             </>
           ) : (
             <button
               onClick={openLoginModal}
               className="flex items-center gap-1.5 group"
             >
-              <span className="text-white font-black text-xl lg:text-2xl tracking-tight leading-none group-hover:text-vibe-pink transition-colors">
+              <span className="text-white font-black text-lg lg:text-xl tracking-tight leading-none group-hover:text-vibe-pink transition-colors">
                 Đăng nhập
               </span>
               <LogIn
@@ -101,16 +126,18 @@ function ProfileHeader() {
           )}
         </div>
       </div>
+
+      {/* Logout / Settings Button */}
       {user ? (
         <button
           onClick={logout}
-          className="w-9 h-9 rounded-full bg-white/6 border border-white/8 flex items-center justify-center text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all"
+          className="w-10 h-10 rounded-xl bg-white/5 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all cursor-pointer shadow-lg"
           title="Đăng xuất"
         >
           <LogOut size={16} />
         </button>
       ) : (
-        <button className="w-9 h-9 rounded-full bg-white/6 border border-white/8 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all">
+        <button className="w-10 h-10 rounded-xl bg-white/5 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all shadow-lg">
           <Settings size={17} />
         </button>
       )}
@@ -127,34 +154,41 @@ function CoinsCard() {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-4 lg:mx-6 mt-4 rounded-2xl overflow-hidden relative"
-      style={{ background: "linear-gradient(135deg,#0d0d0d 0%,#111 100%)" }}
+      whileHover={{ y: -1, transition: { duration: 0.2 } }}
+      className="mx-4 lg:mx-6 mt-4 rounded-2xl overflow-hidden relative border border-white/[0.06] bg-zinc-900/45 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
     >
-      <div className="absolute inset-0 bg-linear-to-r from-yellow-500/6 via-orange-500/4 to-transparent pointer-events-none" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-yellow-500/40 via-orange-400/20 to-transparent" />
+      {/* Light highlights */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/[0.07] via-amber-500/[0.03] to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-yellow-400/30 via-amber-500/10 to-transparent" />
+      
       <div className="relative p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-yellow-500/15 flex items-center justify-center shadow-[0_0_16px_rgba(234,179,8,0.2)]">
-            <CoinIcon size={22} />
+          {/* Animated Glowing Coin Icon Wrapper */}
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-yellow-500/20 to-amber-500/10 border border-yellow-500/25 flex items-center justify-center shadow-[0_0_18px_rgba(245,158,11,0.25)] relative overflow-hidden group">
+            <CoinIcon size={24} />
           </div>
           <div>
-            <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">
+            <p className="text-white/40 text-[10px] font-extrabold uppercase tracking-widest leading-none">
               Số dư xu
             </p>
-            <p className="text-white font-black text-2xl tracking-tighter leading-none mt-0.5">
-              {(coins ?? 0).toLocaleString()}
-              <span className="text-yellow-400/70 text-sm font-bold ml-1">
+            <div className="flex items-baseline gap-1 mt-1">
+              <span className="font-black text-2xl tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-white via-yellow-100 to-amber-400">
+                {(coins ?? 0).toLocaleString()}
+              </span>
+              <span className="text-amber-400 text-xs font-extrabold">
                 xu
               </span>
-            </p>
+            </div>
           </div>
         </div>
+
         <Link href="/vip">
           <motion.button
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-1.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-black px-3 py-1.5 rounded-xl hover:bg-yellow-500/20 transition-all"
+            whileHover={{ scale: 1.03, y: -0.5 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-500 to-amber-600 text-black text-xs font-black px-3.5 py-2 rounded-xl shadow-[0_4px_12px_rgba(245,158,11,0.3)] hover:shadow-[0_4px_18px_rgba(245,158,11,0.55)] transition-all cursor-pointer border border-yellow-400/20"
           >
-            <CoinIcon size={12} />
+            <CoinIcon size={12} className="text-black filter brightness-50" />
             Dùng xu
           </motion.button>
         </Link>
@@ -192,47 +226,114 @@ function VipStatusCard() {
   const expiryLabel = formatExpiry(vipExpiry);
   const isMobile = (width ?? 0) < 1024;
 
+  const nextExp = progress?.nextRankExp ?? null;
+  const levelSpan = Math.max(
+    1,
+    Number(nextExp ?? progress?.giftExp ?? 0) -
+      Number(progress?.currentRankExp ?? 0),
+  );
+  const levelProgress =
+    nextExp === null
+      ? 100
+      : Math.max(
+          0,
+          Math.min(
+            100,
+            ((Number(progress?.giftExp ?? 0) -
+              Number(progress?.currentRankExp ?? 0)) /
+              levelSpan) *
+              100,
+          ),
+        );
+
+  return (
+    <Link href="/vip">
+      <motion.div
+        whileHover={{ y: -1 }}
+        whileTap={{ scale: 0.99 }}
+        className="mx-4 mt-3.5 cursor-pointer overflow-hidden rounded-2xl border border-vibe-pink/20 bg-zinc-900/40 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:mx-6"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-vibe-pink to-orange-500">
+            <Gift size={20} className="text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-black uppercase text-white/35">
+                  Level {progress?.rank ?? 1}
+                </p>
+                <p className="truncate text-sm font-black text-white">
+                  {progress?.rankName ?? "Phần thưởng xem phim"}
+                </p>
+              </div>
+              <ChevronRight size={16} className="shrink-0 text-white/35" />
+            </div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/8">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${levelProgress}%` }}
+                className="h-full rounded-full bg-gradient-to-r from-vibe-pink to-orange-400"
+              />
+            </div>
+            <div className="mt-1.5 flex justify-between text-[10px] text-white/35">
+              <span>{Number(progress?.giftExp ?? 0).toLocaleString("vi-VN")} EXP</span>
+              <span>+{Number(progress?.coinsReward ?? 0)} xu · +{Number(progress?.expReward ?? 0)} EXP/hộp</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </Link>
+  );
+
   if (!isVip) {
     // Not VIP — show upgrade banner
     return (
       <Link href="/vip">
         <motion.div
+          whileHover={{ y: -1 }}
           whileTap={{ scale: 0.98 }}
-          className="mx-4 lg:mx-6 mt-3 rounded-2xl relative overflow-hidden cursor-pointer"
-          style={{
-            background:
-              "linear-gradient(135deg,#1a0907 0%,#0f0f0f 55%,#1a0500 100%)",
-          }}
+          className="mx-4 lg:mx-6 mt-3.5 rounded-2xl relative overflow-hidden cursor-pointer border border-vibe-pink/25 bg-zinc-900/30 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
         >
-          <div className="absolute inset-0 bg-linear-to-r from-vibe-pink/15 via-orange-500/8 to-transparent pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-vibe-pink via-orange-400 to-transparent" />
+          {/* Deep glowing background leaks */}
+          <div className="absolute inset-0 bg-gradient-to-r from-vibe-pink/[0.15] via-orange-500/[0.05] to-transparent pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-vibe-pink via-orange-500 to-transparent" />
+          
           <div className="relative p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-vibe-pink flex items-center justify-center shadow-[0_0_20px_rgba(255,69,0,0.5)] shrink-0">
-                <Crown size={18} className="text-white" />
+              {/* Crown Icon Container with Premium Glow */}
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-vibe-pink to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(255,42,109,0.4)] shrink-0 border border-white/10">
+                <Crown size={20} className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]" />
               </div>
+              
               <div>
-                <p className="text-white font-black text-base leading-tight tracking-tight">
-                  Gói <span className="text-vibe-pink">Bậc Hộp Quà</span>
+                <p className="text-white font-extrabold text-base leading-tight tracking-tight flex items-center gap-1.5">
+                  <span>Gói</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibe-pink to-orange-400 font-black">
+                    Bậc Hộp Quà
+                  </span>
                 </p>
-                <p className="text-white/40 text-[11px] mt-0.5">
+                <p className="text-white/40 text-[11px] mt-1 font-medium leading-relaxed max-w-[220px] sm:max-w-xs md:max-w-md">
                   Xem phim để tích thời gian, mở hộp nhận xu theo bậc
                 </p>
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="bg-vibe-pink/20 border border-vibe-pink/30 text-vibe-pink text-[10px] font-black px-2 py-0.5 rounded-full">
+                
+                <div className="mt-2.5 flex items-center gap-2 flex-wrap">
+                  <span className="bg-vibe-pink/10 border border-vibe-pink/20 text-vibe-pink text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
                     Kiếm xu/phút
                   </span>
-                  <span className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 text-[10px] font-black px-2 py-0.5 rounded-full">
+                  <span className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
                     Thưởng theo bậc
                   </span>
                 </div>
               </div>
             </div>
-            <div className="shrink-0 flex items-center gap-1.5">
-              <span className="text-vibe-pink text-xs font-black">
+
+            {/* Premium Button Trigger */}
+            <div className="shrink-0 flex items-center gap-1.5 bg-vibe-pink/10 border border-vibe-pink/20 rounded-xl px-3 py-1.5 hover:bg-vibe-pink/20 transition-all">
+              <span className="text-vibe-pink text-xs font-black uppercase tracking-wider">
                 Chọn gói
               </span>
-              <ChevronRight size={14} className="text-vibe-pink/60" />
+              <ChevronRight size={13} className="text-vibe-pink" />
             </div>
           </div>
         </motion.div>
@@ -258,35 +359,35 @@ function VipStatusCard() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mx-4 lg:mx-6 mt-3 rounded-2xl overflow-hidden relative"
-        style={{ background: "linear-gradient(135deg,#1a0907 0%,#0d0d0d 60%)" }}
+        whileHover={{ y: -1 }}
+        className="mx-4 lg:mx-6 mt-3.5 rounded-2xl overflow-hidden relative border border-vibe-pink/20 bg-zinc-900/40 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
       >
-        <div className="absolute inset-0 bg-linear-to-b from-vibe-pink/10 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-vibe-pink via-orange-400 to-rose-500" />
+        <div className="absolute inset-0 bg-gradient-to-b from-vibe-pink/[0.08] via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-vibe-pink via-orange-400 to-rose-500" />
 
         {/* Header row */}
         <div className="relative p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-vibe-pink flex items-center justify-center shadow-[0_0_20px_rgba(255,69,0,0.5)]">
-              <Crown size={18} className="text-white" />
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-vibe-pink to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(255,42,109,0.35)] shrink-0 border border-white/10">
+              <Crown size={20} className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-white font-black text-base tracking-tight">
-                  Gói <span className="text-vibe-pink">Bậc Hộp Quà</span>
+                <p className="text-white font-extrabold text-base tracking-tight leading-none">
+                  Gói <span className="text-transparent bg-clip-text bg-gradient-to-r from-vibe-pink to-rose-400 font-black">Bậc Hộp Quà</span>
                 </p>
-                <span className="bg-green-500/20 border border-green-500/30 text-green-400 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
+                <span className="bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
                   Đang dùng
                 </span>
               </div>
-              <p className="text-white/35 text-[11px] mt-0.5 flex items-center gap-1.5">
-                <Timer size={10} className="text-vibe-pink/60" />
+              <p className="text-white/40 text-[11px] mt-1.5 flex items-center gap-1 font-medium">
+                <Timer size={11} className="text-vibe-pink/60" />
                 {expiryLabel}
               </p>
             </div>
           </div>
           <Link href="/vip">
-            <span className="text-white/30 text-xs hover:text-white/60 transition-colors flex items-center gap-1">
+            <span className="text-white/40 text-xs hover:text-vibe-pink transition-colors flex items-center gap-1 cursor-pointer">
               Mua gói khác
               <ChevronRight size={12} />
             </span>
@@ -295,27 +396,27 @@ function VipStatusCard() {
 
         {/* Coins earning rate */}
         {vipCoinsPerMinute > 0 && (
-          <div className="mx-4 mb-3 rounded-xl bg-yellow-500/8 border border-yellow-500/15 px-3 py-2.5 flex items-center gap-2.5">
-            <CoinIcon size={16} className="shrink-0" />
-            <p className="text-yellow-400/80 text-xs font-bold">
+          <div className="mx-4 mb-3.5 rounded-xl bg-yellow-500/[0.05] border border-yellow-500/15 px-3 py-2 flex items-center gap-2">
+            <CoinIcon size={14} className="shrink-0" />
+            <p className="text-yellow-400/80 text-xs font-bold leading-normal">
               {vipCoinsPerMinute > 1
                 ? `+${vipCoinsPerMinute} xu/phút`
                 : "Kiếm tiền đã bật"}
-              <span className="text-white/30 font-normal">
+              <span className="text-white/30 font-medium ml-1">
                 {vipCoinsPerMinute > 1
-                  ? " khi xem phim theo gói đã mua"
-                  : " theo cấu hình gói hiện tại"}
+                  ? "khi xem phim theo gói đã mua"
+                  : "theo cấu hình gói hiện tại"}
               </span>
             </p>
           </div>
         )}
 
         {/* Perks grid */}
-        <div className="px-4 pb-4 grid grid-cols-2 gap-2">
+        <div className="px-4 pb-4 grid grid-cols-2 gap-x-3 gap-y-2 border-b border-white/[0.04]">
           {VIP_PERKS.map(({ label }) => (
-            <div key={label} className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-vibe-pink shrink-0" />
-              <span className="text-white/60 text-[11px] font-medium">
+            <div key={label} className="flex items-start gap-1.5">
+              <CheckCircle2 size={12} className="text-vibe-pink shrink-0 mt-0.5" />
+              <span className="text-white/50 text-[10px] font-medium leading-tight">
                 {label}
               </span>
             </div>
@@ -323,34 +424,33 @@ function VipStatusCard() {
         </div>
 
         {progress && (
-          <div className="px-4 pb-4">
+          <div className="p-4 bg-black/20">
             <motion.button
+              whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => setOpen(true)}
-              className="w-full rounded-2xl border border-white/8 bg-zinc-900/60 p-4 block text-left"
+              className="w-full rounded-xl border border-white/[0.06] bg-zinc-950/40 p-3 block text-left hover:bg-zinc-950/70 transition-all cursor-pointer"
             >
               <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-vibe-pink/15 border border-vibe-pink/25 flex items-center justify-center">
-                    <Sparkles size={16} className="text-vibe-pink" />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8.5 h-8.5 rounded-lg bg-vibe-pink/10 border border-vibe-pink/20 flex items-center justify-center shrink-0">
+                    <Sparkles size={14} className="text-vibe-pink" />
                   </div>
                   <div>
-                    <p className="text-white font-black text-sm">
+                    <p className="text-white font-extrabold text-xs">
                       Cấp bậc quà hiện tại
                     </p>
-                    <p className="text-vibe-pink text-xs font-bold mt-0.5">
-                      Bậc {progress.rank} · {progress.rankName}
+                    <p className="text-vibe-pink text-[11px] font-bold mt-0.5">
+                      Bậc {progress!.rank} · {progress!.rankName}
                     </p>
                   </div>
                 </div>
-                <ChevronRight size={15} className="text-white/35" />
+                <ChevronRight size={14} className="text-white/35" />
               </div>
 
               <div className="mt-3">
-                <p className="text-[11px] text-white/45">
-                  {progress.nextRankName
-                    ? `Bậc kế tiếp: ${progress.nextRankName}`
-                    : "Đã đạt bậc cao nhất"}
+                <p className="text-[10px] text-white/40 leading-relaxed">
+                  Bấm để xem lịch sử tích lũy và điều kiện thăng cấp bậc nhận xu
                 </p>
               </div>
             </motion.button>
@@ -387,7 +487,7 @@ function VipStatusCard() {
                   Cấp bậc hộp quà
                 </p>
                 <p className="text-vibe-pink text-xs font-bold mt-1">
-                  Bậc {progress.rank} · {progress.rankName}
+                  Bậc {progress!.rank} · {progress!.rankName}
                 </p>
               </div>
               <button
@@ -401,15 +501,15 @@ function VipStatusCard() {
             <div className="px-5 py-4 overflow-y-auto max-h-[72vh]">
               <div className="rounded-xl border border-white/8 bg-white/3 p-3.5">
                 <p className="text-[11px] text-white/45">
-                  {progress.nextRankName
-                    ? `Bậc kế tiếp: ${progress.nextRankName}`
+                  {progress!.nextRankName
+                    ? `Bậc kế tiếp: ${progress!.nextRankName}`
                     : "Đã đạt bậc cao nhất"}
                 </p>
               </div>
 
               <div className="mt-3 space-y-2">
                 {ranks.map((tier) => {
-                  const isCurrent = tier.rank === progress.rank;
+                  const isCurrent = tier.rank === progress!.rank;
                   return (
                     <div
                       key={tier.rank}

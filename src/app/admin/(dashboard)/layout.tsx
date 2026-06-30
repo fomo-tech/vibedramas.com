@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAdmin } from "@/actions/authActions";
 import {
-  Crown,
   Film,
   Gift,
   LayoutDashboard,
@@ -35,7 +34,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   // Auto-open settings if on a settings sub-page
   useEffect(() => {
     const settingsRoutes = [
-      "/admin/vip",
       "/admin/topup-packages",
       "/admin/ranks",
       "/admin/welfare",
@@ -115,7 +113,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   ];
 
   const settingsMenuItems = [
-    { href: "/admin/vip", icon: Crown, label: "Gói bậc" },
     { href: "/admin/topup-packages", icon: DollarSign, label: "Gói nạp xu" },
     { href: "/admin/ranks", icon: Shield, label: "Bậc hộp quà" },
     { href: "/admin/welfare", icon: Gift, label: "Phúc lợi" },

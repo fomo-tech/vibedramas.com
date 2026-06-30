@@ -7,6 +7,8 @@ export interface GiftRankTier {
   rank: number;
   name: string;
   coinsReward: number;
+  expReward: number;
+  requiredExp: number;
   watchSeconds: number;
 }
 

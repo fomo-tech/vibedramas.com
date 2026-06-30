@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/db";
 import SeoConfig from "@/models/SeoConfig";
+import type { Metadata } from "next";
 
 // Utility để lấy SEO config — gọi DB trực tiếp (tránh self-referencing HTTP fetch)
 export async function getSeoConfig(page: string) {
@@ -184,6 +185,27 @@ export function buildMetadata(config: SeoMetadataConfig | null = null) {
   };
 }
 
+export function buildPrivateMetadata(
+  title: string,
+  canonical: string,
+  description?: string,
+): Metadata {
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: { index: false, follow: true },
+    },
+  };
+}
+
+export function serializeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
 // Generate Organization Schema for Google
 export function generateOrganizationSchema() {
   const siteUrl = resolveSiteUrl();
@@ -200,10 +222,6 @@ export function generateOrganizationSchema() {
       width: 512,
       height: 512,
     },
-    sameAs: [
-      "https://facebook.com/phimnganhay",
-      "https://tiktok.com/@phimnganhay",
-    ],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "hỗ trợ khách hàng",

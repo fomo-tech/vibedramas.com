@@ -60,7 +60,7 @@ const ALL_DRAMAS_PREVIEW_LIMIT = 20;
 // ─── ResultCard ───────────────────────────────────────────────────────────────
 
 function ResultCard({ drama, index }: { drama: Drama; index: number }) {
-  const img = drama.poster_url || drama.thumb_url || "";
+  const img = drama.thumb_url || drama.poster_url || "";
 
   return (
     <motion.div

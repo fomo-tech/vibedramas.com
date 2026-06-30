@@ -6,6 +6,11 @@ import GiftLog from "@/models/GiftLog";
 import { getUserSession } from "@/lib/auth";
 import { getCache, setCache } from "@/lib/cache";
 import { rateLimit } from "@/lib/rateLimit";
+import {
+  expRewardForRank,
+  findRankForExp,
+  requiredExpForRank,
+} from "@/lib/giftRanks";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +43,7 @@ export async function GET(req: NextRequest) {
     const userIdStr = String(session.userId);
 
     // Cache per-user for 30s — aggregation is expensive, this route is polled frequently
-    const cacheKey = `gift:cfg:${userIdStr}`;
+    const cacheKey = `gift:cfg:v2:${userIdStr}`;
     const cached = await getCache<object>(cacheKey);
     if (cached) {
       return NextResponse.json(cached);
@@ -50,15 +55,17 @@ export async function GET(req: NextRequest) {
       await RankConfig.insertMany(DEFAULT_RANKS);
     }
 
-    const vipUser = await User.findById(session.userId).select("giftLevel");
-    if (!vipUser) {
+    const rewardUser = await User.findById(session.userId).select(
+      "giftLevel giftExp",
+    );
+    if (!rewardUser) {
       return NextResponse.json(
         { error: "Không tìm thấy user" },
         { status: 404 },
       );
     }
 
-    const giftLevel = toFiniteNumber(vipUser.giftLevel, 1);
+    const savedLevel = Math.max(1, toFiniteNumber(rewardUser.giftLevel, 1));
     const ranks = await RankConfig.find().sort({ rank: 1 }).lean();
 
     if (!Array.isArray(ranks) || ranks.length === 0) {
@@ -68,13 +75,23 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const currentRank =
-      ranks.find((r) => toFiniteNumber(r.rank, -1) === giftLevel) ?? ranks[0];
+    // Preserve the level of existing users, then let EXP drive every upgrade.
+    const savedRank =
+      ranks.find((r) => toFiniteNumber(r.rank, -1) === savedLevel) ?? ranks[0];
+    const giftExp = Math.max(
+      toFiniteNumber(rewardUser.giftExp, 0),
+      requiredExpForRank(savedRank),
+    );
+    const currentRank = findRankForExp(ranks, giftExp) ?? ranks[0];
     const normalizedLevel = Math.max(1, toFiniteNumber(currentRank.rank, 1));
 
-    if (normalizedLevel !== giftLevel) {
-      vipUser.giftLevel = normalizedLevel;
-      await vipUser.save();
+    if (
+      normalizedLevel !== savedLevel ||
+      giftExp !== toFiniteNumber(rewardUser.giftExp, 0)
+    ) {
+      rewardUser.giftLevel = normalizedLevel;
+      rewardUser.giftExp = giftExp;
+      await rewardUser.save();
     }
 
     const effectiveWatchSeconds = Math.max(
@@ -82,6 +99,14 @@ export async function GET(req: NextRequest) {
       toFiniteNumber(currentRank.watchSeconds, 60),
     );
     const coinsReward = Math.max(0, toFiniteNumber(currentRank.coinsReward, 0));
+    const expReward = expRewardForRank(currentRank);
+    const currentRankIndex = ranks.findIndex(
+      (rank) => toFiniteNumber(rank.rank, -1) === normalizedLevel,
+    );
+    const nextRank =
+      currentRankIndex >= 0 ? (ranks[currentRankIndex + 1] ?? null) : null;
+    const currentRankExp = requiredExpForRank(currentRank);
+    const nextRankExp = nextRank ? requiredExpForRank(nextRank) : null;
 
     // Coins earned from gift box: today & all-time
     const startOfToday = new Date();
@@ -102,16 +127,19 @@ export async function GET(req: NextRequest) {
     const responsePayload = {
       rank: normalizedLevel,
       rankName: String(currentRank.name ?? "Khán Giả"),
-      nextRankName: null,
+      nextRankName: nextRank ? String(nextRank.name ?? "") : null,
       watchMax: effectiveWatchSeconds,
       coinsReward,
+      expReward,
+      giftExp,
+      currentRankExp,
+      nextRankExp,
       coinsToday,
       coinsTotal,
-      // First-time flag: gift box is immediately ready so new users get a taste
-      isFirstClaim: coinsTotal === 0,
+      isFirstClaim: false,
     };
 
-    // Cache for 30s — stale by at most 30s, but saves 2 aggregations per poll
+    // Cache briefly; opening a box invalidates the user reward snapshot.
     await setCache(cacheKey, responsePayload, 30);
 
     return NextResponse.json(responsePayload);
