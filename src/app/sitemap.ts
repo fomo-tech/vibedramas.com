@@ -3,6 +3,8 @@ import connectDB from "@/lib/db";
 import Drama from "@/models/Drama";
 import { resolveSiteUrl } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 type DramaTaxonomy = { slug: string; name?: string };
 type DramaSitemapDoc = {
   slug: string;

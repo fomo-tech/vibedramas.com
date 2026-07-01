@@ -335,7 +335,7 @@ export default function VipDesktop({ onSubscribe }: VipDesktopProps) {
           )}
         </motion.div>
 
-        <div className="w-full max-w-6xl grid grid-cols-1 gap-4 xl:grid-cols-[1.25fr_1fr] xl:items-start">
+        <div className="w-full max-w-4xl grid grid-cols-1 gap-4 xl:grid-cols-[1.25fr_1fr] xl:items-start">
           {loading ? (
             <div className="flex items-center gap-3 text-white/30 rounded-2xl border border-white/10 bg-white/3 px-5 py-6">
               <Loader2 size={18} className="animate-spin text-vibe-pink" />

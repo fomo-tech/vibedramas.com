@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
+import { buildMetadata, resolveSiteUrl } from "@/lib/seo";
 import connectDB from "@/lib/db";
 import Drama from "@/models/Drama";
 import AllDramasClient from "@/components/home/AllDramasClient";
-import { resolveSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +14,8 @@ function resolveThumb(thumb_url: string, fallback: string): string {
   return `${CDN}/${thumb_url}`;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const siteUrl = resolveSiteUrl();
-  const canonicalUrl = `${siteUrl}/short`;
-  const fallbackOg = `${siteUrl}/icons/og-image.png`;
+export async function generateMetadata(): Promise<any> {
+  const fallbackOg = "/icons/og-image.png";
 
   // Dùng thumbnail của drama nổi bật nhất làm OG image
   await connectDB();
@@ -36,8 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     "Xem phim ngắn trung quốc hay nhất 2026 miễn phí. Phim ngắn tổng tài, phim ngắn cổ trang, phim ngắn hay vietsub full HD. Cập nhật liên tục tại Phim ngắn hay.";
 
-  return {
-    metadataBase: new URL(siteUrl),
+  return buildMetadata({
     title,
     description,
     keywords: [
@@ -64,33 +60,9 @@ export async function generateMetadata(): Promise<Metadata> {
       "xem phim ngắn miễn phí",
       SITE_NAME,
     ],
-    robots: { index: true, follow: true },
-    alternates: { canonical: canonicalUrl },
-    openGraph: {
-      title,
-      description,
-      type: "website",
-      url: canonicalUrl,
-      siteName: SITE_NAME,
-      locale: "vi_VN",
-      images: [
-        {
-          url: ogImage,
-          width: 800,
-          height: 450,
-          alt: "Phim Ngắn Trung Quốc Hay - Phim ngắn hay",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title:
-        "Phim Ngắn Trung Quốc Hay Nhất 2026 - Tổng Tài, Cổ Trang | Phim ngắn hay",
-      description:
-        "Xem phim ngắn trung quốc, phim ngắn tổng tài, phim ngắn cổ trang hay nhất 2026. Vietsub full HD miễn phí.",
-      images: [ogImage],
-    },
-  };
+    canonicalUrl: "/short",
+    ogImage,
+  });
 }
 
 export default async function ShortListPage() {

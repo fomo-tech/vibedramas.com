@@ -1,6 +1,6 @@
 // Service Worker for Phim ngắn hay PWA
 // ⚠️ Bump BUILD_VERSION mỗi khi deploy để invalidate cache cũ
-const BUILD_VERSION = "0.0.53";
+const BUILD_VERSION = "0.0.58";
 const CACHE_NAME = "phim-ngan-hay-static-" + BUILD_VERSION;
 const OFFLINE_CACHE = "phim-ngan-hay-offline-" + BUILD_VERSION;
 

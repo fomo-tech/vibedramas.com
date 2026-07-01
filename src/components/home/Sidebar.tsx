@@ -11,6 +11,9 @@ import {
   Gift,
   Search,
   Sparkles,
+  ChevronRight,
+  Trophy,
+  Coins,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -28,7 +31,10 @@ export default function Sidebar({
   onTabChange,
 }: SidebarProps) {
   const pathname = usePathname();
-  const { user, openLoginModal } = useAuthStore();
+  const { user, coins, giftLevel, vipStatus, openLoginModal } = useAuthStore();
+  const LEVEL_NAMES = ["", "Khán Giả", "Hâm Mộ", "Tri Kỷ", "Trưởng Lão", "Phú Hộ"];
+  const levelName = LEVEL_NAMES[giftLevel] || LEVEL_NAMES[1];
+  const formattedCoins = Number(coins || 0).toLocaleString("vi-VN");
 
   const navGroups = [
     {
@@ -143,51 +149,101 @@ export default function Sidebar({
       </div>
 
       {/* Watch rewards */}
-      <div className="mx-0.5 xl:mx-1 mb-4 xl:mb-6 space-y-2">
-          <>
-            <Link href="/vip" className="block">
-              <div className="rounded-2xl p-3 xl:p-4 relative overflow-hidden border transition-all duration-300 bg-linear-to-br from-[#1a0a07] via-zinc-900/85 to-[#1a0f05] border-vibe-pink/25 hover:border-orange-400/65">
-                <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full bg-vibe-pink/18 blur-2xl pointer-events-none" />
-                <div className="absolute -bottom-6 -left-5 w-20 h-20 rounded-full bg-orange-500/18 blur-2xl pointer-events-none" />
+      <div className="mx-0.5 xl:mx-1 mb-4 xl:mb-6">
+        {!user ? (
+          /* Guest state: Premium Loyalty Card */
+          <div className="rounded-2xl p-3.5 xl:p-4 relative overflow-hidden border transition-all duration-300 bg-linear-to-br from-[#1c0d0a]/90 via-[#0f0e12]/95 to-[#1c120a]/90 border-orange-500/20 hover:border-orange-500/40 shadow-lg group">
+            {/* Background gradient flares */}
+            <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-vibe-pink/15 blur-2xl pointer-events-none group-hover:bg-vibe-pink/25 transition-all duration-500" />
+            <div className="absolute -bottom-12 -left-10 w-24 h-24 rounded-full bg-orange-500/15 blur-2xl pointer-events-none group-hover:bg-orange-500/25 transition-all duration-500" />
 
-                <div className="relative flex items-start gap-3">
-                  <div className="w-8 h-8 xl:w-9 xl:h-9 rounded-xl bg-linear-to-br from-vibe-pink to-orange-500 flex items-center justify-center shrink-0 shadow-[0_0_14px_rgba(255,69,0,0.35)]">
-                    <Gift size={15} className="text-white" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-white font-black text-xs xl:text-sm tracking-tight truncate">
-                        Phần thưởng xem phim
-                      </p>
-                    </div>
-
-                    <p className="text-white/55 text-[10px] xl:text-[11px] mt-1 leading-tight">
-                      Xem phim, nhận xu và tích EXP lên cấp
-                    </p>
-                  </div>
-                </div>
-
-                <div className="relative mt-2.5 w-full py-1.5 rounded-lg text-center text-[10px] xl:text-[11px] font-black tracking-widest uppercase border transition-all duration-300 bg-linear-to-r from-vibe-pink to-orange-500 text-white border-transparent">
-                  Xem tiến độ
-                </div>
+            <div className="relative flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-linear-to-br from-vibe-pink to-orange-500 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,69,0,0.3)] group-hover:scale-105 transition-transform duration-300">
+                <Gift size={16} className="text-white animate-pulse" />
               </div>
-            </Link>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-extrabold text-xs xl:text-sm tracking-tight leading-tight">
+                  Phúc Lợi Xem Phim
+                </h3>
+                <p className="text-white/40 text-[10px] mt-0.5 font-medium leading-none">
+                  Tích lũy quà tặng & EXP
+                </p>
+              </div>
+            </div>
 
-            {!user && (
-              <button
-                onClick={openLoginModal}
-                className="w-full rounded-xl border border-white/12 bg-white/4 hover:bg-white/8 px-3 py-2 text-left transition-all"
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles size={14} className="text-vibe-pink" />
-                  <p className="text-[11px] font-bold text-white/90">
-                    Đăng nhập để mở đầy đủ tính năng kiếm xu
+            {/* Perks list */}
+            <div className="relative mt-3 space-y-1.5 border-t border-white/5 pt-3">
+              <div className="flex items-center gap-2 text-white/70 text-[10px] xl:text-[11px]">
+                <Coins size={11} className="text-vibe-pink shrink-0" />
+                <span className="truncate">Nhận xu miễn phí mỗi tập</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/70 text-[10px] xl:text-[11px]">
+                <Gift size={11} className="text-orange-400 shrink-0" />
+                <span className="truncate">Mở hộp quà VIP nhận thưởng</span>
+              </div>
+            </div>
+
+            {/* Login CTA Button */}
+            <button
+              onClick={openLoginModal}
+              className="relative mt-3.5 w-full py-2 rounded-xl text-center text-[10px] xl:text-xs font-black tracking-wider uppercase bg-linear-to-r from-vibe-pink to-orange-500 text-white cursor-pointer shadow-[0_4px_12px_rgba(255,69,0,0.2)] hover:shadow-[0_4px_16px_rgba(255,69,0,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+            >
+              Đăng Nhập Nhận Quà
+            </button>
+          </div>
+        ) : (
+          /* Logged-in state: User loyalty progress and coin dashboard */
+          <Link href="/vip" className="block group">
+            <div className="rounded-2xl p-3.5 xl:p-4 relative overflow-hidden border transition-all duration-300 bg-linear-to-br from-[#120a06]/90 via-[#0e0e12]/95 to-[#161208]/90 border-orange-500/20 hover:border-orange-500/40 shadow-lg">
+              {/* Background gradient flares */}
+              <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-vibe-pink/15 blur-2xl pointer-events-none group-hover:bg-vibe-pink/25 transition-all duration-500" />
+              <div className="absolute -bottom-12 -left-10 w-24 h-24 rounded-full bg-orange-500/15 blur-2xl pointer-events-none group-hover:bg-orange-500/25 transition-all duration-500" />
+
+              {/* Level / User Info */}
+              <div className="relative flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-linear-to-br from-orange-500 to-amber-500 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(249,115,22,0.3)]">
+                    <Trophy size={16} className="text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[9px] font-extrabold text-orange-400 uppercase tracking-widest leading-none">
+                      Cấp {giftLevel}
+                    </p>
+                    <h3 className="text-white font-extrabold text-xs xl:text-sm tracking-tight mt-1 truncate">
+                      {levelName}
+                    </h3>
+                  </div>
+                </div>
+                <ChevronRight size={14} className="text-white/30 group-hover:text-white/60 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </div>
+
+              {/* Info dashboard */}
+              <div className="relative mt-3 pt-3 border-t border-white/5 grid grid-cols-2 gap-2">
+                <div className="bg-white/3 rounded-xl p-2 border border-white/5 min-w-0">
+                  <p className="text-[8px] xl:text-[9px] font-bold text-white/40 uppercase tracking-wider leading-none">Ví Xu</p>
+                  <div className="flex items-center gap-1 mt-1 min-w-0">
+                    <Coins size={11} className="text-amber-400 shrink-0" />
+                    <span className="text-[11px] xl:text-xs font-black text-white truncate">
+                      {formattedCoins}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-white/3 rounded-xl p-2 border border-white/5 min-w-0">
+                  <p className="text-[8px] xl:text-[9px] font-bold text-white/40 uppercase tracking-wider leading-none">Đặc Quyền</p>
+                  <p className="text-[10px] xl:text-[10.5px] font-bold text-amber-300 mt-1 truncate">
+                    {vipStatus ? "Thành viên VIP" : "Mở Hộp Quà"}
                   </p>
                 </div>
-              </button>
-            )}
-          </>
+              </div>
+
+              {/* Bottom interactive link */}
+              <div className="relative mt-3 w-full py-1.5 rounded-xl text-center text-[10px] font-bold tracking-widest uppercase border border-orange-500/25 bg-orange-500/5 text-orange-400 group-hover:bg-linear-to-r group-hover:from-vibe-pink group-hover:to-orange-500 group-hover:text-white group-hover:border-transparent transition-all duration-300">
+                Xem Tiến Độ
+              </div>
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* Nav Groups */}

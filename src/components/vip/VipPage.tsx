@@ -105,7 +105,7 @@ export default function VipPage() {
       style={{ backgroundColor: "#050403" }}
     >
       <header className="sticky top-0 z-30 border-b border-orange-500/15 bg-[#070504]/92 backdrop-blur-xl">
-        <div className="mx-auto flex min-h-16 max-w-6xl items-center gap-3 px-4 py-3 lg:px-8">
+        <div className="mx-auto flex min-h-16 max-w-4xl items-center gap-3 px-4 py-3 lg:px-8">
           <button
             type="button"
             onClick={() => router.back()}
@@ -136,7 +136,7 @@ export default function VipPage() {
       ) : loading ? (
         <RewardSkeleton />
       ) : (
-        <main className="mx-auto max-w-6xl px-4 pb-32 pt-5 lg:px-8 lg:pb-12 lg:pt-8">
+        <main className="mx-auto max-w-4xl px-4 pb-32 pt-5 lg:px-8 lg:pb-12 lg:pt-8">
           <motion.section
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -535,7 +535,7 @@ function RankCard({
 
 function GuestState({ onLogin }: { onLogin: () => void }) {
   return (
-    <main className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl items-center justify-center px-5 pb-24 text-center">
+    <main className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-4xl items-center justify-center px-5 pb-24 text-center">
       <div className="max-w-sm">
         <div className="mx-auto flex h-24 w-24 items-center justify-center">
           <GiftBoxIcon size={92} rank={1} locked />
@@ -559,7 +559,7 @@ function GuestState({ onLogin }: { onLogin: () => void }) {
 
 function RewardSkeleton() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 lg:px-8">
+    <main className="mx-auto max-w-4xl px-4 py-6 lg:px-8">
       <div className="h-80 animate-pulse rounded-lg bg-white/5" />
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[0, 1, 2, 3].map((item) => (

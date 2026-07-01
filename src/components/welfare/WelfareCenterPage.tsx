@@ -560,7 +560,7 @@ export default function WelfareCenterPage() {
 
   return (
     <div className="min-h-full h-full overflow-y-auto bg-[#050505] pb-32 lg:pb-12 text-white selection:bg-vibe-pink/30">
-      <div className="mx-auto max-w-lg lg:max-w-4xl xl:max-w-6xl">
+      <div className="mx-auto max-w-lg lg:max-w-4xl xl:max-w-4xl">
         {/* Premium Banner Header */}
         <div className="relative pt-10 pb-20 px-6 overflow-hidden">
           {/* Background Ambient Spheres */}

@@ -1,24 +1,16 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import connectDB from "@/lib/db";
 import Drama from "@/models/Drama";
 import AllDramasClient from "@/components/home/AllDramasClient";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Tất Cả Phim | Phim ngắn hay",
   description:
     "Khám phá toàn bộ kho phim ngắn mới nhất: lọc theo thể loại, quốc gia, năm phát hành và độ phổ biến.",
-  alternates: {
-    canonical: "/all",
-  },
-  openGraph: {
-    title: "Tất Cả Phim | Phim ngắn hay",
-    description: "Khám phá toàn bộ kho phim ngắn mới nhất trên Phim ngắn hay.",
-    url: "/all",
-    type: "website",
-  },
-};
+  canonicalUrl: "/all",
+});
 
 export default async function AllDramasPage() {
   await connectDB();
