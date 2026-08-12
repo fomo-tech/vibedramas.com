@@ -21,7 +21,14 @@ export async function GET(
 
     const objectId = new mongoose.Types.ObjectId(dramaId);
 
-    const episodes = await Episode.find({ dramaId: objectId }).lean();
+    const episodes = await Episode.find({
+      dramaId: objectId,
+      $or: [
+        { has_vietnamese_audio: true },
+        { subtitle_vtt: { $exists: true, $nin: [null, ""] } },
+        { subtitle_srt: { $exists: true, $nin: [null, ""] } },
+      ],
+    }).lean();
 
     // Sort numerically — handles both "1","2","10" and "Tập 01","Tập 02" formats
     const sorted = (episodes as any[]).sort((a, b) => {

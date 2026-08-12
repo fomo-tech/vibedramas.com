@@ -41,6 +41,7 @@ export async function PUT(req: NextRequest) {
     rank,
     name,
     coinsReward,
+    shopeeCoinsReward,
     expReward,
     requiredExp,
     watchSeconds,
@@ -52,6 +53,7 @@ export async function PUT(req: NextRequest) {
 
   const rankNum = Number(rank);
   const coinsRewardNum = Number(coinsReward);
+  const shopeeCoinsRewardNum = Number(shopeeCoinsReward);
   const expRewardNum = Number(expReward);
   const requiredExpNum = Number(requiredExp);
   const watchSecondsNum = Number(watchSeconds);
@@ -67,10 +69,12 @@ export async function PUT(req: NextRequest) {
   }
   if (
     !Number.isFinite(coinsRewardNum) ||
+    !Number.isFinite(shopeeCoinsRewardNum) ||
     !Number.isFinite(expRewardNum) ||
     !Number.isFinite(requiredExpNum) ||
     !Number.isFinite(watchSecondsNum) ||
     coinsRewardNum < 1 ||
+    shopeeCoinsRewardNum < 0 ||
     expRewardNum < 1 ||
     requiredExpNum < 0 ||
     watchSecondsNum < 10 ||
@@ -90,6 +94,7 @@ export async function PUT(req: NextRequest) {
     {
       name: String(name).trim(),
       coinsReward: coinsRewardNum,
+      shopeeCoinsReward: shopeeCoinsRewardNum,
       expReward: expRewardNum,
       requiredExp: requiredExpNum,
       watchSeconds: watchSecondsNum,

@@ -1,4 +1,3 @@
-import redis from "@/lib/redis";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RateLimitOptions {
@@ -8,6 +7,35 @@ interface RateLimitOptions {
   max: number;
   /** Key prefix for namespacing */
   keyPrefix?: string;
+}
+
+interface MemoryRateLimitEntry {
+  count: number;
+  expiresAt: number;
+}
+
+const globalForRateLimit = globalThis as typeof globalThis & {
+  memoryRateLimits?: Map<string, MemoryRateLimitEntry>;
+};
+
+const memoryRateLimits =
+  globalForRateLimit.memoryRateLimits ??
+  (globalForRateLimit.memoryRateLimits = new Map());
+
+function incrementMemoryCounter(key: string, windowSeconds: number) {
+  const now = Date.now();
+  const existing = memoryRateLimits.get(key);
+
+  if (!existing || existing.expiresAt <= now) {
+    memoryRateLimits.set(key, {
+      count: 1,
+      expiresAt: now + windowSeconds * 1000,
+    });
+    return 1;
+  }
+
+  existing.count += 1;
+  return existing.count;
 }
 
 /**
@@ -30,11 +58,21 @@ export async function rateLimit(
   const key = `${keyPrefix}:${ip}`;
 
   try {
-    const current = await redis.incr(key);
-    if (current === 1) {
-      // First request — set expiry
-      await redis.expire(key, windowMs);
+    let current: number;
+
+    if (process.env.REDIS_URL) {
+      // Avoid creating a Redis connection in local/dev environments that do
+      // not configure Redis. Production can opt in with REDIS_URL.
+      const { default: redis } = await import("@/lib/redis");
+      current = await redis.incr(key);
+      if (current === 1) {
+        // First request — set expiry
+        await redis.expire(key, windowMs);
+      }
+    } else {
+      current = incrementMemoryCounter(key, windowMs);
     }
+
     if (current > max) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },

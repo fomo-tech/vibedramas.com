@@ -121,7 +121,7 @@ export default function AllDramasClient({
   return (
     <div className="flex flex-col h-full pt-safe">
       {/* Page Title */}
-      <div className="mx-auto w-full max-w-350 pt-3 lg:pt-6 xl:pt-8 px-3 lg:px-6 xl:px-8 pb-2 lg:pb-5">
+      <div className="mx-auto w-full max-w-6xl pt-3 lg:pt-6 xl:pt-8 px-3 lg:px-6 xl:px-8 pb-2 lg:pb-5">
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-lg lg:text-3xl xl:text-4xl font-black text-white tracking-tighter">
             {pageTitle}

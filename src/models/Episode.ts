@@ -8,6 +8,9 @@ export interface IEpisode extends Document {
   filename: string;
   link_embed: string;
   link_m3u8: string;
+  subtitle_vtt?: string;
+  subtitle_srt?: string;
+  has_vietnamese_audio?: boolean;
   likeCount?: number;
 }
 
@@ -25,6 +28,9 @@ const EpisodeSchema: Schema = new Schema(
     filename: { type: String },
     link_embed: { type: String },
     link_m3u8: { type: String },
+    subtitle_vtt: { type: String },
+    subtitle_srt: { type: String },
+    has_vietnamese_audio: { type: Boolean, default: false },
     likeCount: { type: Number, default: 0, min: 0 },
   },
   {

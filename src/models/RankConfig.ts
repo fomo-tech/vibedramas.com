@@ -4,6 +4,7 @@ export interface IRankConfig extends Document {
   rank: number; // 1–5, fixed
   name: string; // "Tân Binh", "Chiến Binh", ...
   coinsReward: number; // coins awarded when opening gift box
+  shopeeCoinsReward: number; // extra coins awarded after clicking Shopee CTA
   expReward: number; // level EXP awarded when opening gift box
   requiredExp: number; // cumulative EXP required to unlock this rank
   watchSeconds: number; // seconds of watching to fill gift bar (base, before VIP multiplier)
@@ -23,6 +24,7 @@ const RankConfigSchema: Schema = new Schema(
     rank: { type: Number, required: true, unique: true, min: 1, max: 5 },
     name: { type: String, required: true },
     coinsReward: { type: Number, required: true, min: 1 },
+    shopeeCoinsReward: { type: Number, required: true, min: 0, default: 5 },
     expReward: { type: Number, required: true, min: 1, default: 10 },
     requiredExp: { type: Number, required: true, min: 0, default: 0 },
     watchSeconds: { type: Number, required: true, min: 10 },
@@ -49,6 +51,7 @@ export const DEFAULT_RANKS = [
     rank: 1,
     name: "Khán Giả",
     coinsReward: 10,
+    shopeeCoinsReward: 5,
     expReward: 10,
     requiredExp: 0,
     watchSeconds: 60,
@@ -62,6 +65,7 @@ export const DEFAULT_RANKS = [
     rank: 2,
     name: "Fan Cứng",
     coinsReward: 20,
+    shopeeCoinsReward: 8,
     expReward: 15,
     requiredExp: 100,
     watchSeconds: 55,
@@ -77,6 +81,7 @@ export const DEFAULT_RANKS = [
     rank: 3,
     name: "Sao Nổi",
     coinsReward: 35,
+    shopeeCoinsReward: 12,
     expReward: 20,
     requiredExp: 300,
     watchSeconds: 50,
@@ -90,6 +95,7 @@ export const DEFAULT_RANKS = [
     rank: 4,
     name: "Minh Tinh",
     coinsReward: 55,
+    shopeeCoinsReward: 18,
     expReward: 30,
     requiredExp: 700,
     watchSeconds: 45,
@@ -103,6 +109,7 @@ export const DEFAULT_RANKS = [
     rank: 5,
     name: "Huyền Thoại",
     coinsReward: 80,
+    shopeeCoinsReward: 25,
     expReward: 40,
     requiredExp: 1500,
     watchSeconds: 40,

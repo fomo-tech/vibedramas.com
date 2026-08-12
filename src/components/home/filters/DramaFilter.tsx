@@ -290,7 +290,7 @@ export default function DramaFilter({
 
   return (
     <div className="w-full bg-black/75 backdrop-blur-xl border-b border-white/5 sticky top-0 z-40 pt-safe">
-      <div className="mx-auto flex w-full max-w-350 items-center gap-1.5 lg:gap-2 px-3 lg:px-6 xl:px-8 py-2.5 lg:py-3 overflow-x-auto scrollbar-hide">
+      <div className="mx-auto flex w-full max-w-6xl items-center gap-1.5 lg:gap-2 px-3 lg:px-6 xl:px-8 py-2.5 lg:py-3 overflow-x-auto scrollbar-hide">
         {/* Search */}
         <div className="relative group shrink-0">
           <Search

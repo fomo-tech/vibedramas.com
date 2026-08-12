@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HLS Video Player</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="player-shell">
+    <header>
+      <p class="eyebrow">VIDEO PLAYER</p>
+      <h1>Phát video HLS</h1>
+      <p class="subtitle">Lấy tập miễn phí từ UShort hoặc dán địa chỉ playlist <code>.m3u8</code>.</p>
+    </header>
+
+    <section class="source-card" aria-label="Nguồn video">
+      <label for="dramaId">Mã phim DramaRush</label>
+      <div class="source-row api-row">
+        <input id="dramaId" inputmode="numeric" value="23378" placeholder="Ví dụ: 23378" aria-label="Mã phim DramaRush">
+        <button id="fetchDramaBtn" class="secondary">Lấy danh sách tập</button>
+      </div>
+      <div class="catalog-row">
+        <div>
+          <label for="catalogSelect">Chọn tập</label>
+          <select id="catalogSelect" aria-label="Danh sách video"></select>
+        </div>
+        <div>
+          <label for="codecSelect">Chất lượng ưu tiên</label>
+          <select id="codecSelect" aria-label="Định dạng video">
+            <option value="720">720p</option>
+            <option value="480">480p</option>
+            <option value="1080">1080p</option>
+          </select>
+        </div>
+      </div>
+      <label for="videoUrl">Địa chỉ video</label>
+      <div class="source-row">
+        <input id="videoUrl" type="url" spellcheck="false" autocomplete="off" aria-label="Địa chỉ playlist HLS">
+        <button id="loadBtn" class="primary">▶ Phát</button>
+      </div>
+      <p id="status" class="status" role="status">Sẵn sàng.</p>
+    </section>
+
+    <section class="video-card">
+      <video id="video" controls playsinline preload="metadata"></video>
+      <div class="video-footer">
+        <span id="formatLabel">HLS player</span>
+        <button id="stopBtn" class="secondary">■ Dừng</button>
+      </div>
+    </section>
+
+    <p class="hint">Nếu nguồn đã hết hạn hoặc có DRM/quyền truy cập, trình phát sẽ không thể mở video.</p>
+  </main>
+
+  <script src="node_modules/hls.js/dist/hls.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

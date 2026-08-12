@@ -1,94 +1,52 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useId } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { API_ROUTES } from "@/lib/api";
 
 export type GiftBoxState = "idle" | "ready" | "opening" | "collected";
 
-const SESSION_EXP_KEY = "vd_gift_watch"; // seconds accumulated
-const SESSION_MAX_KEY = "vd_gift_max"; // watchMax at time of save
 const DEFAULT_WATCH_MAX = 60;
-const LEADER_KEY = "vd_timer_leader"; // tab leader lock
-const LEADER_TTL = 2500; // ms — if no renewal in 2.5s, lock is stale
+const GIFT_CLIENT_ID_KEY = "vd_gift_client_id_v1";
+const GIFT_PROGRESS_KEY_PREFIX = "vd_gift_progress_v1";
 
-function getSessionKeys(userId?: string | null) {
-  const scope = userId?.trim() ? `u_${userId}` : "guest";
-  return {
-    exp: `${SESSION_EXP_KEY}_${scope}`,
-    max: `${SESSION_MAX_KEY}_${scope}`,
-  };
-}
-
-function getLeaderKey(userId?: string | null) {
-  const scope = userId?.trim() ? `u_${userId}` : "guest";
-  return `${LEADER_KEY}_${scope}`;
-}
-
-function tryClaimLeader(tabId: string, userId?: string | null): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    const leaderKey = getLeaderKey(userId);
-    const raw = localStorage.getItem(leaderKey);
-    if (raw) {
-      const { id, ts } = JSON.parse(raw) as { id: string; ts: number };
-      if (id !== tabId && Date.now() - ts < LEADER_TTL) return false;
-    }
-    localStorage.setItem(
-      leaderKey,
-      JSON.stringify({ id: tabId, ts: Date.now() }),
-    );
-    return true;
-  } catch {
-    return true;
+// Do not use crypto.randomUUID here: it is missing in older iOS
+// Safari/WebViews. This generator works in every browser we support.
+function createGiftClientId() {
+  if (typeof window !== "undefined") {
+    try {
+      const saved = window.localStorage.getItem(GIFT_CLIENT_ID_KEY);
+      if (saved?.startsWith("gift-") && saved.length <= 100) return saved;
+    } catch {}
   }
+
+  const webCrypto = globalThis.crypto;
+  let id: string;
+  if (typeof webCrypto?.getRandomValues === "function") {
+    const bytes = new Uint8Array(16);
+    webCrypto.getRandomValues(bytes);
+    id = `gift-${Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")}`;
+  } else {
+    id = `gift-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  }
+
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(GIFT_CLIENT_ID_KEY, id);
+    } catch {}
+  }
+  return id;
 }
 
-function releaseLeader(tabId: string, userId?: string | null) {
-  try {
-    const leaderKey = getLeaderKey(userId);
-    const raw = localStorage.getItem(leaderKey);
-    if (raw) {
-      const { id } = JSON.parse(raw) as { id: string };
-      if (id === tabId) localStorage.removeItem(leaderKey);
-    }
-  } catch {}
+function progressStorageKey(userId: string) {
+  return `${GIFT_PROGRESS_KEY_PREFIX}:${userId}`;
 }
 
-function readSession(userId?: string | null) {
-  if (typeof window === "undefined") return { exp: 0, max: DEFAULT_WATCH_MAX };
-
-  const keys = getSessionKeys(userId);
-  const expRaw =
-    sessionStorage.getItem(keys.exp) ?? localStorage.getItem(keys.exp) ?? "0";
-  const maxRaw =
-    sessionStorage.getItem(keys.max) ??
-    localStorage.getItem(keys.max) ??
-    String(DEFAULT_WATCH_MAX);
-
-  const exp = parseInt(expRaw, 10) || 0;
-  const max = parseInt(maxRaw, 10) || DEFAULT_WATCH_MAX;
-  return { exp, max };
-}
-
-function clearSession(userId?: string | null) {
-  if (typeof window === "undefined") return;
-  const keys = getSessionKeys(userId);
-  sessionStorage.removeItem(keys.exp);
-  sessionStorage.removeItem(keys.max);
-  localStorage.removeItem(keys.exp);
-  localStorage.removeItem(keys.max);
-}
-
-function saveSession(exp: number, max: number, userId?: string | null) {
-  if (typeof window === "undefined") return;
-  const keys = getSessionKeys(userId);
-  const expValue = String(exp);
-  const maxValue = String(max);
-  sessionStorage.setItem(keys.exp, expValue);
-  sessionStorage.setItem(keys.max, maxValue);
-  localStorage.setItem(keys.exp, expValue);
-  localStorage.setItem(keys.max, maxValue);
+interface WatchProgressResponse {
+  watchExp: number;
+  watchMax: number;
+  ready: boolean;
+  error?: string;
 }
 
 export interface GiftConfig {
@@ -103,6 +61,8 @@ export interface GiftConfig {
   nextRankExp: number | null;
   coinsToday: number;
   coinsTotal: number;
+  watchExp?: number;
+  ready?: boolean;
   isFirstClaim?: boolean;
 }
 
@@ -123,15 +83,22 @@ export interface UseGiftBoxReturn {
   state: GiftBoxState;
   reward: number;
   rewardExp: number;
+  productUrl: string | null;
+  claimId: string | null;
+  shopeeCoinsReward: number;
+  shopeeOpening: boolean;
   leveledUp: boolean;
+  errorMessage: string | null;
   open: () => Promise<void>;
+  openShopee: () => Promise<void>;
   dismissReward: () => void;
 }
 
-export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
-  const tabId = useRef<string>(useId());
+export function useGiftBox(): UseGiftBoxReturn {
+  const [clientId] = useState(createGiftClientId);
 
   const { user, giftLevel, setGiftLevel, setCoins } = useAuthStore();
+  const userId = user?.id;
 
   const isLoggedIn = !!user;
 
@@ -141,21 +108,17 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
       ? config.watchMax
       : DEFAULT_WATCH_MAX;
 
-  // Restore from sessionStorage using the SAVED max (not hardcoded)
-  const [watchExp, setWatchExp] = useState<number>(() => {
-    const { exp, max } = readSession();
-    return Math.min(exp, max);
-  });
-
-  const [state, setState] = useState<GiftBoxState>(() => {
-    const { exp, max } = readSession();
-    // Only restore as "ready" if exp actually equals the saved max
-    return exp >= max && exp > 0 ? "ready" : "idle";
-  });
+  const [watchExp, setWatchExp] = useState(0);
+  const [state, setState] = useState<GiftBoxState>("idle");
 
   const [reward, setReward] = useState(0);
   const [rewardExp, setRewardExp] = useState(0);
+  const [productUrl, setProductUrl] = useState<string | null>(null);
+  const [claimId, setClaimId] = useState<string | null>(null);
+  const [shopeeCoinsReward, setShopeeCoinsReward] = useState(0);
+  const [shopeeOpening, setShopeeOpening] = useState(false);
   const [leveledUp, setLeveledUp] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [rankName, setRankName] = useState("");
   const [nextRankName, setNextRankName] = useState<string | null>(null);
   const [coinsToday, setCoinsToday] = useState(0);
@@ -166,6 +129,28 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
   // Fetch config when login state or level changes
   useEffect(() => {
     if (!isLoggedIn) return;
+
+    // Restore the last server-confirmed value immediately for a stable reload
+    // UI. The config response below remains authoritative and overwrites it.
+    if (userId) {
+      try {
+        const cached = JSON.parse(
+          window.localStorage.getItem(progressStorageKey(userId)) || "null",
+        ) as { watchExp?: number; watchMax?: number } | null;
+        if (cached) {
+          const cachedMax = Math.max(1, Number(cached.watchMax) || DEFAULT_WATCH_MAX);
+          const cachedExp = Math.min(
+            cachedMax,
+            Math.max(0, Number(cached.watchExp) || 0),
+          );
+          window.requestAnimationFrame(() => {
+            setWatchExp(cachedExp);
+            setState(cachedExp >= cachedMax ? "ready" : "idle");
+          });
+        }
+      } catch {}
+    }
+
     fetch(API_ROUTES.gift.config)
       .then((r) => {
         if (!r.ok) throw new Error("config failed");
@@ -182,69 +167,47 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
         setNextRankName(data.nextRankName ?? null);
         setCoinsToday(data.coinsToday ?? 0);
         setCoinsTotal(data.coinsTotal ?? 0);
-        // First-time users get the box immediately ready — no watching required
-        if (data.isFirstClaim) {
-          setState("ready");
-          setWatchExp(safeMax);
-          saveSession(safeMax, safeMax, user?.id);
-        } else {
-          setWatchExp((prev) => {
-            const safePrev = isNaN(prev) ? 0 : prev;
-            const clamped = Math.min(safePrev, safeMax);
-            if (clamped >= safeMax) setState("ready");
-            saveSession(clamped, safeMax, user?.id);
-            return clamped;
-          });
+        const serverWatchExp = Math.min(
+          safeMax,
+          Math.max(0, Number(data.watchExp) || 0),
+        );
+        setWatchExp(serverWatchExp);
+        if (userId) {
+          try {
+            window.localStorage.setItem(
+              progressStorageKey(userId),
+              JSON.stringify({ watchExp: serverWatchExp, watchMax: safeMax }),
+            );
+          } catch {}
         }
+        setState((current) =>
+          current === "opening" || current === "collected"
+            ? current
+            : data.ready || serverWatchExp >= safeMax
+              ? "ready"
+              : "idle",
+        );
       })
       .catch(() => {});
-  }, [isLoggedIn, giftLevel, user?.id]);
+  }, [isLoggedIn, giftLevel, userId]);
 
-  // Restore user-scoped session whenever current user changes
+  // Reset all reward state whenever the authenticated user changes.
   useEffect(() => {
-    if (!user?.id) {
-      // User logged out — reset to zero, do NOT read guest session
-      // (saveSession effect may have written stale data to guest key)
-      const raf = window.requestAnimationFrame(() => {
+    const raf = window.requestAnimationFrame(() => {
+      if (!userId) {
         setWatchExp(0);
         setState("idle");
-        setReward(0);
-        setRewardExp(0);
-        setLeveledUp(false);
-      });
-      return () => window.cancelAnimationFrame(raf);
-    }
-
-    const { exp, max } = readSession(user.id);
-    const restored = Math.min(exp, max);
-
-    const raf = window.requestAnimationFrame(() => {
-      setWatchExp(restored);
-      setState(restored >= max && restored > 0 ? "ready" : "idle");
+      }
+      setReward(0);
+      setRewardExp(0);
+      setProductUrl(null);
+      setClaimId(null);
+      setShopeeCoinsReward(0);
+      setLeveledUp(false);
+      setErrorMessage(null);
     });
-
     return () => window.cancelAnimationFrame(raf);
-  }, [user?.id]);
-
-  // Persist exp + current max whenever watchExp changes
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      saveSession(watchExp, watchMax, user?.id);
-    }
-  }, [watchExp, watchMax, user?.id]);
-
-  // Release leader lock on unmount or tab hide/close
-  useEffect(() => {
-    const id = tabId.current;
-    const onHide = () => {
-      if (document.visibilityState === "hidden") releaseLeader(id, user?.id);
-    };
-    document.addEventListener("visibilitychange", onHide);
-    return () => {
-      document.removeEventListener("visibilitychange", onHide);
-      releaseLeader(id, user?.id);
-    };
-  }, [user?.id]);
+  }, [userId]);
 
   useEffect(() => {
     return () => {
@@ -254,43 +217,58 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
     };
   }, []);
 
-  // Tick +1 per second while watching, logged in, and bar not full.
+  // HlsPlayer owns the server heartbeat because it has direct access to the
+  // real media currentTime. It publishes only server-confirmed progress here.
   useEffect(() => {
-    if (!isLoggedIn || !active || state !== "idle") return;
-
-    const timer = setInterval(() => {
-      // Tab phải visible mới được tích — chặn multi-tab exploit
-      if (document.hidden) return;
-      if (!tryClaimLeader(tabId.current, user?.id)) return; // double-check: another tab is ticking
-      setWatchExp((prev) => {
-        const next = prev + 1;
-        if (next >= watchMax) {
-          setState("ready");
-          return watchMax;
-        }
-        return next;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isLoggedIn, active, state, watchMax, user?.id]);
+    const handleProgress = (event: Event) => {
+      const data = (event as CustomEvent<WatchProgressResponse>).detail;
+      if (!data) return;
+      const safeMax = Math.max(1, Number(data.watchMax) || watchMax);
+      const safeExp = Math.min(safeMax, Math.max(0, Number(data.watchExp) || 0));
+      setConfig((current) =>
+        current ? { ...current, watchMax: safeMax } : current,
+      );
+      setWatchExp(safeExp);
+      if (userId) {
+        try {
+          window.localStorage.setItem(
+            progressStorageKey(userId),
+            JSON.stringify({ watchExp: safeExp, watchMax: safeMax }),
+          );
+        } catch {}
+      }
+      // A heartbeat from the video can finish after the claim request and
+      // report the newly reset watch progress. Never let that late response
+      // hide the opening/result modal before the user has seen the reward.
+      setState((current) =>
+        current === "opening" || current === "collected"
+          ? current
+          : data.ready || safeExp >= safeMax
+            ? "ready"
+            : "idle",
+      );
+      setErrorMessage(null);
+    };
+    window.addEventListener("vibe:gift-progress", handleProgress);
+    return () => window.removeEventListener("vibe:gift-progress", handleProgress);
+  }, [userId, watchMax]);
 
   const open = useCallback(async () => {
-    if (state !== "ready") return;
+    if (state !== "ready" || !clientId) return;
     const claimSeq = ++claimSeqRef.current;
     setState("opening");
+    setErrorMessage(null);
 
-    // Clear session IMMEDIATELY — prevents double-claim on refresh/tab switch
-    clearSession(user?.id);
-    // Reset watchExp to 0 immediately so the config re-fetch triggered by
-    // setGiftLevel below sees prev=0 and does NOT call setState("ready"),
-    // which would collapse the open-animation modal before it finishes.
     setWatchExp(0);
 
     try {
-      const res = await fetch(API_ROUTES.gift.open, { method: "POST" });
-      if (!res.ok) throw new Error("failed");
-      const data = (await res.json()) as {
+      const res = await fetch(API_ROUTES.gift.open, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
         coinsEarned: number;
         newLevel: number;
         newCoins: number;
@@ -300,12 +278,19 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
         leveledUp: boolean;
         rankName?: string;
         rank?: number;
+        productUrl?: string | null;
+        claimId?: string;
+        shopeeCoinsReward?: number;
       };
+      if (!res.ok) throw new Error(data.error || "Không thể mở hộp quà lúc này");
 
       if (claimSeqRef.current !== claimSeq) return;
 
       setReward(data.coinsEarned);
       setRewardExp(data.expEarned ?? 0);
+      setProductUrl(data.productUrl ?? null);
+      setClaimId(data.claimId ?? null);
+      setShopeeCoinsReward(Math.max(0, Number(data.shopeeCoinsReward) || 0));
       setLeveledUp(Boolean(data.leveledUp));
       setConfig((current) =>
         current
@@ -322,27 +307,104 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
       setCoins(data.newCoins);
       if (data.rankName) setRankName(data.rankName);
       setState("collected");
+      if (userId) {
+        try {
+          window.localStorage.setItem(
+            progressStorageKey(userId),
+            JSON.stringify({ watchExp: 0, watchMax }),
+          );
+        } catch {}
+      }
 
       // Reset visual state after animation (session already cleared above)
       if (dismissTimerRef.current) {
         clearTimeout(dismissTimerRef.current);
       }
-      dismissTimerRef.current = setTimeout(() => {
-        if (claimSeqRef.current !== claimSeq) return;
-        setWatchExp(0);
-        setReward(0);
-        setRewardExp(0);
-        setLeveledUp(false);
-        setState("idle");
-        dismissTimerRef.current = null;
-      }, 3500);
-    } catch {
+      if (!data.productUrl) {
+        dismissTimerRef.current = setTimeout(() => {
+          if (claimSeqRef.current !== claimSeq) return;
+          setWatchExp(0);
+          setReward(0);
+          setRewardExp(0);
+          setProductUrl(null);
+          setClaimId(null);
+          setShopeeCoinsReward(0);
+          setLeveledUp(false);
+          setState("idle");
+          dismissTimerRef.current = null;
+        }, 3500);
+      }
+    } catch (error) {
       if (claimSeqRef.current !== claimSeq) return;
-      // Restore session on API failure so user can retry
-      saveSession(watchMax, watchMax, user?.id);
+      // Do not pretend a rejected claim succeeded. The server keeps the
+      // authoritative progress, and the user can see the real reason.
+      const message =
+        error instanceof Error ? error.message : "Không thể mở hộp quà lúc này";
+      setErrorMessage(message);
       setState("ready");
     }
-  }, [state, watchMax, setGiftLevel, setCoins, user?.id]);
+  }, [clientId, state, setGiftLevel, setCoins, userId, watchMax]);
+
+  const openShopee = useCallback(async () => {
+    if (!claimId || !productUrl || shopeeOpening) return;
+    setShopeeOpening(true);
+    setErrorMessage(null);
+
+    // Open synchronously from the user's click so iOS popup protection does
+    // not block the Shopee tab while the reward API is pending.
+    const shopeeWindow = window.open("about:blank", "_blank");
+    try {
+      const response = await fetch(API_ROUTES.gift.shopeeClick, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ claimId }),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        error?: string;
+        newCoins?: number | null;
+        productUrl?: string | null;
+      };
+      if (!response.ok) throw new Error(data.error || "Không thể nhận xu Shopee");
+      if (typeof data.newCoins === "number") setCoins(data.newCoins);
+      const destination = data.productUrl || productUrl;
+
+      // The Shopee click completes the current reward flow. Close the result
+      // modal and explicitly create a fresh watch cycle instead of leaving the
+      // old heartbeat sequence alive after the server reset it during claim.
+      claimSeqRef.current += 1;
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current);
+        dismissTimerRef.current = null;
+      }
+      setWatchExp(0);
+      setReward(0);
+      setRewardExp(0);
+      setProductUrl(null);
+      setClaimId(null);
+      setShopeeCoinsReward(0);
+      setLeveledUp(false);
+      setState("idle");
+      if (userId) {
+        try {
+          window.localStorage.setItem(
+            progressStorageKey(userId),
+            JSON.stringify({ watchExp: 0, watchMax }),
+          );
+        } catch {}
+      }
+      window.dispatchEvent(new CustomEvent("vibe:gift-cycle-reset"));
+
+      if (shopeeWindow) shopeeWindow.location.href = destination;
+      else window.location.href = destination;
+    } catch (error) {
+      shopeeWindow?.close();
+      setErrorMessage(
+        error instanceof Error ? error.message : "Không thể nhận xu Shopee",
+      );
+    } finally {
+      setShopeeOpening(false);
+    }
+  }, [claimId, productUrl, setCoins, shopeeOpening, userId, watchMax]);
 
   const dismissReward = useCallback(() => {
     claimSeqRef.current += 1;
@@ -353,7 +415,11 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
     setWatchExp(0);
     setReward(0);
     setRewardExp(0);
+    setProductUrl(null);
+    setClaimId(null);
+    setShopeeCoinsReward(0);
     setLeveledUp(false);
+    setErrorMessage(null);
     setState("idle");
   }, []);
 
@@ -374,8 +440,14 @@ export function useGiftBox({ active }: { active: boolean }): UseGiftBoxReturn {
     state,
     reward,
     rewardExp,
+    productUrl,
+    claimId,
+    shopeeCoinsReward,
+    shopeeOpening,
     leveledUp,
+    errorMessage,
     open,
+    openShopee,
     dismissReward,
   };
 }

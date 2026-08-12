@@ -85,7 +85,7 @@ export default function PaymentMethodPage() {
 
   return (
     <div className="h-full bg-black overflow-y-auto pb-24 lg:pb-8">
-      <div className="max-w-lg mx-auto">
+      <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
         <PageHeader
           title="Phương thức thanh toán"
           right={

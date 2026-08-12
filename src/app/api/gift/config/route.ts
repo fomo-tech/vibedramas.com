@@ -4,13 +4,13 @@ import RankConfig, { DEFAULT_RANKS } from "@/models/RankConfig";
 import User from "@/models/User";
 import GiftLog from "@/models/GiftLog";
 import { getUserSession } from "@/lib/auth";
-import { getCache, setCache } from "@/lib/cache";
 import { rateLimit } from "@/lib/rateLimit";
 import {
   expRewardForRank,
   findRankForExp,
   requiredExpForRank,
 } from "@/lib/giftRanks";
+import GiftWatchProgress from "@/models/GiftWatchProgress";
 
 export const dynamic = "force-dynamic";
 
@@ -42,12 +42,9 @@ export async function GET(req: NextRequest) {
 
     const userIdStr = String(session.userId);
 
-    // Cache per-user for 30s — aggregation is expensive, this route is polled frequently
-    const cacheKey = `gift:cfg:v2:${userIdStr}`;
-    const cached = await getCache<object>(cacheKey);
-    if (cached) {
-      return NextResponse.json(cached);
-    }
+    // Watch progress is user-visible and must survive an immediate refresh.
+    // Do not serve a cached snapshot here; it otherwise briefly resets the
+    // ring to zero even though GiftWatchProgress has verified seconds.
 
     // Seed ranks if collection is empty
     const count = await RankConfig.countDocuments();
@@ -111,7 +108,7 @@ export async function GET(req: NextRequest) {
     // Coins earned from gift box: today & all-time
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
-    const [todayAgg, totalAgg] = await Promise.all([
+    const [todayAgg, totalAgg, watchProgress] = await Promise.all([
       GiftLog.aggregate([
         { $match: { userId: userIdStr, createdAt: { $gte: startOfToday } } },
         { $group: { _id: null, total: { $sum: "$coinsEarned" } } },
@@ -120,15 +117,22 @@ export async function GET(req: NextRequest) {
         { $match: { userId: userIdStr } },
         { $group: { _id: null, total: { $sum: "$coinsEarned" } } },
       ]),
+      GiftWatchProgress.findOne({ userId: userIdStr }).lean(),
     ]);
     const coinsToday = Math.max(0, toFiniteNumber(todayAgg[0]?.total, 0));
     const coinsTotal = Math.max(0, toFiniteNumber(totalAgg[0]?.total, 0));
+    const watchExp = Math.min(
+      effectiveWatchSeconds,
+      Math.max(0, toFiniteNumber(watchProgress?.verifiedSeconds, 0)),
+    );
 
     const responsePayload = {
       rank: normalizedLevel,
       rankName: String(currentRank.name ?? "Khán Giả"),
       nextRankName: nextRank ? String(nextRank.name ?? "") : null,
       watchMax: effectiveWatchSeconds,
+      watchExp,
+      ready: watchExp >= effectiveWatchSeconds,
       coinsReward,
       expReward,
       giftExp,
@@ -139,10 +143,9 @@ export async function GET(req: NextRequest) {
       isFirstClaim: false,
     };
 
-    // Cache briefly; opening a box invalidates the user reward snapshot.
-    await setCache(cacheKey, responsePayload, 30);
-
-    return NextResponse.json(responsePayload);
+    return NextResponse.json(responsePayload, {
+      headers: { "Cache-Control": "no-store, max-age=0" },
+    });
   } catch (error) {
     console.error("[gift/config] failed", error);
     return NextResponse.json(

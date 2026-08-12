@@ -34,6 +34,9 @@ export interface EpFeedEpisode {
   link_m3u8: string;
   link_embed: string;
   filename: string;
+  subtitle_vtt?: string;
+  subtitle_srt?: string;
+  has_vietnamese_audio?: boolean;
 }
 
 export interface EpFeedDrama {
@@ -450,9 +453,14 @@ export default function EpisodeFeedScroll({
   };
 
   const activeEp = episodes[activeIndex];
-  // Route KKPhim streams through the server proxy so HLS.js never hits CDN CORS directly
+  // Route external streams through the server proxy so HLS.js never hits CDN CORS directly
   const toProxiedSrc = React.useCallback((url: string) => {
-    if (url && url.includes("kkphimplayer6.com")) {
+    if (
+      url &&
+      (url.includes("kkphimplayer6.com") ||
+        url.includes("akamai-static.shorttv.live") ||
+        url.includes("video-v6.mydramawave.com"))
+    ) {
       return `/api/proxy/stream?url=${encodeURIComponent(url)}`;
     }
     return url;
@@ -592,8 +600,18 @@ export default function EpisodeFeedScroll({
                 src={toProxiedSrc(activeEp.link_m3u8)}
                 playing={!isPaused && gateReady}
                 muted={isMuted}
+                subtitleSrc={
+                  activeEp.subtitle_vtt || activeEp.subtitle_srt
+                    ? `/api/proxy/stream?url=${encodeURIComponent(
+                        activeEp.subtitle_vtt || activeEp.subtitle_srt || "",
+                      )}`
+                    : ""
+                }
+                subtitleDefault={Boolean(
+                  activeEp.subtitle_vtt || activeEp.subtitle_srt,
+                )}
                 seekTo={targetSeek[activeEp._id]}
-                performanceMode="smooth-mobile"
+                performanceMode="auto"
                 episodeId={activeEp._id}
                 onTimeUpdate={(current, duration) =>
                   updateTime(activeEp._id, current, duration)

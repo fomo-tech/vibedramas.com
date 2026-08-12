@@ -1,6 +1,6 @@
 // Service Worker for Phim ngắn hay PWA
 // ⚠️ Bump BUILD_VERSION mỗi khi deploy để invalidate cache cũ
-const BUILD_VERSION = "0.0.58";
+const BUILD_VERSION = "0.0.65";
 const CACHE_NAME = "phim-ngan-hay-static-" + BUILD_VERSION;
 const OFFLINE_CACHE = "phim-ngan-hay-offline-" + BUILD_VERSION;
 
@@ -15,9 +15,17 @@ const PRECACHE_ASSETS = [
 // Install event
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(OFFLINE_CACHE).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
-    }),
+    caches.open(OFFLINE_CACHE).then((cache) =>
+      Promise.allSettled(
+        PRECACHE_ASSETS.map(async (asset) => {
+          const response = await fetch(asset, { cache: "reload" });
+          if (!response.ok) {
+            throw new Error(`Precache failed for ${asset}: ${response.status}`);
+          }
+          await cache.put(asset, response);
+        }),
+      ),
+    ),
   );
   // Activate new worker immediately so UI bug fixes are not blocked by stale cache.
   self.skipWaiting();
@@ -77,33 +85,17 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // /_next/static/ → network-first to avoid stale JS/CSS chunks during rapid deploy/dev
+  // Next bundles already contain a content hash. Let the browser/Next headers
+  // handle them and never put UI bundles in Cache Storage. This avoids an old
+  // service worker reviving stale JS/CSS after a deploy.
   if (url.pathname.startsWith("/_next/static/")) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then((cache) =>
-        fetch(request)
-          .then((response) => {
-            if (response.ok) cache.put(request, response.clone());
-            return response;
-          })
-          .catch(() => cache.match(request)),
-      ),
-    );
+    event.respondWith(fetch(request));
     return;
   }
 
-  // Các static asset khác (icons, manifest...) → network-first, cache fallback
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-        }
-        return response;
-      })
-      .catch(() => caches.match(request)),
-  );
+  // All remaining same-origin assets are network-only. Only explicit offline
+  // assets in OFFLINE_CACHE are retained by the install handler.
+  event.respondWith(fetch(request));
 });
 
 // Background sync for offline actions (optional)

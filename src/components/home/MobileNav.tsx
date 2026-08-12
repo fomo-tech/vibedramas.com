@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 const TABS = [
   { icon: Home, label: "Trang chủ", href: "/" },
-  { icon: Crown, label: "Hội viên", href: "/vip" },
+  { icon: Crown, label: "Hộp quà", href: "/reward-box" },
   { icon: Compass, label: "Đề Xuất", href: "/foryou", isCenter: true },
   { icon: Film, label: "Tất cả phim", href: "/all" },
   { icon: User, label: "Của tôi", href: "/profile" },
@@ -17,7 +17,7 @@ export default function MobileNav() {
   const pathname = usePathname();
 
   if (
-    pathname?.startsWith("/vip") ||
+    pathname?.startsWith("/reward-box") ||
     pathname?.startsWith("/wallet/topup") ||
     pathname?.startsWith("/wallet/withdraw")
   ) {

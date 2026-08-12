@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useWatchEarn } from "@/hooks/useWatchEarn";
 import CoinIcon from "@/components/ui/CoinIcon";
 import { useAppStore } from "@/store/useAppStore";
+import { API_ROUTES } from "@/lib/api";
 
 interface HlsPlayerProps {
   src: string;
@@ -15,6 +16,8 @@ interface HlsPlayerProps {
   className?: string;
   episodeId?: string;
   poster?: string;
+  subtitleSrc?: string;
+  subtitleDefault?: boolean;
   onTimeUpdate?: (currentTime: number, duration: number) => void;
   onPlay?: () => void;
   onPause?: () => void;
@@ -29,9 +32,40 @@ type HlsLevelController = {
     width?: number;
   }>;
   autoLevelCapping: number;
+  currentLevel: number;
   nextLevel: number;
   loadLevel: number;
 };
+
+type HlsAudioTrack = {
+  lang?: string;
+  name?: string;
+  default?: boolean;
+};
+
+type HlsAudioController = HlsLevelController & {
+  audioTracks?: HlsAudioTrack[];
+  audioTrack?: number;
+};
+
+function selectPreferredAudioTrack(hls: HlsAudioController): void {
+  const tracks = Array.isArray(hls.audioTracks) ? hls.audioTracks : [];
+  if (tracks.length === 0) return;
+
+  const vietnameseIndex = tracks.findIndex((track) => {
+    const lang = String(track.lang || "").toLowerCase();
+    const name = String(track.name || "").toLowerCase();
+    return (
+      lang === "vi-vn" ||
+      lang === "vi" ||
+      name.includes("vi-vn") ||
+      name.includes("vietnam") ||
+      name.includes("việt")
+    );
+  });
+  const defaultIndex = tracks.findIndex((track) => track.default === true);
+  hls.audioTrack = vietnameseIndex >= 0 ? vietnameseIndex : defaultIndex >= 0 ? defaultIndex : 0;
+}
 
 // HLS config tuned to reduce stutter when audio is enabled
 const HLS_CONFIG = {
@@ -64,6 +98,20 @@ const HLS_CONFIG = {
   maxBufferHole: 0.5,
 };
 
+const GIFT_CLIENT_ID_KEY = "vd_gift_client_id_v1";
+
+function getGiftClientId() {
+  try {
+    const saved = window.localStorage.getItem(GIFT_CLIENT_ID_KEY);
+    if (saved?.startsWith("gift-") && saved.length <= 100) return saved;
+  } catch {}
+  const id = `gift-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  try {
+    window.localStorage.setItem(GIFT_CLIENT_ID_KEY, id);
+  } catch {}
+  return id;
+}
+
 export default function HlsPlayer({
   src,
   playing = false,
@@ -73,16 +121,130 @@ export default function HlsPlayer({
   className = "",
   episodeId = "",
   poster,
+  subtitleSrc = "",
+  subtitleDefault = false,
   onTimeUpdate,
   onPlay,
   onPause,
   onVideoElement,
   onFatalError,
 }: HlsPlayerProps) {
+  const playableSrc =
+    src &&
+    !src.startsWith("/api/proxy/stream") &&
+    (src.includes("kkphimplayer6.com") ||
+      src.includes("akamai-static.shorttv.live") ||
+      src.includes("video-v6.mydramawave.com"))
+      ? `/api/proxy/stream?url=${encodeURIComponent(src)}`
+      : src;
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Keep gift verification beside the media element so episode identity and
+  // playback position cannot be lost through layout/store hydration.
+  useEffect(() => {
+    if (!episodeId) return;
+    let cancelled = false;
+    let sequence = 0;
+    let inFlight = false;
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const clientId = getGiftClientId();
+
+    const post = async (url: string, body: object) => {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        watchExp?: number;
+        watchMax?: number;
+        ready?: boolean;
+        error?: string;
+      };
+      if (!response.ok) throw new Error(data.error || "Gift tracking failed");
+      window.dispatchEvent(
+        new CustomEvent("vibe:gift-progress", { detail: data }),
+      );
+      return data;
+    };
+
+    const start = async () => {
+      if (timer) clearInterval(timer);
+      sequence = 0;
+      const data = await post(API_ROUTES.gift.watchStart, {
+        clientId,
+        episodeId,
+        position: videoRef.current?.currentTime ?? 0,
+      });
+      if (cancelled || data.ready) return;
+      timer = setInterval(async () => {
+        if (cancelled || document.hidden || inFlight) return;
+        inFlight = true;
+        try {
+          await post(API_ROUTES.gift.watchHeartbeat, {
+            clientId,
+            episodeId,
+            sequence: ++sequence,
+            position: videoRef.current?.currentTime ?? 0,
+          });
+        } catch {
+          if (!cancelled) {
+            try {
+              if (timer) clearInterval(timer);
+              await start();
+            } catch {}
+          }
+        } finally {
+          inFlight = false;
+        }
+      }, 5000);
+    };
+
+    const resetGiftCycle = () => {
+      if (cancelled) return;
+      if (timer) clearInterval(timer);
+      timer = undefined;
+      inFlight = false;
+      void start().catch(() => {});
+    };
+
+    window.addEventListener("vibe:gift-cycle-reset", resetGiftCycle);
+
+    void start().catch(() => {});
+    return () => {
+      cancelled = true;
+      if (timer) clearInterval(timer);
+      window.removeEventListener("vibe:gift-cycle-reset", resetGiftCycle);
+    };
+  }, [episodeId]);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const syncSubtitleMode = () => {
+      const mode = subtitleSrc && subtitleDefault ? "showing" : "hidden";
+      for (const track of Array.from(video.textTracks)) {
+        track.mode = mode;
+      }
+    };
+
+    syncSubtitleMode();
+    const timer = window.setTimeout(syncSubtitleMode, 0);
+    video.addEventListener("loadedmetadata", syncSubtitleMode);
+    video.addEventListener("loadeddata", syncSubtitleMode);
+    video.textTracks.addEventListener("addtrack", syncSubtitleMode);
+    return () => {
+      window.clearTimeout(timer);
+      video.removeEventListener("loadedmetadata", syncSubtitleMode);
+      video.removeEventListener("loadeddata", syncSubtitleMode);
+      video.textTracks.removeEventListener("addtrack", syncSubtitleMode);
+    };
+  }, [subtitleSrc, subtitleDefault]);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hlsRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [streamError, setStreamError] = useState<string | null>(null);
   // Throttle onTimeUpdate to reduce re-renders (fires ~4x/sec natively)
   const lastTimeUpdateRef = useRef(0);
   // Track whether hls.startLoad() was ever called — prevents stopLoad()
@@ -96,6 +258,12 @@ export default function HlsPlayer({
   useEffect(() => {
     onFatalErrorRef.current = onFatalError;
   }, [onFatalError]);
+
+  const reportStreamError = useCallback((message: string, details?: unknown) => {
+    setStreamError(message);
+    console.error("[HlsPlayer] Stream playback failed", { message, details });
+    onFatalErrorRef.current?.();
+  }, []);
   // Track if we had to force-mute for autoplay — will try to unmute after user gesture
   const forceMutedRef = useRef(false);
   const unmuteQualityTimerRef = useRef<number | null>(null);
@@ -178,6 +346,30 @@ export default function HlsPlayer({
     },
     [pickSmoothLevel],
   );
+
+  const selectFullHdLevel = useCallback((hls: HlsLevelController) => {
+    const levels = Array.isArray(hls.levels) ? hls.levels : [];
+    if (!levels.length) return false;
+
+    let selected = -1;
+    let selectedHeight = 0;
+    for (let index = 0; index < levels.length; index += 1) {
+      const height = levels[index]?.height || 0;
+      if (height <= 1080 && height > selectedHeight) {
+        selected = index;
+        selectedHeight = height;
+      }
+    }
+    if (selected < 0 || selectedHeight < 1080) return false;
+
+    // Assigning currentLevel selects a manual HLS level, preventing ABR from
+    // silently dropping a known 1080p source to 720p.
+    hls.autoLevelCapping = selected;
+    hls.currentLevel = selected;
+    hls.nextLevel = selected;
+    hls.loadLevel = selected;
+    return true;
+  }, []);
   // Sync refs inside effects (not during render — avoids lint error)
   useEffect(() => {
     playingRef.current = playing;
@@ -278,20 +470,44 @@ export default function HlsPlayer({
 
   const { coinToast } = useWatchEarn(videoRef, episodeId);
   const updatePlayerActive = useAppStore((s) => s.updatePlayerActive);
+  const emitGiftPlayback = useCallback(
+    (active: boolean, position = 0) => {
+      window.dispatchEvent(
+        new CustomEvent("vibe:gift-playback", {
+          detail: {
+            active,
+            episodeId,
+            position: Math.max(0, position),
+          },
+        }),
+      );
+    },
+    [episodeId],
+  );
 
   // Tell global GiftBox whether this player is active
-  const isActive = playing && isLoaded;
-  const prevActiveRef = React.useRef(false);
+  // Start the server watch session as soon as the feed marks this player as
+  // playing. Waiting for the internal HLS `isLoaded` flag caused a dead zone on
+  // some Safari/HLS paths: video segments played, but GiftBox never received
+  // an active episode and `/gift/watch/start` was never called. The server
+  // heartbeat still grants time only when currentTime actually advances.
+  const isActive = playing;
   useEffect(() => {
-    const prev = prevActiveRef.current;
-    prevActiveRef.current = isActive;
-    if (isActive && !prev) updatePlayerActive(true);
-    if (!isActive && prev) updatePlayerActive(false);
+    if (!isActive) {
+      return;
+    }
+
+    // Treat each mounted active player as one owner.  The previous version
+    // used a ref in cleanup; when the episode changed it decremented the
+    // global counter but did not increment it again, so gift tracking stopped
+    // while the next episode was still playing.
+    updatePlayerActive(true);
+    emitGiftPlayback(true, videoRef.current?.currentTime ?? 0);
     return () => {
-      if (prevActiveRef.current) updatePlayerActive(false);
+      updatePlayerActive(false);
+      emitGiftPlayback(false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActive]);
+  }, [emitGiftPlayback, isActive, updatePlayerActive]);
 
   const destroyHls = useCallback(() => {
     if (unmuteStabilityTimerRef.current) {
@@ -341,7 +557,7 @@ export default function HlsPlayer({
   // immediately when scrolled to, without competing for bandwidth.
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !src) return;
+    if (!video || !playableSrc) return;
 
     let cancelled = false;
 
@@ -350,11 +566,12 @@ export default function HlsPlayer({
       video.currentTime = 0;
       destroyHls();
       setIsLoaded(false);
+      setStreamError(null);
 
       // iOS / Safari: native HLS, no hls.js needed.
       // preload="none" + video.load() registers the source without fetching data.
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = src;
+        video.src = playableSrc;
         video.load();
         if (!cancelled) setIsLoaded(true);
         return;
@@ -364,7 +581,7 @@ export default function HlsPlayer({
       if (cancelled) return;
 
       if (!Hls.isSupported()) {
-        video.src = src;
+        video.src = playableSrc;
         if (!cancelled) setIsLoaded(true);
         return;
       }
@@ -373,15 +590,19 @@ export default function HlsPlayer({
       // Segments start when hls.startLoad() is called in the play effect.
       const hls = new Hls({ ...HLS_CONFIG, autoStartLoad: false });
       hlsRef.current = hls;
-      hls.loadSource(src);
+      hls.loadSource(playableSrc);
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         if (cancelled || hlsRef.current !== hls) return;
-        smoothCapLevelRef.current = pickSmoothLevel(
-          (hlsRef.current as HlsLevelController).levels,
-        );
-        if (performanceMode === "smooth-mobile" || smoothDeviceRef.current) {
+        selectPreferredAudioTrack(hls as HlsAudioController);
+        const levelController = hlsRef.current as HlsLevelController;
+        const usingFullHd = selectFullHdLevel(levelController);
+        smoothCapLevelRef.current = pickSmoothLevel(levelController.levels);
+        if (
+          !usingFullHd &&
+          (performanceMode === "smooth-mobile" || smoothDeviceRef.current)
+        ) {
           applySmoothCap(true);
         }
         // If already supposed to be playing, start segments immediately
@@ -393,21 +614,46 @@ export default function HlsPlayer({
         setIsLoaded(true);
       });
 
+      hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, () => {
+        if (!cancelled && hlsRef.current === hls) {
+          selectPreferredAudioTrack(hls as HlsAudioController);
+        }
+      });
+
       hls.on(
         Hls.Events.ERROR,
         (
           _: unknown,
-          data: { fatal: boolean; type: string; details?: string },
+          data: {
+            fatal: boolean;
+            type: string;
+            details?: string;
+            reason?: string;
+            response?: { code?: number };
+          },
         ) => {
+          if (data.fatal) {
+            console.error("[HlsPlayer] HLS fatal error", {
+              type: data.type,
+              details: data.details,
+              reason: data.reason,
+              responseCode: data.response?.code,
+            });
+          }
           if (data.fatal) {
             if (data.type === "networkError") {
               // Manifest load failures should not retry forever — give up immediately
               if (
                 data.details === "manifestLoadError" ||
-                data.details === "manifestParsingError"
+                data.details === "manifestParsingError" ||
+                data.response?.code === 401 ||
+                data.response?.code === 403
               ) {
                 destroyHls();
-                onFatalError?.();
+                reportStreamError(
+                  "Không tải được video. Link HLS có thể đã hết hạn.",
+                  data,
+                );
               } else {
                 // Segment network error — restart loading from current position
                 const currentTime = videoRef.current?.currentTime ?? 0;
@@ -420,12 +666,18 @@ export default function HlsPlayer({
                 hls.recoverMediaError();
               } catch {
                 destroyHls();
-                onFatalError?.();
+                reportStreamError(
+                  "Nguồn video không tương thích hoặc cần giải mã hợp lệ.",
+                  data,
+                );
               }
             } else {
               // Fatal error (keySystemError, muxError, etc.) — give up
               destroyHls();
-              onFatalError?.();
+              reportStreamError(
+                "Nguồn video không tương thích hoặc cần giải mã hợp lệ.",
+                data,
+              );
             }
           }
         },
@@ -440,14 +692,31 @@ export default function HlsPlayer({
       setIsLoaded(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src, performanceMode, pickSmoothLevel, applySmoothCap]);
+  }, [
+    playableSrc,
+    performanceMode,
+    pickSmoothLevel,
+    applySmoothCap,
+    reportStreamError,
+  ]);
 
   // Helper: play muted as fallback.
   // Unmuting is handled by the muted effect via tryStableUnmute — no separate timer needed.
   const playMutedThenUnmute = useCallback((v: HTMLVideoElement) => {
     v.muted = true;
     forceMutedRef.current = true;
-    v.play().catch(() => {});
+    v.play()
+      .then(() => {
+        if (mutedRef.current || !playingRef.current) return;
+        window.setTimeout(() => {
+          if (playingRef.current && !mutedRef.current && videoRef.current === v) {
+            v.muted = false;
+            forceMutedRef.current = false;
+            audioContextRef.current?.resume().catch(() => {});
+          }
+        }, 50);
+      })
+      .catch(() => {});
   }, []);
 
   // Handle Play/Pause + segment loading control
@@ -567,7 +836,9 @@ export default function HlsPlayer({
         const forcePlay = () => {
           if (!playingRef.current || !videoRef.current) return;
           const vid = videoRef.current;
-          vid.muted = true; // always start muted — unmuted later by tryStableUnmute
+          // Respect the current sound toggle. Autoplay fallback below temporarily
+          // mutes only when the browser rejects an unmuted play request.
+          vid.muted = mutedRef.current;
           const p = vid.play();
           if (p !== undefined) {
             p.catch((err) => {
@@ -579,14 +850,16 @@ export default function HlsPlayer({
                   if (playingRef.current && videoRef.current?.paused) {
                     videoRef.current.muted = true;
                     videoRef.current.play().catch(() => {
-                      // Second attempt failed — trigger fallback
-                      onFatalErrorRef.current?.();
+                      reportStreamError("Không thể bắt đầu phát video.");
                     });
                   }
                 }, 150);
               } else {
                 // NotSupportedError, NotReadableError, etc. — codec/format rejected
-                onFatalErrorRef.current?.();
+                reportStreamError(
+                  "Nguồn video không tương thích hoặc cần giải mã hợp lệ.",
+                  err,
+                );
               }
             });
           }
@@ -614,7 +887,14 @@ export default function HlsPlayer({
         }
       }
     }
-  }, [playing, isLoaded, playMutedThenUnmute, performanceMode, applySmoothCap]);
+  }, [
+    playing,
+    isLoaded,
+    playMutedThenUnmute,
+    performanceMode,
+    applySmoothCap,
+    reportStreamError,
+  ]);
 
   // ─── Aggressive stall/freeze recovery (TikTok-style) ───────────────
   // Mobile browsers silently kill video decoders when too many are active.
@@ -668,7 +948,9 @@ export default function HlsPlayer({
       nuclearRecoverCount++;
       // After 1 nuclear recovery still stuck → give up, trigger iframe fallback
       if (nuclearRecoverCount > 1) {
-        onFatalErrorRef.current?.();
+        reportStreamError(
+          "Nguồn video cần trình phát giải mã được cấp quyền.",
+        );
         return;
       }
 
@@ -708,19 +990,26 @@ export default function HlsPlayer({
         const hls = new Hls({ ...HLS_CONFIG, autoStartLoad: true });
         hlsRef.current = hls;
         hlsEverStartedRef.current = true;
-        hls.loadSource(src);
+        hls.loadSource(playableSrc);
         hls.attachMedia(v);
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           if (!playingRef.current || hlsRef.current !== hls) return;
+          selectPreferredAudioTrack(hls as HlsAudioController);
           v.currentTime = currentTime;
-          v.muted = true; // Always keep video muted
+          v.muted = mutedRef.current;
           if (gainNodeRef.current) {
             gainNodeRef.current.gain.value = mutedRef.current ? 0 : 1;
           }
           v.play().catch(() => {
             playMutedThenUnmute(v);
           });
+        });
+
+        hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, () => {
+          if (hlsRef.current === hls) {
+            selectPreferredAudioTrack(hls as HlsAudioController);
+          }
         });
 
         hls.on(
@@ -731,8 +1020,10 @@ export default function HlsPlayer({
                 hls.destroy();
               } catch {}
               if (hlsRef.current === hls) hlsRef.current = null;
-              // Fatal error during nuclear recovery — trigger iframe fallback
-              onFatalErrorRef.current?.();
+              reportStreamError(
+                "Nguồn video không tương thích hoặc cần giải mã hợp lệ.",
+                data,
+              );
             }
           },
         );
@@ -775,7 +1066,9 @@ export default function HlsPlayer({
         if (video.currentTime === 0) {
           zeroProgressTicks++;
           if (zeroProgressTicks >= 8) {
-            onFatalErrorRef.current?.();
+            reportStreamError(
+              "Video không bắt đầu phát. Nguồn có thể đã hết hạn hoặc cần giải mã hợp lệ.",
+            );
             return;
           }
         } else {
@@ -859,7 +1152,7 @@ export default function HlsPlayer({
       clearInterval(watchdog);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, isLoaded, src]);
+  }, [playing, isLoaded, playableSrc, reportStreamError]);
 
   // Visibility recovery: resume video when user comes back to the tab/app.
   // iOS Safari and Android Chrome may pause video when app is backgrounded.
@@ -958,7 +1251,15 @@ export default function HlsPlayer({
           <div className="w-8 h-8 border-[3px] border-vibe-pink border-t-transparent rounded-full animate-spin" />
         </div>
       )}
+      {streamError && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/80 px-6 text-center pointer-events-none">
+          <p className="max-w-sm text-sm leading-relaxed text-white/80">
+            {streamError}
+          </p>
+        </div>
+      )}
       <video
+        data-episode-id={episodeId}
         ref={(el) => {
           (
             videoRef as React.MutableRefObject<HTMLVideoElement | null>
@@ -977,6 +1278,9 @@ export default function HlsPlayer({
           const now = Date.now();
           if (now - lastTimeUpdateRef.current < 500) return;
           lastTimeUpdateRef.current = now;
+          if (videoRef.current) {
+            emitGiftPlayback(true, videoRef.current.currentTime);
+          }
           if (videoRef.current && onTimeUpdate) {
             onTimeUpdate(
               videoRef.current.currentTime,
@@ -984,13 +1288,32 @@ export default function HlsPlayer({
             );
           }
         }}
-        onPlay={onPlay}
-        onPause={onPause}
+        onPlay={() => {
+          emitGiftPlayback(true, videoRef.current?.currentTime ?? 0);
+          onPlay?.();
+        }}
+        onPause={() => {
+          emitGiftPlayback(false);
+          onPause?.();
+        }}
+        onEnded={() => emitGiftPlayback(false)}
         onError={() => {
           // Native video element error (covers iOS HLS failures, unsupported codec, etc.)
-          onFatalError?.();
+          reportStreamError(
+            "Không thể phát nguồn video này. Link có thể đã hết hạn hoặc video cần giải mã hợp lệ.",
+          );
         }}
-      />
+      >
+        {subtitleSrc && (
+          <track
+            kind="subtitles"
+            src={subtitleSrc}
+            srcLang="vi"
+            label="Tiếng Việt"
+            default={subtitleDefault}
+          />
+        )}
+      </video>
     </div>
   );
 }

@@ -7,7 +7,6 @@ import GiftBoxOpenModal from "./GiftBoxOpenModal";
 import GiftInfoSheet from "./GiftInfoSheet";
 import { useGiftBox } from "@/hooks/useGiftBox";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useAppStore } from "@/store/useAppStore";
 import { usePathname } from "next/navigation";
 
 const GIFT_BOX_POSITION_KEY = "vd_gift_box_position_v2";
@@ -42,7 +41,6 @@ function clampPosition(
 
 export default function GiftBox() {
   const { user, openLoginModal } = useAuthStore();
-  const isWatching = useAppStore((s) => s.isWatching);
   const pathname = usePathname();
   const dragMovedRef = useRef(false);
   const dragAreaRef = useRef<HTMLDivElement | null>(null);
@@ -140,12 +138,15 @@ export default function GiftBox() {
     state,
     reward,
     rewardExp,
+    productUrl,
+    shopeeCoinsReward,
+    shopeeOpening,
     leveledUp,
+    errorMessage,
     open,
+    openShopee,
     dismissReward,
-  } = useGiftBox({
-    active: isWatching,
-  });
+  } = useGiftBox();
 
   const showOpenModal = state === "opening" || state === "collected";
   const canDrag = viewport.width > 0 && viewport.height > 0;
@@ -229,12 +230,26 @@ export default function GiftBox() {
               }}
             >
               <GiftBoxButton
-                progress={progress}
+                watchExp={watchExp}
+                watchMax={watchMax}
                 rank={rank}
                 state={state}
                 locked={locked}
                 onClick={handleButtonClick}
               />
+              <AnimatePresence>
+                {errorMessage && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="absolute left-1/2 top-full mt-2 w-52 -translate-x-1/2 rounded-xl border border-red-300/25 bg-zinc-950/95 px-3 py-2 text-center text-[11px] leading-4 text-red-100 shadow-xl backdrop-blur"
+                    role="alert"
+                  >
+                    {errorMessage}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </motion.div>
           </div>
         )}
@@ -268,6 +283,10 @@ export default function GiftBox() {
         visible={showOpenModal}
         reward={reward}
         rewardExp={rewardExp}
+        productUrl={productUrl}
+        shopeeCoinsReward={shopeeCoinsReward}
+        shopeeOpening={shopeeOpening}
+        onOpenShopee={openShopee}
         leveledUp={leveledUp}
         rank={rank}
         canDismiss={state === "collected"}

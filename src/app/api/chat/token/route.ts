@@ -8,6 +8,16 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // The socket server verifies this token with the same secret. Never issue
+  // a token signed with the development fallback when the secret is missing.
+  if (!process.env.JWT_SECRET?.trim()) {
+    console.error("[chat/token] JWT_SECRET is not configured");
+    return NextResponse.json(
+      { error: "Chat authentication is not configured" },
+      { status: 503 },
+    );
+  }
+
   const token = await encrypt({
     userId: user.userId,
     name: user.name,

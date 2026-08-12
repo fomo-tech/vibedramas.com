@@ -63,7 +63,7 @@ export default function Header({
           : "h-[calc(3.5rem+env(safe-area-inset-top))] lg:h-16 px-4 lg:px-8"
       }`}
     >
-      <div className="w-full flex items-center justify-between max-w-480 mx-auto">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
         {/* ── Left: Logo ─────────────────────────────────────────── */}
         <div className="flex-1 flex items-center">
           <Link

@@ -2,6 +2,23 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Environment variables
+
+Create the local environment file before starting the app:
+
+```bash
+cp .env.example .env.local
+```
+
+At minimum, configure `MONGODB_URI`, `REDIS_URL`, and a strong
+`JWT_SECRET`. Generate secrets with `openssl rand -hex 32`. Features such as
+Google login, Cloudinary uploads, Telegram notifications, scheduled jobs, and
+payments also require their corresponding variables listed in `.env.example`.
+
+Only variables prefixed with `NEXT_PUBLIC_` are exposed to browser code. Do not
+put passwords, API secrets, or private keys in those variables. Restart the
+development server after changing an env file.
+
 First, run the development server:
 
 ```bash

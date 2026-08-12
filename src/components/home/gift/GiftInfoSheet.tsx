@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { GiftBoxState } from "@/hooks/useGiftBox";
 import GiftBoxIcon from "./GiftBoxIcon";
-import { RANK_COLORS, RANK_BADGES, RANK_BG, RANK_NAMES } from "./giftConstants";
+import { RANK_COLORS, RANK_BG, RANK_NAMES } from "./giftConstants";
 
 interface GiftInfoSheetProps {
   open: boolean;
@@ -350,104 +350,6 @@ export default function GiftInfoSheet({
           </div>
         </div>
 
-        {/* All rank levels overview */}
-        <div
-          className="mx-4 mt-3 rounded-2xl p-4"
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Star size={14} style={{ color: PRIMARY }} />
-            <span className="text-white/80 text-sm font-bold">
-              Bảng Thưởng Theo Bậc
-            </span>
-          </div>
-          <div className="space-y-1.5">
-            {(
-              [
-                { rank: 1, name: "Khán Giả", coins: 10, secs: 60, exp: 0 },
-                { rank: 2, name: "Fan Cứng", coins: 20, secs: 55, exp: 100 },
-                { rank: 3, name: "Sao Nổi", coins: 35, secs: 50, exp: 300 },
-                {
-                  rank: 4,
-                  name: "Minh Tinh",
-                  coins: 55,
-                  secs: 45,
-                  exp: 700,
-                },
-                {
-                  rank: 5,
-                  name: "Huyền Thoại",
-                  coins: 80,
-                  secs: 40,
-                  exp: 1500,
-                },
-              ] as const
-            ).map((tier) => {
-              const isCurrent = safeRank === tier.rank;
-              const [TC, TS] = RANK_COLORS[tier.rank] ?? RANK_COLORS[1];
-              const TIcon = RANK_BADGES[tier.rank];
-              return (
-                <div
-                  key={tier.rank}
-                  className="flex items-center gap-2.5 rounded-xl px-3 py-2"
-                  style={{
-                    background: isCurrent
-                      ? `linear-gradient(135deg, ${TC}22, ${TS}0e)`
-                      : "rgba(255,255,255,0.025)",
-                    border: `1px solid ${isCurrent ? TC + "55" : "rgba(255,255,255,0.07)"}`,
-                    boxShadow: isCurrent ? `0 2px 16px -4px ${TC}33` : "none",
-                  }}
-                >
-                  <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                    style={{
-                      background: `linear-gradient(135deg, ${TC}33, ${TS}1a)`,
-                      border: `1px solid ${TC}33`,
-                    }}
-                  >
-                    {TIcon && <TIcon size={13} style={{ color: TC }} />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span
-                        className="text-[11px] font-black"
-                        style={{
-                          color: isCurrent ? TC : "rgba(255,255,255,0.65)",
-                        }}
-                      >
-                        {tier.name}
-                      </span>
-                      {isCurrent && (
-                        <span
-                          className="text-[7px] font-black px-1.5 py-0.5 rounded-full tracking-wide"
-                          style={{
-                            background: `linear-gradient(135deg, ${TC}, ${TS})`,
-                            color: "#fff",
-                          }}
-                        >
-                          ĐANG DÙNG
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[10px] text-white/30">
-                      {tier.exp.toLocaleString("vi-VN")} EXP · Xem {tier.secs}s/hộp
-                    </span>
-                  </div>
-                  <div
-                    className="text-sm font-black shrink-0"
-                    style={{ color: isCurrent ? TC : "rgba(255,255,255,0.4)" }}
-                  >
-                    +{tier.coins} xu
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Watch Progress */}
         <div
           className="mx-4 mt-3 rounded-2xl p-4"
@@ -532,7 +434,7 @@ export default function GiftInfoSheet({
             {[
               "Xem phim để tích lũy thời gian",
               "Đủ thời gian → hộp quà mở khóa",
-              "Mở hộp để nhận xu theo bậc hiện tại",
+              "Bấm Mở Shopee nhận quà để nhận xu và link ưu đãi",
               "Muốn thưởng cao hơn: nâng bậc trong trang gói bậc",
             ].map((t, i) => (
               <li
@@ -577,7 +479,7 @@ export default function GiftInfoSheet({
                   openLoginModal();
                   return;
                 }
-                router.push("/vip");
+                router.push("/reward-box");
               }}
               className="w-full py-3.5 rounded-2xl font-black text-sm"
               style={{
@@ -609,7 +511,9 @@ export default function GiftInfoSheet({
             }}
             whileTap={isReady ? { scale: 0.97 } : {}}
           >
-            {isReady ? "Nhận Quà Ngay" : `Xem thêm ${remainingSeconds}s nữa...`}
+            {isReady
+              ? "Mở Shopee nhận quà"
+              : `Xem thêm ${remainingSeconds}s nữa...`}
           </motion.button>
         )}
       </div>

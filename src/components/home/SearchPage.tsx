@@ -263,7 +263,7 @@ export default function SearchPage() {
     >
       {/* ── Top bar ── */}
       <div className="shrink-0 pt-safe border-b border-white/6">
-        <div className="mx-auto flex w-full max-w-5xl items-center gap-3 px-4 pt-4 pb-3 lg:px-8 lg:pt-7 lg:pb-5">
+        <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 pt-4 pb-3 lg:px-8 lg:pt-7 lg:pb-5">
           <motion.button
             whileTap={{ scale: 0.88 }}
             onClick={() => router.back()}
@@ -319,7 +319,7 @@ export default function SearchPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="mx-auto w-full max-w-5xl px-4 pt-5 space-y-7 pb-24 lg:px-8 lg:pt-8 lg:space-y-9"
+              className="mx-auto w-full max-w-6xl px-4 pt-5 space-y-7 pb-24 lg:px-8 lg:pt-8 lg:space-y-9"
             >
               {/* Recent searches */}
               {recentSearches.length > 0 && (
@@ -457,7 +457,7 @@ export default function SearchPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="mx-auto w-full max-w-5xl px-4 pt-4 pb-24 lg:px-8 lg:pt-6"
+              className="mx-auto w-full max-w-6xl px-4 pt-4 pb-24 lg:px-8 lg:pt-6"
             >
               {/* Loading shimmer */}
               {isLoading && (

@@ -239,7 +239,7 @@ export default function GiftCoinsPage() {
 
   return (
     <div className="h-full bg-black overflow-y-auto pb-24 lg:pb-8">
-      <div className="max-w-lg mx-auto">
+      <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
         <PageHeader title="Tặng Xu" />
 
         {/* VIP gate */}
@@ -264,7 +264,7 @@ export default function GiftCoinsPage() {
             <p className="text-white/40 text-sm mb-4 leading-relaxed">
               Nâng cấp VIP để tặng xu cho bạn bè và chia sẻ niềm vui.
             </p>
-            <Link href="/vip">
+            <Link href="/reward-box">
               <button
                 className="px-6 py-3 rounded-2xl font-black text-white text-sm"
                 style={{

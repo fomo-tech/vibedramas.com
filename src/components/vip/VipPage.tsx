@@ -13,8 +13,8 @@ import {
   Gift,
   LockKeyhole,
   Play,
+  ShoppingBag,
   Sparkles,
-  Trophy,
   WalletCards,
   Zap,
 } from "lucide-react";
@@ -23,10 +23,7 @@ import GiftBoxIcon from "@/components/home/gift/GiftBoxIcon";
 import { useGiftRanks, type GiftRankTier } from "@/hooks/useGiftRanks";
 import { useAuthStore } from "@/store/useAuthStore";
 import { API_ROUTES } from "@/lib/api";
-import {
-  RANK_BADGES,
-  RANK_COLORS,
-} from "@/components/home/gift/giftConstants";
+import { RANK_COLORS } from "@/components/home/gift/giftConstants";
 
 interface RewardConfig {
   rank: number;
@@ -34,12 +31,15 @@ interface RewardConfig {
   nextRankName: string | null;
   watchMax: number;
   coinsReward: number;
+  shopeeCoinsReward: number;
   expReward: number;
   giftExp: number;
   currentRankExp: number;
   nextRankExp: number | null;
   coinsToday: number;
   coinsTotal: number;
+  watchExp: number;
+  ready: boolean;
 }
 
 function numberValue(value: unknown, fallback = 0) {
@@ -89,7 +89,6 @@ export default function VipPage() {
 
   const rank = Math.max(1, Math.min(5, numberValue(config?.rank, 1)));
   const [primary, secondary] = RANK_COLORS[rank] ?? RANK_COLORS[1];
-  const RankIcon = RANK_BADGES[rank] ?? Trophy;
   const remainingExp =
     config?.nextRankExp === null
       ? 0
@@ -100,12 +99,15 @@ export default function VipPage() {
 
   return (
     <div
-      data-testid="vip-scroll"
+      data-testid="reward-box-scroll"
       className="h-full min-h-0 overflow-y-auto overscroll-y-contain bg-[#050403] text-white [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch]"
-      style={{ backgroundColor: "#050403" }}
+      style={{
+        background:
+          "radial-gradient(circle at 50% -10%, rgba(255,69,0,.16), transparent 32%), #050403",
+      }}
     >
       <header className="sticky top-0 z-30 border-b border-orange-500/15 bg-[#070504]/92 backdrop-blur-xl">
-        <div className="mx-auto flex min-h-16 max-w-4xl items-center gap-3 px-4 py-3 lg:px-8">
+        <div className="mx-auto flex min-h-16 w-full max-w-6xl items-center gap-3 px-4 py-3 lg:px-8">
           <button
             type="button"
             onClick={() => router.back()}
@@ -116,10 +118,10 @@ export default function VipPage() {
           </button>
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-base font-black lg:text-lg">
-              Phần thưởng
+              Rạp quà phim ngắn
             </h1>
             <p className="truncate text-[11px] text-white/38">
-              Xem phim · Mở hộp · Tăng level
+              Xem phim · Mở hộp · Nhận xu Shopee
             </p>
           </div>
           <div className="flex h-9 shrink-0 items-center gap-2 rounded-lg border border-orange-400/25 bg-linear-to-r from-orange-500/12 to-amber-300/8 px-3 shadow-[0_0_24px_rgba(255,69,0,0.08)]">
@@ -136,11 +138,11 @@ export default function VipPage() {
       ) : loading ? (
         <RewardSkeleton />
       ) : (
-        <main className="mx-auto max-w-4xl px-4 pb-32 pt-5 lg:px-8 lg:pb-12 lg:pt-8">
+        <main className="mx-auto w-full max-w-6xl px-4 pb-32 pt-5 lg:px-8 lg:pb-12 lg:pt-8">
           <motion.section
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden rounded-lg border border-orange-500/25 bg-linear-to-br from-[#210b05] via-[#120806] to-[#090807] shadow-[0_24px_80px_-46px_rgba(255,69,0,0.8)]"
+            className="relative overflow-hidden rounded-[28px] border border-orange-400/25 bg-linear-to-br from-[#251006] via-[#120806] to-[#070606] shadow-[0_30px_100px_-45px_rgba(255,69,0,0.95)]"
           >
             <div
               className="h-1 w-full"
@@ -157,8 +159,7 @@ export default function VipPage() {
               className="pointer-events-none absolute inset-0 opacity-25"
               style={{
                 backgroundImage:
-                  "linear-gradient(115deg, transparent 0%, rgba(255,69,0,.12) 38%, transparent 39%), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px)",
-                backgroundSize: "100% 100%, 42px 42px",
+                  "linear-gradient(115deg, transparent 0%, rgba(255,69,0,.14) 38%, transparent 39%), repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 44px)",
               }}
             />
 
@@ -182,8 +183,7 @@ export default function VipPage() {
                       color: primary,
                     }}
                   >
-                    <RankIcon size={12} />
-                    Level {rank}
+                    SUẤT CHIẾU LEVEL {rank}
                   </span>
                   {config?.nextRankExp === null && (
                     <span className="rounded-md border border-amber-300/25 bg-amber-300/10 px-2 py-1 text-[10px] font-black uppercase text-amber-200">
@@ -196,7 +196,7 @@ export default function VipPage() {
                   {config?.rankName ?? "Khán Giả"}
                 </h2>
                 <p className="mt-2 text-sm text-white/45">
-                  Mỗi hộp nhận{" "}
+                  Hoàn thành một suất xem để nhận{" "}
                   <strong className="text-amber-200">
                     {numberValue(config?.coinsReward)} xu
                   </strong>{" "}
@@ -204,6 +204,14 @@ export default function VipPage() {
                   <strong className="text-orange-200">
                     {numberValue(config?.expReward)} EXP
                   </strong>
+                  {numberValue(config?.shopeeCoinsReward) > 0 && (
+                    <>
+                      {" "}· mở Shopee nhận thêm{" "}
+                      <strong className="text-orange-300">
+                        {numberValue(config?.shopeeCoinsReward)} xu
+                      </strong>
+                    </>
+                  )}
                 </p>
 
                 <div className="mx-auto mt-6 max-w-xl lg:mx-0">
@@ -280,8 +288,8 @@ export default function VipPage() {
             />
             <RewardStat
               icon={<Clock3 size={20} className="text-rose-300" />}
-              label="Thời gian / hộp"
-              value={numberValue(config?.watchMax, 60) + " giây"}
+              label="Tiến độ hộp hiện tại"
+              value={`${Math.floor(numberValue(config?.watchExp))}/${numberValue(config?.watchMax, 60)} giây`}
             />
             <RewardStat
               icon={<Zap size={20} className="text-amber-300" />}
@@ -294,10 +302,10 @@ export default function VipPage() {
             <div className="mb-4 flex items-end justify-between gap-4">
               <div>
                 <p className="text-[10px] font-black uppercase text-vibe-pink">
-                  Lộ trình phần thưởng
+                  Bộ sưu tập phòng vé
                 </p>
                 <h2 className="mt-1 text-xl font-black lg:text-2xl">
-                  Các mốc level
+                  Hộp quà theo cấp bậc
                 </h2>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-orange-200/45">
@@ -319,6 +327,26 @@ export default function VipPage() {
                 ))}
               </div>
             )}
+          </section>
+
+          <section className="mt-8 overflow-hidden rounded-[24px] border border-white/8 bg-[#0b0908]">
+            <div className="grid gap-px bg-white/7 md:grid-cols-3">
+              <RewardStep
+                index="01"
+                title="Xem phim ngắn"
+                description={`Phát video đủ ${numberValue(config?.watchMax, 60)} giây. Tiến độ được lưu theo tài khoản.`}
+              />
+              <RewardStep
+                index="02"
+                title="Mở hộp cinema"
+                description={`Nhận ${numberValue(config?.coinsReward)} xu và ${numberValue(config?.expReward)} EXP để nâng cấp hộp.`}
+              />
+              <RewardStep
+                index="03"
+                title="Mở Shopee"
+                description={`Nhấn CTA để nhận thêm ${numberValue(config?.shopeeCoinsReward)} xu; mỗi hộp chỉ nhận một lần.`}
+              />
+            </div>
           </section>
 
           <section className="mt-8 flex flex-col gap-4 border-t border-orange-500/15 py-6 sm:flex-row sm:items-center sm:justify-between">
@@ -449,7 +477,6 @@ function RankCard({
   const current = tier.rank === currentRank;
   const unlocked = tier.rank <= currentRank;
   const [primary, secondary] = RANK_COLORS[tier.rank] ?? RANK_COLORS[1];
-  const Icon = RANK_BADGES[tier.rank] ?? Trophy;
 
   return (
     <motion.article
@@ -478,12 +505,6 @@ function RankCard({
           }}
         >
           <GiftBoxIcon size={62} rank={tier.rank} />
-          <div
-            className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-md border bg-[#100806]"
-            style={{ borderColor: primary + "45", color: primary }}
-          >
-            <Icon size={12} />
-          </div>
         </div>
         <div
           className="flex h-6 items-center gap-1 rounded-md border px-2 text-[9px] font-black uppercase"
@@ -529,7 +550,31 @@ function RankCard({
         <Clock3 size={11} />
         {numberValue(tier.watchSeconds)} giây mỗi hộp
       </div>
+      <div className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-orange-300/75">
+        <ShoppingBag size={11} />
+        Shopee +{numberValue(tier.shopeeCoinsReward)} xu
+      </div>
     </motion.article>
+  );
+}
+
+function RewardStep({
+  index,
+  title,
+  description,
+}: {
+  index: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <article className="bg-[#0b0908] p-5 lg:p-6">
+      <span className="font-mono text-[11px] font-black tracking-[0.25em] text-orange-400">
+        SCENE {index}
+      </span>
+      <h3 className="mt-3 text-base font-black text-white">{title}</h3>
+      <p className="mt-2 text-xs leading-5 text-white/42">{description}</p>
+    </article>
   );
 }
 
@@ -559,7 +604,7 @@ function GuestState({ onLogin }: { onLogin: () => void }) {
 
 function RewardSkeleton() {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-6 lg:px-8">
+    <main className="mx-auto w-full max-w-6xl px-4 py-6 lg:px-8">
       <div className="h-80 animate-pulse rounded-lg bg-white/5" />
       <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[0, 1, 2, 3].map((item) => (

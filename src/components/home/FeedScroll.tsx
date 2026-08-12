@@ -34,6 +34,9 @@ interface Episode {
   filename: string;
   link_m3u8: string;
   link_embed: string;
+  subtitle_vtt?: string;
+  subtitle_srt?: string;
+  has_vietnamese_audio?: boolean;
 }
 
 interface FeedItem {
@@ -57,6 +60,9 @@ interface FeedItem {
     name: string;
     link_m3u8: string;
     link_embed: string;
+    subtitle_vtt?: string;
+    subtitle_srt?: string;
+    has_vietnamese_audio?: boolean;
   };
 }
 
@@ -113,7 +119,16 @@ export default function FeedScroll() {
     {},
   );
   const [episodeMeta, setEpisodeMeta] = useState<
-    Record<string, { _id: string; name: string }>
+    Record<
+      string,
+      {
+        _id: string;
+        name: string;
+        subtitle_vtt?: string;
+        subtitle_srt?: string;
+        has_vietnamese_audio?: boolean;
+      }
+    >
   >({});
 
   // Episode panel state
@@ -451,7 +466,13 @@ export default function FeedScroll() {
     setEpisodeName((prev) => ({ ...prev, [detailDrama._id]: ep.name }));
     setEpisodeMeta((prev) => ({
       ...prev,
-      [detailDrama._id]: { _id: ep._id, name: ep.name },
+      [detailDrama._id]: {
+        _id: ep._id,
+        name: ep.name,
+        subtitle_vtt: ep.subtitle_vtt,
+        subtitle_srt: ep.subtitle_srt,
+        has_vietnamese_audio: ep.has_vietnamese_audio,
+      },
     }));
     closeDetail();
   };
@@ -464,7 +485,13 @@ export default function FeedScroll() {
     setEpisodeName((prev) => ({ ...prev, [itemId]: ep.name }));
     setEpisodeMeta((prev) => ({
       ...prev,
-      [itemId]: { _id: ep._id, name: ep.name },
+      [itemId]: {
+        _id: ep._id,
+        name: ep.name,
+        subtitle_vtt: ep.subtitle_vtt,
+        subtitle_srt: ep.subtitle_srt,
+        has_vietnamese_audio: ep.has_vietnamese_audio,
+      },
     }));
 
     const item = items.find((i) => i._id === itemId);
@@ -664,9 +691,14 @@ export default function FeedScroll() {
     };
   }, []);
 
-  // Route KKPhim streams through our proxy so HLS.js never hits CDN CORS directly
+  // Route external streams through our proxy so HLS.js never hits CDN CORS directly
   const toProxiedSrc = useCallback((url: string) => {
-    if (url && url.includes("kkphimplayer6.com")) {
+    if (
+      url &&
+      (url.includes("kkphimplayer6.com") ||
+        url.includes("akamai-static.shorttv.live") ||
+        url.includes("video-v6.mydramawave.com"))
+    ) {
       return `/api/proxy/stream?url=${encodeURIComponent(url)}`;
     }
     return url;
@@ -717,6 +749,9 @@ export default function FeedScroll() {
   const activeEpName = activeItem
     ? episodeName[activeItem._id] || activeItem.episode1.name || "1"
     : "1";
+  const activeEpisodeMeta = activeItem
+    ? episodeMeta[activeItem._id] || activeItem.episode1
+    : undefined;
 
   return (
     <>
@@ -770,6 +805,20 @@ export default function FeedScroll() {
                     src={activeSrc}
                     playing={gateReady && !isPaused}
                     muted={isMuted}
+                    subtitleSrc={
+                      activeEpisodeMeta?.subtitle_vtt ||
+                      activeEpisodeMeta?.subtitle_srt
+                        ? `/api/proxy/stream?url=${encodeURIComponent(
+                            activeEpisodeMeta.subtitle_vtt ||
+                              activeEpisodeMeta.subtitle_srt ||
+                              "",
+                          )}`
+                        : ""
+                    }
+                    subtitleDefault={Boolean(
+                      activeEpisodeMeta?.subtitle_vtt ||
+                        activeEpisodeMeta?.subtitle_srt,
+                    )}
                     seekTo={targetSeek[activeItem._id]}
                     episodeId={activeEpId}
                     onTimeUpdate={(cur, dur) =>

@@ -1,0 +1,50 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #101216;
+  color: #f4f5f7;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at 70% 0%, #28344e 0, #101216 45%);
+}
+
+.player-shell { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 40px; }
+.eyebrow { margin: 0 0 8px; color: #8ea9ff; font-size: 12px; font-weight: 800; letter-spacing: .16em; }
+h1 { margin: 0; font-size: clamp(30px, 5vw, 48px); letter-spacing: -.04em; }
+.subtitle { margin: 10px 0 28px; color: #aab1c1; }
+code { color: #dbe3ff; }
+
+.source-card, .video-card { border: 1px solid #2c3342; border-radius: 20px; background: rgba(22, 26, 35, .88); box-shadow: 0 20px 60px rgba(0, 0, 0, .2); }
+.source-card { padding: 18px; }
+.catalog-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; margin-bottom: 14px; }
+label { display: block; margin-bottom: 8px; color: #cbd1df; font-size: 13px; font-weight: 700; }
+.source-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.api-row { margin-bottom: 14px; }
+.api-row button { min-height: 42px; }
+input, select { min-width: 0; width: 100%; padding: 12px 13px; border: 1px solid #3a4354; border-radius: 11px; outline: 0; color: #f4f5f7; background: #11151d; font: inherit; font-size: 13px; }
+input:focus { border-color: #8ea9ff; box-shadow: 0 0 0 3px rgba(142, 169, 255, .14); }
+select:focus { border-color: #8ea9ff; box-shadow: 0 0 0 3px rgba(142, 169, 255, .14); }
+button { border: 0; border-radius: 11px; padding: 0 18px; color: #d6dbea; background: #2a3140; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+button:hover { filter: brightness(1.1); }
+button.primary { color: #121621; background: #9eb4ff; }
+button.secondary { padding: 8px 12px; font-size: 12px; }
+.status { min-height: 18px; margin: 11px 2px 0; color: #96a0b5; font-size: 12px; }
+.status.error { color: #ff9d9d; }
+
+.video-card { margin-top: 16px; overflow: hidden; }
+video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #050608; object-fit: contain; }
+.video-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; color: #8e98ab; font-size: 12px; }
+.hint { margin: 14px 2px; color: #798398; font-size: 12px; }
+
+@media (max-width: 560px) {
+  .player-shell { padding-top: 30px; }
+  .catalog-row { grid-template-columns: 1fr; }
+  .source-row { grid-template-columns: 1fr; }
+  button.primary { min-height: 42px; }
+}

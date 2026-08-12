@@ -189,9 +189,11 @@ export default function GiftBoxIcon({
           {locked ? (
             <path d="M29.2 42 V39.8 A2.8 2.8 0 0 1 34.8 39.8 V42 M28.2 42 H35.8 V47 H28.2 Z" fill={palette.jewel} />
           ) : (
-            <text x="32" y="44.5" textAnchor="middle" fill="#5B2600" fontSize="7" fontWeight="900">
-              {safeRank}
-            </text>
+            <path
+              d="M29.5 42 L32 39.5 L34.5 42 L32 44.5 Z"
+              fill={palette.jewel}
+              opacity="0.92"
+            />
           )}
           <circle cx="30.5" cy="40.5" r="1.2" fill="#FFF" opacity="0.8" />
         </g>
@@ -213,9 +215,6 @@ export default function GiftBoxIcon({
         <circle cx="32" cy="16" r="4.6" fill={"url(#" + jewelGradient + ")"} stroke={palette.metal} strokeWidth="1" />
         <circle cx="30.5" cy="14.5" r="1.2" fill="#FFF" opacity="0.85" />
 
-        {safeRank >= 4 && !locked && (
-          <path d="M24 11 L27 5 L32 10 L37 5 L40 11" fill="none" stroke={palette.ribbonTop} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        )}
       </motion.g>
 
       {!locked && (

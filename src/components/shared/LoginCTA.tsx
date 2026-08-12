@@ -45,20 +45,21 @@ export default function LoginCTA({
   const { openLoginModal } = useAuthStore();
 
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+    <div className="relative flex flex-col items-center justify-center overflow-hidden px-6 py-16 text-center">
       {/* ── Glow blob ── */}
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden
       >
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-vibe-pink/8 blur-[80px]" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-orange-500/10 blur-[90px]" />
+        <div className="absolute left-1/2 top-1/2 h-64 w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-orange-400/6 shadow-[0_0_80px_rgba(255,69,0,0.08)]" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="relative flex flex-col items-center gap-6 max-w-xs"
+        className="relative flex max-w-sm flex-col items-center gap-6 rounded-[28px] border border-white/7 bg-linear-to-b from-white/5 via-white/2 to-transparent px-6 py-8 shadow-[0_30px_80px_rgba(0,0,0,0.34)] backdrop-blur-sm"
       >
         {/* ── Hero icon ── */}
         <div className="relative">
@@ -69,17 +70,18 @@ export default function LoginCTA({
             className="absolute inset-0 rounded-full bg-vibe-pink/30"
           />
           {/* Inner circle */}
-          <div className="relative w-20 h-20 rounded-full bg-linear-to-br from-vibe-pink/20 to-orange-500/10 border border-vibe-pink/30 flex items-center justify-center shadow-[0_0_40px_rgba(255,69,0,0.2)]">
-            <Icon size={32} className="text-vibe-pink" strokeWidth={1.8} />
+          <div className="relative w-20 h-20 rounded-[24px] rotate-3 bg-linear-to-br from-orange-500/25 to-red-500/8 border border-orange-400/30 flex items-center justify-center shadow-[0_18px_45px_rgba(255,69,0,0.2)]">
+            <Icon size={32} className="-rotate-3 text-orange-400" strokeWidth={1.8} />
           </div>
         </div>
 
         {/* ── Text ── */}
         <div className="space-y-2">
-          <h2 className="text-white font-black text-2xl tracking-tight leading-tight">
+          <p className="mb-2 text-[9px] font-black uppercase tracking-[0.28em] text-orange-400">Phim ngắn · Cảm xúc dài</p>
+          <h2 className="text-white font-black text-2xl tracking-[-0.03em] leading-tight">
             {title}
           </h2>
-          <p className="text-white/35 text-sm leading-relaxed">{description}</p>
+          <p className="mx-auto max-w-[280px] text-white/40 text-sm leading-relaxed">{description}</p>
         </div>
 
         {/* ── Perk chips ── */}
@@ -87,10 +89,10 @@ export default function LoginCTA({
           {PERKS.map(({ icon: PerkIcon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-2 bg-white/4 border border-white/6 rounded-xl px-3 py-2"
+              className="flex items-center gap-2 bg-black/20 border border-white/7 rounded-xl px-3 py-2.5 transition-colors hover:border-orange-400/20 hover:bg-orange-500/5"
             >
-              <div className="w-6 h-6 rounded-lg bg-vibe-pink/15 border border-vibe-pink/20 flex items-center justify-center shrink-0">
-                <PerkIcon size={11} className="text-vibe-pink/80" />
+              <div className="w-6 h-6 rounded-lg bg-orange-500/12 border border-orange-400/18 flex items-center justify-center shrink-0">
+                <PerkIcon size={11} className="text-orange-400/90" />
               </div>
               <span className="text-white/50 text-[11px] font-semibold leading-tight">
                 {label}
@@ -104,7 +106,7 @@ export default function LoginCTA({
           whileTap={{ scale: 0.96 }}
           whileHover={{ scale: 1.02 }}
           onClick={openLoginModal}
-          className="relative w-full overflow-hidden flex items-center justify-center gap-2 bg-vibe-pink text-white font-black text-sm px-6 py-3.5 rounded-2xl transition-colors hover:bg-orange-500 shadow-[0_4px_32px_rgba(255,69,0,0.4)] group"
+          className="relative w-full overflow-hidden flex items-center justify-center gap-2 bg-linear-to-r from-[#ff3d00] via-[#ff5722] to-[#ff8a00] text-white font-black text-sm px-6 py-3.5 rounded-2xl border border-orange-300/20 transition-all hover:-translate-y-0.5 shadow-[0_12px_36px_rgba(255,69,0,0.34)] hover:shadow-[0_16px_42px_rgba(255,69,0,0.48)] group"
         >
           {/* Shine sweep */}
           <motion.div

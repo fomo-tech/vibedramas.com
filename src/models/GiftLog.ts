@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IGiftLog extends Document {
+  claimId: string;
   userId: string;
   giftLevel: number;
   rank: number;
@@ -9,11 +10,18 @@ export interface IGiftLog extends Document {
   leveledUp: boolean;
   ip: string;
   ua: string;
+  verifiedSeconds: number;
+  productUrl?: string;
+  shopeeCoinsReward: number;
+  shopeeCoinsEarned: number;
+  shopeeClickedAt?: Date;
   createdAt: Date;
 }
 
 const GiftLogSchema: Schema = new Schema(
   {
+    // sparse keeps the unique index compatible with historical log rows.
+    claimId: { type: String, required: true, unique: true, sparse: true },
     userId: { type: String, required: true, index: true },
     giftLevel: { type: Number, required: true },
     rank: { type: Number, required: true },
@@ -22,6 +30,11 @@ const GiftLogSchema: Schema = new Schema(
     leveledUp: { type: Boolean, default: false },
     ip: { type: String, default: "unknown" },
     ua: { type: String, default: "unknown" },
+    verifiedSeconds: { type: Number, required: true, min: 0 },
+    productUrl: { type: String },
+    shopeeCoinsReward: { type: Number, default: 0, min: 0 },
+    shopeeCoinsEarned: { type: Number, default: 0, min: 0 },
+    shopeeClickedAt: { type: Date },
   },
   { timestamps: true },
 );

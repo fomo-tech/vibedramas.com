@@ -33,7 +33,7 @@ export default function SpendingHistoryPage() {
 
   return (
     <div className="h-full bg-black overflow-y-auto pb-24 lg:pb-8">
-      <div className="max-w-lg mx-auto">
+      <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
         <PageHeader title="Lịch sử mua bậc" />
 
         {loading && items.length === 0 ? (
@@ -46,7 +46,7 @@ export default function SpendingHistoryPage() {
             title="Chưa có lịch sử mua bậc"
             subtitle="Mua gói bậc để tăng xu/phút và mở hộp quà theo bậc tương ứng"
             ctaLabel="Xem gói bậc"
-            ctaHref="/vip"
+            ctaHref="/reward-box"
           />
         ) : (
           <div

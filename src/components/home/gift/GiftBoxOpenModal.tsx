@@ -11,10 +11,14 @@ interface GiftBoxOpenModalProps {
   visible: boolean;
   reward: number;
   rewardExp?: number;
+  productUrl?: string | null;
+  shopeeCoinsReward?: number;
+  shopeeOpening?: boolean;
   leveledUp?: boolean;
   rank?: number;
   canDismiss?: boolean;
   onDismiss: () => void;
+  onOpenShopee: () => Promise<void>;
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -71,10 +75,14 @@ export default function GiftBoxOpenModal({
   visible,
   reward,
   rewardExp = 0,
+  productUrl = null,
+  shopeeCoinsReward = 0,
+  shopeeOpening = false,
   leveledUp = false,
   rank = 1,
   canDismiss = true,
   onDismiss,
+  onOpenShopee,
 }: GiftBoxOpenModalProps) {
   // Lazy initializer: false on SSR, true on client — safe with createPortal
   const [mounted] = useState<boolean>(() => typeof document !== "undefined");
@@ -247,6 +255,29 @@ export default function GiftBoxOpenModal({
                 MỞ HỘP NHẬN THƯỞNG
               </span>
             </motion.div>
+
+            {productUrl && canDismiss && (
+              <motion.button
+                type="button"
+                disabled={shopeeOpening}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void onOpenShopee();
+                }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.25, ease: EASE }}
+                className="mt-4 rounded-full px-5 py-2.5 text-sm font-black text-black"
+                style={{
+                  background: `linear-gradient(135deg, ${SECONDARY}, ${PRIMARY})`,
+                  boxShadow: `0 8px 28px ${PRIMARY}45`,
+                }}
+              >
+                {shopeeOpening
+                  ? "Đang nhận xu..."
+                  : `Mở link để nhận thêm ${shopeeCoinsReward} xu`}
+              </motion.button>
+            )}
           </motion.div>
 
           <motion.button

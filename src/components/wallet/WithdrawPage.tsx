@@ -200,7 +200,7 @@ export default function WithdrawPage() {
     <div className="h-full overflow-y-auto bg-black pb-safe">
       {/* Header */}
       <div className="sticky top-0 z-20 backdrop-blur-2xl bg-black/80 border-b border-white/6 px-5 py-4 pt-safe">
-        <div className="max-w-lg mx-auto">
+        <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               <button
@@ -305,7 +305,7 @@ export default function WithdrawPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ type: "spring", damping: 30, stiffness: 280 }}
-            className="max-w-lg mx-auto px-5 pt-6 pb-28 space-y-6"
+            className="mx-auto w-full max-w-lg px-5 pt-6 pb-28 space-y-6 lg:max-w-6xl"
           >
             {/* Balance hero */}
             <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-vibe-pink/20 via-black to-orange-500/10 border border-vibe-pink/20 p-6">
@@ -431,7 +431,7 @@ export default function WithdrawPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ type: "spring", damping: 30, stiffness: 280 }}
-            className="max-w-lg mx-auto px-5 pt-6 pb-28 space-y-5"
+            className="mx-auto w-full max-w-lg px-5 pt-6 pb-28 space-y-5 lg:max-w-6xl"
           >
             <div className="flex items-center justify-between">
               <p className="text-[11px] font-black text-white/30 uppercase tracking-widest">
@@ -590,7 +590,7 @@ export default function WithdrawPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ type: "spring", damping: 30, stiffness: 280 }}
-            className="max-w-lg mx-auto px-5 pt-6 pb-28 space-y-5"
+            className="mx-auto w-full max-w-lg px-5 pt-6 pb-28 space-y-5 lg:max-w-6xl"
           >
             <p className="text-[11px] font-black text-white/30 uppercase tracking-widest">
               Xác nhận thông tin

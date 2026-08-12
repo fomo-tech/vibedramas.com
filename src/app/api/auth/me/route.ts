@@ -7,7 +7,9 @@ export async function GET() {
   const session = await getUserSession();
 
   if (!session) {
-    return NextResponse.json({ user: null }, { status: 401 });
+    // Anonymous visitors are a valid application state. Returning 200 keeps
+    // the session probe from showing a misleading failed request in DevTools.
+    return NextResponse.json({ user: null });
   }
 
   try {

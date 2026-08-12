@@ -21,25 +21,38 @@ export default function PWAInstaller() {
 
     // In development, aggressively disable SW + caches to avoid stale bundles.
     if ("serviceWorker" in navigator && !isProduction) {
-      navigator.serviceWorker
-        .getRegistrations()
-        .then((registrations) => {
-          return Promise.all(registrations.map((reg) => reg.unregister()));
-        })
-        .catch((error) => {
-          console.warn("Service Worker cleanup failed:", error);
-        });
+      const cleanupLocalPwa = async () => {
+        try {
+          const wasControlled = Boolean(navigator.serviceWorker.controller);
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          const unregisterResults = await Promise.all(
+            registrations.map((registration) => registration.unregister()),
+          );
 
-      if ("caches" in window) {
-        caches
-          .keys()
-          .then((names) =>
-            Promise.all(names.map((name) => caches.delete(name))),
-          )
-          .catch((error) => {
-            console.warn("Cache storage cleanup failed:", error);
-          });
-      }
+          if ("caches" in window) {
+            const names = await caches.keys();
+            await Promise.all(names.map((name) => caches.delete(name)));
+          }
+
+          // unregister() does not release the current tab immediately. Reload
+          // exactly once so localhost is no longer controlled by the stale SW.
+          const reloadKey = "vibe_local_sw_cleanup_reloaded";
+          if (
+            wasControlled &&
+            unregisterResults.some(Boolean) &&
+            sessionStorage.getItem(reloadKey) !== "1"
+          ) {
+            sessionStorage.setItem(reloadKey, "1");
+            window.location.reload();
+            return;
+          }
+          sessionStorage.removeItem(reloadKey);
+        } catch (error) {
+          console.warn("Local PWA cleanup failed:", error);
+        }
+      };
+
+      void cleanupLocalPwa();
     }
 
     // Register service worker only in production

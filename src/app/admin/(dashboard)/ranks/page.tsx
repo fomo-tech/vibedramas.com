@@ -58,6 +58,10 @@ export default function AdminRanksPage() {
             cộng sau mỗi lần người dùng xem đủ thời gian và mở hộp quà.
           </p>
           <p>
+            <strong className="text-white">Xu / Shopee</strong> được cộng một
+            lần khi người dùng nhấn nút mở Shopee sau khi nhận hộp.
+          </p>
+          <p>
             Level tăng tự động theo EXP, không có mua gói hoặc thời hạn sử dụng.
           </p>
         </div>

@@ -44,7 +44,7 @@ export default function AllDramasGrid({ dramas }: AllDramasGridProps) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-350 px-3 py-2 lg:p-6 xl:p-8">
+    <div className="mx-auto w-full max-w-6xl px-3 py-2 lg:p-6 xl:p-8">
       {dramas.length === 0 ? (
         <div className="h-96 flex flex-col items-center justify-center text-center animate-fade-in">
           <div className="text-6xl mb-4">🎬</div>

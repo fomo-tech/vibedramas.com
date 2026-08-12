@@ -8,6 +8,7 @@ export interface RankRow {
   rank: number;
   name: string;
   coinsReward: number;
+  shopeeCoinsReward: number;
   expReward: number;
   requiredExp: number;
   watchSeconds: number;
@@ -19,7 +20,7 @@ export interface RankRow {
 
 type EditableForm = Pick<
   RankRow,
-  "name" | "coinsReward" | "expReward" | "requiredExp" | "watchSeconds"
+  "name" | "coinsReward" | "shopeeCoinsReward" | "expReward" | "requiredExp" | "watchSeconds"
 >;
 
 interface RankTableProps {
@@ -37,6 +38,7 @@ export default function RankTable({ ranks, onSaved }: RankTableProps) {
   const [form, setForm] = useState<EditableForm>({
     name: "",
     coinsReward: 10,
+    shopeeCoinsReward: 5,
     expReward: 10,
     requiredExp: 0,
     watchSeconds: 60,
@@ -49,6 +51,7 @@ export default function RankTable({ ranks, onSaved }: RankTableProps) {
     setForm({
       name: row.name,
       coinsReward: numeric(row.coinsReward, 10),
+      shopeeCoinsReward: numeric(row.shopeeCoinsReward, 5),
       expReward: numeric(row.expReward, 10),
       requiredExp: numeric(row.requiredExp, 0),
       watchSeconds: numeric(row.watchSeconds, 60),
@@ -74,6 +77,7 @@ export default function RankTable({ ranks, onSaved }: RankTableProps) {
           ...form,
           name: form.name.trim(),
           coinsReward: Math.max(1, numeric(form.coinsReward, 1)),
+          shopeeCoinsReward: Math.max(0, numeric(form.shopeeCoinsReward, 0)),
           expReward: Math.max(1, numeric(form.expReward, 1)),
           requiredExp: Math.max(0, Math.floor(numeric(form.requiredExp, 0))),
           watchSeconds: Math.max(10, numeric(form.watchSeconds, 60)),
@@ -99,7 +103,7 @@ export default function RankTable({ ranks, onSaved }: RankTableProps) {
 
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-800">
-      <table className="w-full min-w-[820px] text-sm">
+      <table className="w-full min-w-[940px] text-sm">
         <thead>
           <tr className="bg-gray-900 text-xs uppercase text-gray-400">
             <th className="px-4 py-3 text-left">Level</th>
@@ -107,6 +111,7 @@ export default function RankTable({ ranks, onSaved }: RankTableProps) {
             <th className="px-4 py-3 text-center">Mốc EXP</th>
             <th className="px-4 py-3 text-center">EXP / hộp</th>
             <th className="px-4 py-3 text-center">Xu / hộp</th>
+            <th className="px-4 py-3 text-center">Xu / Shopee</th>
             <th className="px-4 py-3 text-center">Giây / hộp</th>
             <th className="px-4 py-3 text-center">Thao tác</th>
           </tr>
@@ -121,6 +126,7 @@ export default function RankTable({ ranks, onSaved }: RankTableProps) {
                 <NumberCell active={active} value={form.requiredExp} display={`${numeric(row.requiredExp, 0).toLocaleString("vi-VN")} EXP`} onChange={(value) => setForm((old) => ({ ...old, requiredExp: value }))} />
                 <NumberCell active={active} value={form.expReward} display={`+${numeric(row.expReward, 10)} EXP`} onChange={(value) => setForm((old) => ({ ...old, expReward: value }))} />
                 <NumberCell active={active} value={form.coinsReward} display={`+${numeric(row.coinsReward, 0)} xu`} onChange={(value) => setForm((old) => ({ ...old, coinsReward: value }))} />
+                <NumberCell active={active} value={form.shopeeCoinsReward} display={`+${numeric(row.shopeeCoinsReward, 0)} xu`} onChange={(value) => setForm((old) => ({ ...old, shopeeCoinsReward: value }))} />
                 <NumberCell active={active} value={form.watchSeconds} display={`${numeric(row.watchSeconds, 60)}s`} onChange={(value) => setForm((old) => ({ ...old, watchSeconds: value }))} />
                 <td className="px-4 py-3 text-center">
                   {active ? (

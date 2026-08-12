@@ -1,0 +1,1195 @@
+{
+  "success": true,
+  "timestamp": "2026-08-12T03:21:51.468Z",
+  "data": {
+    "status": 0,
+    "message": "成功",
+    "data": {
+      "id": 10261,
+      "shortPlayCode": 802641,
+      "shortPlayName": "Tướng quân biết lỗi rồi",
+      "summary": "Nguyễn Lan, một luật sư ly hôn hiện đại, xuyên không thành đại phu nhân Phủ Tướng Quân – người từng bị hủy hoại dung nhan vì cứu tướng quân Trần Khôi, nhưng lại bị phụ bạc. Khi tỉnh lại, cô đã vạch trần hàng loạt âm mưu của tiểu thiếp độc ác-Lê Quyên. Sau khi Lê Quyên bị trừng phạt, tướng quân Trần Khôi thức tỉnh nhưng đã quá muộn.",
+      "totalEpisodes": 47,
+      "coverId": "https://akamai-static.shorttv.live/images/cover/2025/08/20/26191927136443f7bfec72ff1f770864.jpg?auth_key=1786512111-0-0-2f99a062100eb96442720ba688cb68b5&process=mediagate",
+      "lockBegin": 13,
+      "maxWatchEpisodeNum": 1,
+      "episodes": [
+        {
+          "id": 727070,
+          "episodeNum": 1,
+          "videoDuration": 169,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/390f8d0a373c43abacbb1158f544fc8e.jpg?auth_key=1786512111-0-0-46fcca146235c86df2995dfb910069b1&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "554",
+            "video_720": "775",
+            "video_1080": "1209"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/a5e9a1cd628f4157a5e6942b51ec6dac_720/main.m3u8?auth_key=1786512111-0-0-999c526465013e3e70949e47edff1666",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/de84487aead54e9ab3417f31e7291431_1080/main.m3u8?auth_key=1786512111-0-0-0e6754f4be9c6a7569595838b394722e",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/e64e423a8b4846ac9c77ed7c63df42f4_480/main.m3u8?auth_key=1786512111-0-0-03f91ae15260da9c5a0a73ebe99f31f2"
+          }
+        },
+        {
+          "id": 727071,
+          "episodeNum": 2,
+          "videoDuration": 141,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/daa48d46fa2b4e888f172030d0709ab8.jpg?auth_key=1786512111-0-0-f3f31ecc351be1be72a246d0e17201cb&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "576",
+            "video_720": "812",
+            "video_1080": "1284"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/5d276573aad34534948d24e382d69ce4_720/main.m3u8?auth_key=1786512111-0-0-8f951cb93e7667b00b8cd28f610c93ce",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/0d7ec9088e224f9bb6a1a0612f89feb8_1080/main.m3u8?auth_key=1786512111-0-0-31924a9a2c3384e10244768c14cf8cc6",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/62153af2a6024fe3b3a585bc3f2c8f1f_480/main.m3u8?auth_key=1786512111-0-0-81623ae673a7a7ee3641147f48149208"
+          }
+        },
+        {
+          "id": 727072,
+          "episodeNum": 3,
+          "videoDuration": 142,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/4c70026bf91f4f319686adc84de140b0.jpg?auth_key=1786512111-0-0-a12ffcb353746b747343587183c5c6d7&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "559",
+            "video_720": "789",
+            "video_1080": "1248"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/6ea252cf134c4c55a574ef1358fd7f82_720/main.m3u8?auth_key=1786512111-0-0-9dca322b1bf1bee5d5060506d94c47f1",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/34b33aea3db34c14bcf5879afd07fe7e_1080/main.m3u8?auth_key=1786512111-0-0-063abc89b1a5d7c21bad15c20bf010e4",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/cb66353185744a2886121bced1dc28b7_480/main.m3u8?auth_key=1786512111-0-0-3b8d152738747f99173af2a2dd5d2855"
+          }
+        },
+        {
+          "id": 727073,
+          "episodeNum": 4,
+          "videoDuration": 140,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/18a97ead05e34a8798aa05982f61d615.jpg?auth_key=1786512111-0-0-7c65b56d87ec510593c1687e1d02964c&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "492",
+            "video_720": "677",
+            "video_1080": "1054"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/cbf998539e994060a7f96a363d31d25d_720/main.m3u8?auth_key=1786512111-0-0-634323617d272432924d3548a5b12264",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/c88562066ba34c48b7b83e7417b3092f_1080/main.m3u8?auth_key=1786512111-0-0-2c77e1425d798b0ce0c49be017acbdfe",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/100ee472d7ff402aafa031c17eae2471_480/main.m3u8?auth_key=1786512111-0-0-8686bae79e91e93d3012989f2bf5f057"
+          }
+        },
+        {
+          "id": 727074,
+          "episodeNum": 5,
+          "videoDuration": 115,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/ff4dcd36c0d944cda83a11471a7adfdf.jpg?auth_key=1786512111-0-0-4de6e9162fe9fb90b83041e2110e3a47&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "607",
+            "video_720": "864",
+            "video_1080": "1369"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/eb85d2d362024a9484a9fdf33c2fbe96_720/main.m3u8?auth_key=1786512111-0-0-4c32cbe1e77818f9909e81a4ab783aac",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/2e1ed4f412b2499c88f238737d40ec44_1080/main.m3u8?auth_key=1786512111-0-0-d0f9978a5e0458d300fb4397655bc4fc",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/b6db96a49bf14ac3b2a2ea677424d997_480/main.m3u8?auth_key=1786512111-0-0-4387f82adc90f15699f61854bd3736fb"
+          }
+        },
+        {
+          "id": 727075,
+          "episodeNum": 6,
+          "videoDuration": 123,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/9d8497076a2f4282b974f4ebe40516e0.jpg?auth_key=1786512111-0-0-a5b98ae773b89fdcaf30fb25ee9c1425&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "569",
+            "video_720": "800",
+            "video_1080": "1257"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/2ff64dc4a9e74680b246676e55c417cb_720/main.m3u8?auth_key=1786512111-0-0-195fb04adcbbe33ae790a7c42cf1bbd1",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/fe010025b6e6471bb9aa33b71b1f1d1c_1080/main.m3u8?auth_key=1786512111-0-0-388f161165bd7772074959c2fa0d3c88",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/ff72b9e7e5d34801a74b665f0e01794f_480/main.m3u8?auth_key=1786512111-0-0-a8eb679bd30bf4072db2ec42756fa5e8"
+          }
+        },
+        {
+          "id": 727076,
+          "episodeNum": 7,
+          "videoDuration": 152,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/004a71a65ece4abea4e86dc21652ae3b.jpg?auth_key=1786512111-0-0-51f39c8ecd739cc81d2eb3bb548ec660&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "533",
+            "video_720": "743",
+            "video_1080": "1162"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/fad34543c4804a07bb630a634c5dc51e_720/main.m3u8?auth_key=1786512111-0-0-4a5c572b6fc06ecff783f443dd39d8ad",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/499ce2f82c9c4fdc8f6ca315c52797e4_1080/main.m3u8?auth_key=1786512111-0-0-7ed3469f1ac07fa272c647dbbd057c35",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/57c408656f22453aa05639dd8140c81b_480/main.m3u8?auth_key=1786512111-0-0-c0b020b5680cadf7c9730cc42f8e1e7d"
+          }
+        },
+        {
+          "id": 727077,
+          "episodeNum": 8,
+          "videoDuration": 150,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/d90099d0a1d44507ba6293f638e8b83f.jpg?auth_key=1786512111-0-0-b6140420e5ba9d4c6b367d8510214e45&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "592",
+            "video_720": "843",
+            "video_1080": "1343"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/ad4e32781602489c9c7acd71dc799692_720/main.m3u8?auth_key=1786512111-0-0-7ba057cc095fb159f7b2015557b62971",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/1cf0557beaf34298b13c864ec8564cee_1080/main.m3u8?auth_key=1786512111-0-0-6bd4e59e1efe97740981afe9f2c5c4d1",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/3bc680bfc3194b78a7e0629defdf5524_480/main.m3u8?auth_key=1786512111-0-0-08b04e43d5f185eadfad6d0f5c89f9e2"
+          }
+        },
+        {
+          "id": 727078,
+          "episodeNum": 9,
+          "videoDuration": 188,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/3cbfc26a5b0d43639873c84911b70f20.jpg?auth_key=1786512111-0-0-edc8c1b2d1d1f29fac9f0a7b9b98d0b0&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "544",
+            "video_720": "770",
+            "video_1080": "1219"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/d7a329447bcf49049bcb5a22f6ebeca4_720/main.m3u8?auth_key=1786512111-0-0-44f72b0db1713cc2a9547fd0a4de9961",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/40875ba696884f48a1534f01cd272f7c_1080/main.m3u8?auth_key=1786512111-0-0-c21caab8a7a73da9e379675c5d6698a3",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/2625237a89aa411a9b7b08d59a321cd9_480/main.m3u8?auth_key=1786512111-0-0-c62b3e293427f15d1994b10082162ab7"
+          }
+        },
+        {
+          "id": 727079,
+          "episodeNum": 10,
+          "videoDuration": 198,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/7a9b7ebb96334c4bbba689a57ec66c82.jpg?auth_key=1786512111-0-0-614bf33f2e40db0fcbbfaf3ebd27e860&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "585",
+            "video_720": "835",
+            "video_1080": "1334"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/2c4e7e09f18b4d6ea235d1666b5b9f22_720/main.m3u8?auth_key=1786512111-0-0-f25f23079130546df5fe5ccc0f7ac1bb",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/8b61636690354778b2b593b71703474d_1080/main.m3u8?auth_key=1786512111-0-0-ec0f584a95525b07abc1345d1a3586a7",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/655a363b5cc0418a8c762c729477b22d_480/main.m3u8?auth_key=1786512111-0-0-5763b8e64e69b98e7301ad2697541028"
+          }
+        },
+        {
+          "id": 727080,
+          "episodeNum": 11,
+          "videoDuration": 123,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/7ee99b50d603414d87017f921dc46069.jpg?auth_key=1786512111-0-0-1d630b3439bfeaa89937ff187b16b952&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "636",
+            "video_720": "915",
+            "video_1080": "1469"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/6177b949c04a4ff694efc7f90b15787d_720/main.m3u8?auth_key=1786512111-0-0-6f42a0fa2a37e66803419490121d4481",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/8ebe05164972452d87400e27bb646483_1080/main.m3u8?auth_key=1786512111-0-0-7bfb1c2db069c0e4c1b5332ef4f9d94e",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/0a39fe959bd5452f821367d8dc01759c_480/main.m3u8?auth_key=1786512111-0-0-f111c9bbe77d44f26fe4928561c0cfab"
+          }
+        },
+        {
+          "id": 727081,
+          "episodeNum": 12,
+          "videoDuration": 104,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/9a5532b2f5644151b86feea55d23eeaf.jpg?auth_key=1786512111-0-0-a6b4413790ca1abd7f9d107cc64ddff7&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "679",
+            "video_720": "986",
+            "video_1080": "1594"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/925b9cf37473489fbd53f3c834e7975d_720/main.m3u8?auth_key=1786512111-0-0-28edbc4a3ec33b3df5db5e642338f298",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/d2d6dbd946014aee8c5389f0f9da3d52_1080/main.m3u8?auth_key=1786512111-0-0-0c74f88d4a6bd89e7cdadc0a04507d97",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/4908509c2b27448299ed16e508fafa0d_480/main.m3u8?auth_key=1786512111-0-0-7ac372d295218580f2e47cc8bb135ba7"
+          }
+        },
+        {
+          "id": 727082,
+          "episodeNum": 13,
+          "videoDuration": 179,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/4249d7fee5c3434396b162833a592346.jpg?auth_key=1786512111-0-0-d4d095700fb1068f00e21a332b4d705c&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 2,
+          "alreadyLock": 1,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "624",
+            "video_720": "898",
+            "video_1080": "1441"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/d6191f592a63437e9317bd9bdac01599_720/main.m3u8?auth_key=1786512111-0-0-840cdb0611fa2089b998b984093ec86b",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/6fc733e06926491d84ad2e1ed89418e6_1080/main.m3u8?auth_key=1786512111-0-0-a18475d969f86d85c4c374855417b22b",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/490a5b239a364cd0b86a14c510cda674_480/main.m3u8?auth_key=1786512111-0-0-b783cfd5d54195df6d9b64733d227bb9"
+          }
+        },
+        {
+          "id": 727083,
+          "episodeNum": 14,
+          "videoDuration": 134,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/1b1c2adef16648e3983b9d0cc51083c8.jpg?auth_key=1786512111-0-0-20fb318de8556e58bb6b3aeef45530a9&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "623",
+            "video_720": "899",
+            "video_1080": "1443"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/f6f9ed57664e4a089fc44642f0f1d468_720/main.m3u8?auth_key=1786512111-0-0-834b769ec5689924a9ffbab2e3f6d6ab",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/745dee637f764991a347ea8fb95ae32d_1080/main.m3u8?auth_key=1786512111-0-0-8c5bbf3f077792805fd57501240df803",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/0816191bd5934277bb81efa244c7d94c_480/main.m3u8?auth_key=1786512111-0-0-c2d2d9962edbb4d9cac1808f599a95a6"
+          }
+        },
+        {
+          "id": 727084,
+          "episodeNum": 15,
+          "videoDuration": 79,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/3935d12cd3e3474b97a5a680abf8da35.jpg?auth_key=1786512111-0-0-d7b278171946e6d99aa171bb6135bf08&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "594",
+            "video_720": "849",
+            "video_1080": "1345"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/810adcdfafbd4b629c2619528cb31fa7_720/main.m3u8?auth_key=1786512111-0-0-452fb841383f4326cce4e03303dee5d1",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/2f098fa7f5fe4f55956f86c845edb5f4_1080/main.m3u8?auth_key=1786512111-0-0-a63cefe446e550b59f91e1bfd0e0c6c4",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/e87b62470f5e4743b311f4ac4255f6e2_480/main.m3u8?auth_key=1786512111-0-0-b33bc0266b2b177ab89ee106fafdf49b"
+          }
+        },
+        {
+          "id": 727085,
+          "episodeNum": 16,
+          "videoDuration": 108,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/0a043817c9704547b6c592626d82a246.jpg?auth_key=1786512111-0-0-8661c2bc134558c9af2fb4561ca42139&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "733",
+            "video_720": "1072",
+            "video_1080": "1731"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/68293cf401304ea2bf8217c2d57e70c9_720/main.m3u8?auth_key=1786512111-0-0-115eab4dc0a970466cf2803d4f9b5e8b",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/820a8361198d437e98ad53f58259eec9_1080/main.m3u8?auth_key=1786512111-0-0-0ca65cf77dd1a469e9620d2188414580",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/2cf8fcda2f3f4ffbb2c3b7de0ab87768_480/main.m3u8?auth_key=1786512111-0-0-2004b919154e10e07777d24375cfadef"
+          }
+        },
+        {
+          "id": 727086,
+          "episodeNum": 17,
+          "videoDuration": 115,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/66b38608f7b94a93a37be3f89a83de68.jpg?auth_key=1786512111-0-0-f360f3d0e228f890fbbece5f90afce7d&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "631",
+            "video_720": "911",
+            "video_1080": "1456"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/34f3e5511ab8430f835e3475fdfe1efc_720/main.m3u8?auth_key=1786512111-0-0-2ee26412597775e479627d0e31479068",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/c062b2ac9d71462cbdb46a0792aa3554_1080/main.m3u8?auth_key=1786512111-0-0-2ccd6c1b4a8da314d9f08f1795ee26b9",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/a347920f4be3418abcd4acbf815eb9a4_480/main.m3u8?auth_key=1786512111-0-0-4a3c77a3bb3f27198f7b38da9b7e54e2"
+          }
+        },
+        {
+          "id": 727087,
+          "episodeNum": 18,
+          "videoDuration": 103,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/711b01f193404612874517b9dc6f112c.jpg?auth_key=1786512111-0-0-c473cc116a76fd43021164b0cc3226d3&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "682",
+            "video_720": "990",
+            "video_1080": "1593"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/530d04af321e4f55b9e9d3ff1cf2e617_720/main.m3u8?auth_key=1786512111-0-0-c6e97d7b60995de9f23daf7001792f24",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/34018627aaae4a8e886e728d5accdf6e_1080/main.m3u8?auth_key=1786512111-0-0-611f78fd61b93775939790654cd79c78",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/044c6d4c6c824ac2a245c4b6f7d97cdf_480/main.m3u8?auth_key=1786512111-0-0-61d7cc773bb9c909ba174d9a38925293"
+          }
+        },
+        {
+          "id": 727088,
+          "episodeNum": 19,
+          "videoDuration": 157,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/d332184e88ec4e539678a61b8db97283.jpg?auth_key=1786512111-0-0-8ad6e67bde955e4c22152d0d4ee9c7c7&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "661",
+            "video_720": "954",
+            "video_1080": "1531"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/6b6adb8a51e7453284fc97c086f9f44b_720/main.m3u8?auth_key=1786512111-0-0-d5617c3e7d9876923857813b21fe0b8a",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/cbf5a6db4efb403bb7f4d0f0fc36e75c_1080/main.m3u8?auth_key=1786512111-0-0-7e1d223c189baba11da850b48c2b4e44",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/a7c19d6b0d2c4dbe9d032e33981b8c4c_480/main.m3u8?auth_key=1786512111-0-0-ed8007e3c9f0126f9ef593e31011f0e2"
+          }
+        },
+        {
+          "id": 727089,
+          "episodeNum": 20,
+          "videoDuration": 181,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/12df3feb8c4d4c67af0689fb85978b91.jpg?auth_key=1786512111-0-0-e0aac2666270aa86b0728fbef5461c94&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "611",
+            "video_720": "870",
+            "video_1080": "1380"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/644bd1d65855438f9c0c7d388bc6897b_720/main.m3u8?auth_key=1786512111-0-0-da4c314fd8add2d6881368a7426dc1bf",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/704bde331bed4809a84bc23dd00fd00b_1080/main.m3u8?auth_key=1786512111-0-0-ed8ff3bbd7ea6e66019f3735d900cb90",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/b7c168d97f864bf680be4f08a1ca0d6c_480/main.m3u8?auth_key=1786512111-0-0-e0d638af69b8e8637af02bdce253b6e2"
+          }
+        },
+        {
+          "id": 727090,
+          "episodeNum": 21,
+          "videoDuration": 97,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/37072b3d95444dac8afb4fd522c3014b.jpg?auth_key=1786512111-0-0-80139574ccd4b3a710c7ba8b1d7938df&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "584",
+            "video_720": "827",
+            "video_1080": "1309"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/6ea531e742364432bfa3c2347484868f_720/main.m3u8?auth_key=1786512111-0-0-2239ed7fc2bf4514769cdd27a7936123",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/5952d9b7958343b79f8de452b923a28e_1080/main.m3u8?auth_key=1786512111-0-0-53e4ca1c8ba6d19701c31fc2c8f419e5",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/8f0369bb476d411f8370e11f2689fd5b_480/main.m3u8?auth_key=1786512111-0-0-2657eb0dc28ea9bc2758385e01c69138"
+          }
+        },
+        {
+          "id": 727091,
+          "episodeNum": 22,
+          "videoDuration": 93,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/00a8b07d20d04e79a6d902f68ee72e24.jpg?auth_key=1786512111-0-0-ba631aaea778740da36c8682f3047dea&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "658",
+            "video_720": "953",
+            "video_1080": "1536"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/6cb72a8d93364a0cb449400cc616c9be_720/main.m3u8?auth_key=1786512111-0-0-37303d807be1af4e5c2757c6ff3cdbe2",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/dcdb923844104017b48092ef6da96d75_1080/main.m3u8?auth_key=1786512111-0-0-ce07cbc3b74af62dd5dda62dc44695cf",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/0ce80993d20e4b9e9a93ea2651424485_480/main.m3u8?auth_key=1786512111-0-0-9cbd3bc9c4fcf3f6685e1ee64c4278e7"
+          }
+        },
+        {
+          "id": 727092,
+          "episodeNum": 23,
+          "videoDuration": 112,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/ad4629d7ef964ec49592082771013f90.jpg?auth_key=1786512111-0-0-9a710314acf4b5be4e2cecd4093e084b&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "602",
+            "video_720": "863",
+            "video_1080": "1391"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/2736b3d13e1349d2a77b931a3eecb401_720/main.m3u8?auth_key=1786512111-0-0-2ad854cca07f5723261ca184cb958be4",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/319318e21a4a40dfb96e7e63f7013da0_1080/main.m3u8?auth_key=1786512111-0-0-7314b586fd9e291a83cc72774c60281f",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/d044578a06414b0a8877052513bc56cc_480/main.m3u8?auth_key=1786512111-0-0-09f6d74e168fb5ada278b0b15bf3fe5b"
+          }
+        },
+        {
+          "id": 727093,
+          "episodeNum": 24,
+          "videoDuration": 105,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/d92e5ce5da704e82a474d16edac5957e.jpg?auth_key=1786512111-0-0-21664e9d48e6801f073afd7b538da5b2&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "556",
+            "video_720": "787",
+            "video_1080": "1249"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/b3074f6ae7cd478cb1ef609df1e65b34_720/main.m3u8?auth_key=1786512111-0-0-4ecb0b30242db2440e7e8bd2e899d279",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/7f010a7ff08244729f41f6ff7e2e8661_1080/main.m3u8?auth_key=1786512111-0-0-aeb88ca6ce4a8c63cf439ee38d1c3ea2",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/78ba4c807f4d489dadc10a3e98f8a6f9_480/main.m3u8?auth_key=1786512111-0-0-b34b059ab2923a891554e4126ee55faf"
+          }
+        },
+        {
+          "id": 727094,
+          "episodeNum": 25,
+          "videoDuration": 147,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/2aa3bba904b44160b453b1fd270ad738.jpg?auth_key=1786512111-0-0-dc212d61972936e2246c8c05df5f7075&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "508",
+            "video_720": "708",
+            "video_1080": "1111"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/641c31e903d349279c7db65620ec92a8_720/main.m3u8?auth_key=1786512111-0-0-3a29894caf8c53179294fda5161da413",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/949de93200914e70922346378f1dee3a_1080/main.m3u8?auth_key=1786512111-0-0-4e918feabdb84bd087912fe8df0daa94",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/40f0590395124db2b14f02bc0da9c68c_480/main.m3u8?auth_key=1786512111-0-0-030c18cde15e39efc1aee8f94886b2a7"
+          }
+        },
+        {
+          "id": 727095,
+          "episodeNum": 26,
+          "videoDuration": 71,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/9fcf4bd395104eb9bcfb42f1c8fea567.jpg?auth_key=1786512111-0-0-5efcf12426db123e13f7b186b43756ad&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "684",
+            "video_720": "993",
+            "video_1080": "1597"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/016fb8f8c4a144c8a10614d5f6f100a2_720/main.m3u8?auth_key=1786512111-0-0-cf1a0af1f8a615e7e015722be1dd0bd8",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/d5adebc80a1a4236bcf0e4eeebc23da0_1080/main.m3u8?auth_key=1786512111-0-0-b8bc911e82b6d869495aab916a9f57a4",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/55924b4b717548f8bd6af89eff179939_480/main.m3u8?auth_key=1786512111-0-0-508fd3134923914602a56b7c3c9c5a98"
+          }
+        },
+        {
+          "id": 727096,
+          "episodeNum": 27,
+          "videoDuration": 86,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/2152a0aa761c4d598b1520c0b81969ba.jpg?auth_key=1786512111-0-0-a1046f4e79f4b2f63b6c1a843708952d&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "572",
+            "video_720": "812",
+            "video_1080": "1290"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/20db5c7c067f46868d6a23ec7a70e39e_720/main.m3u8?auth_key=1786512111-0-0-74a0a48311b97941fed5f077e25b01e3",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/19e2198c89724a27b05a0d0561b6dc68_1080/main.m3u8?auth_key=1786512111-0-0-7c26ec5e724f9c6b4cf884d3a880f197",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/d9b5994f24554a3f966593d59ca757c4_480/main.m3u8?auth_key=1786512111-0-0-839409cc8ad74ef51fff2d246d3727cd"
+          }
+        },
+        {
+          "id": 727097,
+          "episodeNum": 28,
+          "videoDuration": 86,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/bbe533afa6df40018ef6320c7f7cd7a4.jpg?auth_key=1786512111-0-0-d372c4f1765a50c4953f9522e6714c05&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "580",
+            "video_720": "825",
+            "video_1080": "1315"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/7491dc170342440b87e623dcbd94fe46_720/main.m3u8?auth_key=1786512111-0-0-18248d7b227c01bda9557c44a6715aef",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/244b8a2165cd4e9b8fae4a96f89c3caf_1080/main.m3u8?auth_key=1786512111-0-0-cedcf7be5ddf63638380627839dcfa0f",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/ed35d96e72a540608ca88e1f113fb3fc_480/main.m3u8?auth_key=1786512111-0-0-b6df60a5f8c16cbd60456fc99f40a192"
+          }
+        },
+        {
+          "id": 727098,
+          "episodeNum": 29,
+          "videoDuration": 77,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/f2aca4a229474f2bba6bf66330240d8f.jpg?auth_key=1786512111-0-0-38d73d58acc22ac657c4f0a17a28d7af&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "546",
+            "video_720": "769",
+            "video_1080": "1216"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/ea9ca71d3d3344e2b1817d616e44dcd1_720/main.m3u8?auth_key=1786512111-0-0-032b3e5c28ce12f14b86d5a1a4f9a78a",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/9f516ceaad1a4f4bb3c93a111de006cd_1080/main.m3u8?auth_key=1786512111-0-0-5fdd57fd2a61c52f6d166029110d82a9",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/86bb6bec1cd545129fc8f90589514375_480/main.m3u8?auth_key=1786512111-0-0-3b87cc45de4bef2b5b081174abb7fdf0"
+          }
+        },
+        {
+          "id": 727099,
+          "episodeNum": 30,
+          "videoDuration": 93,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/aebe52d39a0043ab8ac17eb1465ac2b1.jpg?auth_key=1786512111-0-0-9b69f387c3ef832622c81c1c987dcead&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "588",
+            "video_720": "841",
+            "video_1080": "1344"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/b31b65e1711f4b14ab31b36f319f00a6_720/main.m3u8?auth_key=1786512111-0-0-9c1a1a4f8b8c82b45c215de5eb322990",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/ae2c9b66bca1482a8427ced90533ba84_1080/main.m3u8?auth_key=1786512111-0-0-920a714140b3e6d871f0b9699e44d008",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/ead5c3417c404b81be84d113425fbc0c_480/main.m3u8?auth_key=1786512111-0-0-a6895bb92e79cd51356a1af722eba694"
+          }
+        },
+        {
+          "id": 727100,
+          "episodeNum": 31,
+          "videoDuration": 86,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/fd7dad0a7165437199a6e4eebbb985b4.jpg?auth_key=1786512111-0-0-05e1ee1437cf04506a1f7e6069b31529&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "647",
+            "video_720": "943",
+            "video_1080": "1531"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/3bc66543614441ed95188ed01766c0b2_720/main.m3u8?auth_key=1786512111-0-0-fcc2e3431f17e51fbbe149db086e8b76",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/6d991a21371e4a05aaa5a08a0c1f935f_1080/main.m3u8?auth_key=1786512111-0-0-dc09783132812d2de53723f42534eb36",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/e54b3b1e7377463fa13edd4f4d8c4005_480/main.m3u8?auth_key=1786512111-0-0-3b4386ef75dd385e1aa86918bd39954c"
+          }
+        },
+        {
+          "id": 727101,
+          "episodeNum": 32,
+          "videoDuration": 133,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/f429531e0a70498788bde8e24cb6b699.jpg?auth_key=1786512111-0-0-4f044abd1bf439676f66bc46cfe1146a&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "610",
+            "video_720": "872",
+            "video_1080": "1405"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/1ed5d782f1c74e49b8ff222752ada8ee_720/main.m3u8?auth_key=1786512111-0-0-4e52d35070f785ae573f5539e9039442",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/529224e25fd448f5a3ef2e28d1a93288_1080/main.m3u8?auth_key=1786512111-0-0-1a06a7f5b464f05678469bcd3d0be04e",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/31b3d4cf61cc442aaa24f60cd1249ded_480/main.m3u8?auth_key=1786512111-0-0-264e0c2375869391e9ef04ba2734e924"
+          }
+        },
+        {
+          "id": 727102,
+          "episodeNum": 33,
+          "videoDuration": 76,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/b74ceb78489a4be0a480b5b49edabc63.jpg?auth_key=1786512111-0-0-9b503264f48154fe9d33f4343a16ca7e&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "585",
+            "video_720": "837",
+            "video_1080": "1352"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/a63d33fa91624571a339d03e94f20282_720/main.m3u8?auth_key=1786512111-0-0-c5be4ebfac9acd267c2325ac3889e46a",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/b17f8c188419449da840a16d61fa9260_1080/main.m3u8?auth_key=1786512111-0-0-675868667f9272e5a250e74a22deb009",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/66df6d9477854d9a9e533e8435e66402_480/main.m3u8?auth_key=1786512111-0-0-4ffdc760f6d38cf09acf3e1e0cc54086"
+          }
+        },
+        {
+          "id": 727103,
+          "episodeNum": 34,
+          "videoDuration": 98,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/084dfe2f524442c3b9e297f1b4dc191d.jpg?auth_key=1786512111-0-0-47238568d771c279d0e02a09018910de&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "552",
+            "video_720": "781",
+            "video_1080": "1249"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/30e044c99e5e479e9aa692f17da2e3f0_720/main.m3u8?auth_key=1786512111-0-0-ada2bfefbe9e3799ae63025c5e27679d",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/298151d8ee17459b80d4b2c068b35ea7_1080/main.m3u8?auth_key=1786512111-0-0-c9409bc54f8eddf6587e165c48d01414",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/37e66b81b6bc458ba8bc2b25e8e3234a_480/main.m3u8?auth_key=1786512111-0-0-179273aaf5a82a39e121d67c90fc05db"
+          }
+        },
+        {
+          "id": 727104,
+          "episodeNum": 35,
+          "videoDuration": 149,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/1fd9772dccb743c5856c9c3760ee0e34.jpg?auth_key=1786512111-0-0-71880f0cdbeb130b7bfdeaa60eceb6a1&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "639",
+            "video_720": "916",
+            "video_1080": "1468"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/0a81788021d94d9abb35d3115dddd414_720/main.m3u8?auth_key=1786512111-0-0-d41062b41594ffbeb3f0148a4031346a",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/f334f435ea964cf38df82f7ee5655649_1080/main.m3u8?auth_key=1786512111-0-0-3dfbcf5306598574fab56bb838250ed9",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/890056dca8304047a39fd802215f5bb2_480/main.m3u8?auth_key=1786512111-0-0-bddfa9fff6ed0b3398db71d8258ec22d"
+          }
+        },
+        {
+          "id": 727105,
+          "episodeNum": 36,
+          "videoDuration": 129,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/f7b4d2d2554d4162bd7f06a02f674b78.jpg?auth_key=1786512111-0-0-f5a05336670e714e8002bd55d462afb9&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "583",
+            "video_720": "830",
+            "video_1080": "1326"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/70572a6181bb449c9b0dcba658d0aa6f_720/main.m3u8?auth_key=1786512111-0-0-d803e0085e65d4c78d9f9974add5744b",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/6485d89f3dd04c1e928fc122753aa7fb_1080/main.m3u8?auth_key=1786512111-0-0-dede31aa08e93ab6e5b95a804cff6c19",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/4e71cfb71e9d4ae3b3b7c6f362c1dd58_480/main.m3u8?auth_key=1786512111-0-0-194976e9de2cea9da66e21fa1ffd84b5"
+          }
+        },
+        {
+          "id": 727106,
+          "episodeNum": 37,
+          "videoDuration": 86,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/257aa0da6d84409ebcbcc2794ed6b411.jpg?auth_key=1786512111-0-0-23040cd5e5c399dded5e6b710ca31f2a&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "612",
+            "video_720": "880",
+            "video_1080": "1409"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/68d2b2efad1149b79c0f7ff67edf3c47_720/main.m3u8?auth_key=1786512111-0-0-e7f1ee56889723218743a48839d655a1",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/777416f2fc544ae89440c27585f2bef7_1080/main.m3u8?auth_key=1786512111-0-0-eca979bed64646a76aa51820442767ad",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/20f0e62cc1eb4b1cb48a9e8d7eda49f8_480/main.m3u8?auth_key=1786512111-0-0-482204d653be5e6268f335f0409bd1de"
+          }
+        },
+        {
+          "id": 727107,
+          "episodeNum": 38,
+          "videoDuration": 155,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/72a53283c54144a09881dec266c6d8b8.jpg?auth_key=1786512111-0-0-743c54b45d4edde47b99c89bcf3936c6&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "568",
+            "video_720": "805",
+            "video_1080": "1283"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/3a92c79d1de44eef959f8fa12c20a0e5_720/main.m3u8?auth_key=1786512111-0-0-4d9b2cd67a6d54287a69df20cadedd16",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/ad15daa49e3a4c119962fe7865f1c65c_1080/main.m3u8?auth_key=1786512111-0-0-e5e2f45002123568285680a114347bde",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/c3f76de9743d4c81beabd59a712899ff_480/main.m3u8?auth_key=1786512111-0-0-9575612fc49c5d7f99db56412db1e536"
+          }
+        },
+        {
+          "id": 727108,
+          "episodeNum": 39,
+          "videoDuration": 105,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/4decdcc8798a41a5aad56259338bde78.jpg?auth_key=1786512111-0-0-ca8d647438582b604c1889ab98c036ce&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "605",
+            "video_720": "881",
+            "video_1080": "1440"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/a7c02bc0f16547dbbb9a785f94ae81af_720/main.m3u8?auth_key=1786512111-0-0-1fa787b6fcb90945c9de77a9b85ee7dd",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/f05c42a5717646da9ad8a36bb198f042_1080/main.m3u8?auth_key=1786512111-0-0-6dd86df30bf3dc2f733fb836165894b1",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/93004633167e4e78bbd2c516db634a9e_480/main.m3u8?auth_key=1786512111-0-0-638579277f9906040cbab230866b13a0"
+          }
+        },
+        {
+          "id": 727109,
+          "episodeNum": 40,
+          "videoDuration": 166,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/22d043b3dc934f15925ef5e505fd2d3b.jpg?auth_key=1786512111-0-0-942e9786cf2021895e368d4fa8c5abe5&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "618",
+            "video_720": "893",
+            "video_1080": "1447"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/eb3f7319f4cc406ebd7a2d393d504a3a_720/main.m3u8?auth_key=1786512111-0-0-979f270ce37afd6ecd2318a100035e71",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/ec494f88f5b7419085563035275b3f86_1080/main.m3u8?auth_key=1786512111-0-0-a21188b65df114704461b56728868e8b",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/a0bb9d4bf42f4edb8a18f1e40492dd89_480/main.m3u8?auth_key=1786512111-0-0-09c48caf7add6f178fa53cf8f918a88a"
+          }
+        },
+        {
+          "id": 727110,
+          "episodeNum": 41,
+          "videoDuration": 92,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/1851f20885dc460c9ad3b15c44c77ba8.jpg?auth_key=1786512111-0-0-ae4ee28200f22b2e4ccb2512d70133ef&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "669",
+            "video_720": "973",
+            "video_1080": "1588"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/54bf343576ff4d92a68d43c106596804_720/main.m3u8?auth_key=1786512111-0-0-4d5d1242b7e265e982be18743cf19470",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/2df041e0e2ca4f30bb0113ada6b5d13c_1080/main.m3u8?auth_key=1786512111-0-0-23319cbe6cf887c6d29f5ab8cecb6bb6",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/ad04ec1ca8a34f228de166ce9bb8023c_480/main.m3u8?auth_key=1786512111-0-0-bfe3c01de509530825b788162da9dc77"
+          }
+        },
+        {
+          "id": 727111,
+          "episodeNum": 42,
+          "videoDuration": 115,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/01f97313087b441497fe55afd2a5d1ad.jpg?auth_key=1786512111-0-0-5beaa6cee7b49b86244bcba0f3f2f1d4&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "587",
+            "video_720": "843",
+            "video_1080": "1373"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/658e569dbde947dd9a2f87b95352d992_720/main.m3u8?auth_key=1786512111-0-0-fb79ca52078f9a1f1ebca66311cc0582",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/96569f4fb3f44fa589b8003af3a41262_1080/main.m3u8?auth_key=1786512111-0-0-a611849351827c30e40564baf70797a4",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/0277a6e8af5c4ee3b679f5e15bc2535a_480/main.m3u8?auth_key=1786512111-0-0-79704b31c82f7c2b4011dcbb493a2e39"
+          }
+        },
+        {
+          "id": 727112,
+          "episodeNum": 43,
+          "videoDuration": 145,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/7648605841ee4259ab4219b4fb9e6a99.jpg?auth_key=1786512111-0-0-c19d41b6ca49cb55b06b0c3e5245027d&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "531",
+            "video_720": "746",
+            "video_1080": "1180"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/ebacceeae2714bf0be51d2f8153de87d_720/main.m3u8?auth_key=1786512111-0-0-53359cfd68368f11c46ed583b7c016c5",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/222786a568fa4b4e8ded45d2ebaa08b5_1080/main.m3u8?auth_key=1786512111-0-0-b53084c92e29123c18adfac8f43cdc99",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/ad2858e922be404d99b350984a69983d_480/main.m3u8?auth_key=1786512111-0-0-8b243e1e85d44bd60823cd35c22a79fa"
+          }
+        },
+        {
+          "id": 727113,
+          "episodeNum": 44,
+          "videoDuration": 120,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/5cb014d37b034bee8600abd5eed0773a.jpg?auth_key=1786512111-0-0-4f88a7938265cef8d4b0d18e9eb213f0&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "647",
+            "video_720": "952",
+            "video_1080": "1562"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/e712be0993bb47259ef9e7ee60238d16_720/main.m3u8?auth_key=1786512111-0-0-5ed85e9d06fdcdd353c4d809dc24073b",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/a109aac4fb3e4a6f9a62d075ba7bbf39_1080/main.m3u8?auth_key=1786512111-0-0-3d96fe2ed1aeba5de1263b5975768cd4",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/bf04bdca3f3d49a2afeb37813a076ccf_480/main.m3u8?auth_key=1786512111-0-0-b8cf3582a0a265d8c2a51c128e836a91"
+          }
+        },
+        {
+          "id": 727114,
+          "episodeNum": 45,
+          "videoDuration": 193,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/0d36f2b495874c0aaddb507e826d4a31.jpg?auth_key=1786512111-0-0-e8ae6d0b4f08685921937506e6227b4c&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "616",
+            "video_720": "886",
+            "video_1080": "1424"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/36551f782ec84ce293361a551a35e199_720/main.m3u8?auth_key=1786512111-0-0-d2f1c618474349d62cd2da3607bea98b",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/9be342effa71467bbda1ecd7467a45f3_1080/main.m3u8?auth_key=1786512111-0-0-ec55760142a5f8fef607ce2e0708b9c2",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/f1d23cfa0be3479bac6ddca08b4a4af8_480/main.m3u8?auth_key=1786512111-0-0-4d4948f815174848248f4bab313a760c"
+          }
+        },
+        {
+          "id": 727115,
+          "episodeNum": 46,
+          "videoDuration": 165,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/18c53af454024998b35f4c1b5204660b.jpg?auth_key=1786512111-0-0-8476bbcf346a134df67e138d68d77765&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "581",
+            "video_720": "827",
+            "video_1080": "1323"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/ab12cf4c7d80434ea7814ba7db61f2ad_720/main.m3u8?auth_key=1786512111-0-0-08561dc28bc04ad77e9380a4b48b03d9",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/304288401e314fd3a22fdcf2b997095a_1080/main.m3u8?auth_key=1786512111-0-0-edfbdeda7106c9cfd4b88107cf13874f",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/c67bbf4f93104862be73a52a1c512c77_480/main.m3u8?auth_key=1786512111-0-0-5d54447a6c1e00643d7e1c80a8bd2318"
+          }
+        },
+        {
+          "id": 727116,
+          "episodeNum": 47,
+          "videoDuration": 120,
+          "frameExtractionCover": "https://akamai-static.shorttv.live/images/cover/2025/08/20/0885ed9d59bd4747927696ecd35904b7.jpg?auth_key=1786512111-0-0-fe8833bf72976ebd21f78bd0d00c4384&process=mediagate",
+          "aspectRatio": 0.5625,
+          "lock": 1,
+          "alreadyLock": 2,
+          "needDecrypt": true,
+          "codec": {
+            "video_480": "aac",
+            "video_720": "aac",
+            "video_1080": "aac"
+          },
+          "bitRate": {
+            "video_480": "601",
+            "video_720": "857",
+            "video_1080": "1370"
+          },
+          "videoUrl": {
+            "video_720": "https://akamai-static.shorttv.live/hls-encrypted/923d472a1da2474fab0639dba3f9e557_720/main.m3u8?auth_key=1786512111-0-0-3889873d32da45471c4151fd87797850",
+            "video_1080": "https://akamai-static.shorttv.live/hls-encrypted/2ed250dcce9549969e9cd89b1316cbfe_1080/main.m3u8?auth_key=1786512111-0-0-f340f3e7b10a4534fbc5ec418cf9ceb7",
+            "video_480": "https://akamai-static.shorttv.live/hls-encrypted/fc0bc79502274f9b806de0b7fc232959_480/main.m3u8?auth_key=1786512111-0-0-2e06c69647a2070207a029712c44702f"
+          }
+        }
+      ]
+    }
+  }
+}

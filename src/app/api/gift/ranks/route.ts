@@ -16,7 +16,7 @@ export async function GET() {
 
   const ranks = await RankConfig.find()
     .sort({ rank: 1 })
-    .select("rank name coinsReward expReward requiredExp watchSeconds")
+    .select("rank name coinsReward shopeeCoinsReward expReward requiredExp watchSeconds")
     .lean();
 
   return NextResponse.json(

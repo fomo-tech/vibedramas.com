@@ -1,0 +1,14 @@
+{
+  "name": "standalone-hls-video-player",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone HLS video player",
+  "scripts": {
+    "start": "python3 -m http.server 8080 --bind 127.0.0.1",
+    "crawl": "node crawler.js",
+    "crawl:dramawave": "node dramawave-crawler.js"
+  },
+  "dependencies": {
+    "hls.js": "^1.6.17"
+  }
+}

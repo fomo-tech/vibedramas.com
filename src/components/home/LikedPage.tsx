@@ -163,7 +163,7 @@ export default function LikedPage() {
 
   return (
     <div className="h-full bg-black overflow-y-auto pb-24 lg:pb-8">
-      <div className="w-full max-w-lg mx-auto lg:max-w-4xl">
+      <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
         {/* Header */}
         <div className="flex items-center justify-between px-4 lg:px-6 pt-6 lg:pt-8 pb-4">
           <div className="flex items-center gap-2.5">

@@ -204,7 +204,7 @@ export default function TopupPage() {
     <div className="h-full overflow-y-auto bg-black pb-safe">
       {/* Unified sticky header — back button + title + coin balance + step indicator */}
       <div className="sticky top-0 z-30 backdrop-blur-2xl bg-black/80 border-b border-white/6 px-5 py-4 pt-safe">
-        <div className="max-w-lg mx-auto">
+        <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <button
@@ -258,7 +258,7 @@ export default function TopupPage() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ type: "spring", damping: 30, stiffness: 280 }}
           >
-            <div className="max-w-lg mx-auto px-5 py-6 space-y-6 pb-28">
+            <div className="mx-auto w-full max-w-lg px-5 py-6 space-y-6 pb-28 lg:max-w-6xl">
               {/* Hero */}
               <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-vibe-pink/20 via-black to-orange-500/10 border border-vibe-pink/20 p-6">
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-vibe-pink/20 rounded-full blur-3xl pointer-events-none" />
@@ -395,7 +395,7 @@ export default function TopupPage() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ type: "spring", damping: 30, stiffness: 280 }}
           >
-            <div className="max-w-lg mx-auto px-5 py-6 space-y-5 pb-28">
+            <div className="mx-auto w-full max-w-lg px-5 py-6 space-y-5 pb-28 lg:max-w-6xl">
               {/* Amount banner */}
               <div className="bg-linear-to-r from-vibe-pink/15 via-orange-500/10 to-transparent border border-vibe-pink/20 rounded-2xl p-5 text-center">
                 <p className="text-white/40 text-xs font-bold uppercase tracking-widest mb-1">

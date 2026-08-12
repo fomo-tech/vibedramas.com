@@ -33,7 +33,7 @@ export default function TopupHistoryPage() {
 
   return (
     <div className="h-full bg-black overflow-y-auto pb-24 lg:pb-8">
-      <div className="mx-auto max-w-lg lg:max-w-3xl xl:max-w-4xl">
+      <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
         <PageHeader title="Lịch sử nạp xu" />
 
         {loading && items.length === 0 ? (
@@ -46,7 +46,7 @@ export default function TopupHistoryPage() {
             title="Chưa có giao dịch nạp xu"
             subtitle="Mua gói bậc để nâng cấp hộp quà và nhận nhiều xu hơn mỗi lần mở hộp"
             ctaLabel="Xem gói bậc"
-            ctaHref="/vip"
+            ctaHref="/reward-box"
           />
         ) : (
           <div

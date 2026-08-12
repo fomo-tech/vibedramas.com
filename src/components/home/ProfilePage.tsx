@@ -68,16 +68,25 @@ function ProfileHeader() {
   const isVip = vipStatus && vipExpiry && new Date(vipExpiry) > new Date();
 
   return (
-    <div className="flex items-center justify-between px-4 lg:px-6 pt-6 lg:pt-8 pb-4">
+    <div className="relative overflow-hidden px-4 pb-5 pt-7 lg:px-6 lg:pb-6 lg:pt-9">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-orange-500/14 blur-[72px]" />
+        <div className="absolute -left-20 bottom-0 h-36 w-36 rounded-full bg-red-600/8 blur-[64px]" />
+      </div>
+      <div className="relative mb-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.24em] text-orange-400/80">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-orange-400" />
+        Hồ sơ thành viên
+      </div>
+      <div className="relative flex items-center justify-between">
       <div className="flex items-center gap-4">
         {/* Avatar Container with Glow & Gradient Ring */}
         <div className="relative shrink-0">
-          <div className={`w-16 h-16 lg:w-18 lg:h-18 rounded-full overflow-hidden p-[2px] bg-gradient-to-br ${
+          <div className={`w-16 h-16 lg:w-[72px] lg:h-[72px] rounded-[22px] overflow-hidden p-[2px] bg-gradient-to-br ${
             isVip 
               ? "from-amber-400 via-yellow-300 to-orange-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]" 
               : "from-white/10 to-white/5 border border-white/10"
           }`}>
-            <div className="w-full h-full rounded-full overflow-hidden bg-zinc-950">
+            <div className="w-full h-full rounded-[20px] overflow-hidden bg-zinc-950">
               <UserAvatar
                 name={user?.name ?? "?"}
                 avatar={user?.avatar}
@@ -97,7 +106,7 @@ function ProfileHeader() {
           {user ? (
             <>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-white font-extrabold text-lg lg:text-xl tracking-tight leading-none">
+                <span className="text-white font-black text-xl lg:text-2xl tracking-[-0.035em] leading-none">
                   {user.name}
                 </span>
                 {isVip && (
@@ -106,7 +115,7 @@ function ProfileHeader() {
                   </span>
                 )}
               </div>
-              <span className="text-white/40 text-xs mt-1 font-medium truncate max-w-[200px] lg:max-w-[250px]">
+              <span className="text-white/38 text-xs mt-1.5 font-medium truncate max-w-[200px] lg:max-w-[250px]">
                 {user.email}
               </span>
             </>
@@ -141,6 +150,7 @@ function ProfileHeader() {
           <Settings size={17} />
         </button>
       )}
+      </div>
     </div>
   );
 }
@@ -155,21 +165,21 @@ function CoinsCard() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -1, transition: { duration: 0.2 } }}
-      className="mx-4 lg:mx-6 mt-4 rounded-2xl overflow-hidden relative border border-white/[0.06] bg-zinc-900/45 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
+      className="mx-4 lg:mx-6 mt-1 rounded-[22px] overflow-hidden relative border border-amber-400/[0.14] bg-linear-to-br from-[#1a150c] via-[#12100e] to-[#100e0d] backdrop-blur-xl shadow-[0_18px_48px_rgba(0,0,0,0.42)]"
     >
       {/* Light highlights */}
       <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/[0.07] via-amber-500/[0.03] to-transparent pointer-events-none" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-yellow-400/30 via-amber-500/10 to-transparent" />
       
-      <div className="relative p-4 flex items-center justify-between">
+      <div className="relative p-4.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Animated Glowing Coin Icon Wrapper */}
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-yellow-500/20 to-amber-500/10 border border-yellow-500/25 flex items-center justify-center shadow-[0_0_18px_rgba(245,158,11,0.25)] relative overflow-hidden group">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400/25 to-amber-600/10 border border-yellow-500/25 flex items-center justify-center shadow-[0_0_22px_rgba(245,158,11,0.22)] relative overflow-hidden group">
             <CoinIcon size={24} />
           </div>
           <div>
-            <p className="text-white/40 text-[10px] font-extrabold uppercase tracking-widest leading-none">
-              Số dư xu
+            <p className="text-amber-200/45 text-[9px] font-black uppercase tracking-[0.18em] leading-none">
+              Ví xu của tôi
             </p>
             <div className="flex items-baseline gap-1 mt-1">
               <span className="font-black text-2xl tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-white via-yellow-100 to-amber-400">
@@ -182,11 +192,11 @@ function CoinsCard() {
           </div>
         </div>
 
-        <Link href="/vip">
+        <Link href="/reward-box">
           <motion.button
             whileHover={{ scale: 1.03, y: -0.5 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-500 to-amber-600 text-black text-xs font-black px-3.5 py-2 rounded-xl shadow-[0_4px_12px_rgba(245,158,11,0.3)] hover:shadow-[0_4px_18px_rgba(245,158,11,0.55)] transition-all cursor-pointer border border-yellow-400/20"
+            className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-xs font-black px-3.5 py-2.5 rounded-xl shadow-[0_6px_18px_rgba(245,158,11,0.25)] hover:shadow-[0_8px_24px_rgba(245,158,11,0.45)] transition-all cursor-pointer border border-yellow-300/30"
           >
             <CoinIcon size={12} className="text-black filter brightness-50" />
             Dùng xu
@@ -247,14 +257,14 @@ function VipStatusCard() {
         );
 
   return (
-    <Link href="/vip">
+    <Link href="/reward-box">
       <motion.div
         whileHover={{ y: -1 }}
         whileTap={{ scale: 0.99 }}
-        className="mx-4 mt-3.5 cursor-pointer overflow-hidden rounded-2xl border border-vibe-pink/20 bg-zinc-900/40 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:mx-6"
+        className="mx-4 mt-3.5 cursor-pointer overflow-hidden rounded-[22px] border border-orange-400/20 bg-linear-to-br from-[#18100d] via-[#11100f] to-[#120d0b] p-4 shadow-[0_16px_42px_rgba(0,0,0,0.36)] backdrop-blur-xl lg:mx-6"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-vibe-pink to-orange-500">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-orange-300/20 bg-gradient-to-br from-vibe-pink to-orange-500 shadow-[0_10px_25px_rgba(255,69,0,0.24)]">
             <Gift size={20} className="text-white" />
           </div>
           <div className="min-w-0 flex-1">
@@ -273,7 +283,7 @@ function VipStatusCard() {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${levelProgress}%` }}
-                className="h-full rounded-full bg-gradient-to-r from-vibe-pink to-orange-400"
+                className="h-full rounded-full bg-gradient-to-r from-[#ff3d00] via-orange-500 to-amber-400"
               />
             </div>
             <div className="mt-1.5 flex justify-between text-[10px] text-white/35">
@@ -289,7 +299,7 @@ function VipStatusCard() {
   if (!isVip) {
     // Not VIP — show upgrade banner
     return (
-      <Link href="/vip">
+      <Link href="/reward-box">
         <motion.div
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.98 }}
@@ -386,7 +396,7 @@ function VipStatusCard() {
               </p>
             </div>
           </div>
-          <Link href="/vip">
+          <Link href="/reward-box">
             <span className="text-white/40 text-xs hover:text-vibe-pink transition-colors flex items-center gap-1 cursor-pointer">
               Mua gói khác
               <ChevronRight size={12} />
@@ -609,13 +619,13 @@ function PerksRow() {
   ];
 
   return (
-    <div className="mx-4 lg:mx-6 mt-3 rounded-2xl overflow-hidden border border-white/6 bg-zinc-900/60 grid grid-cols-4">
+    <div className="mx-4 lg:mx-6 mt-3 rounded-[22px] overflow-hidden border border-white/7 bg-[#11100f]/90 grid grid-cols-4 shadow-[0_12px_36px_rgba(0,0,0,0.26)]">
       {items.map(({ icon: Icon, label, value, color }, index) => (
         <div
           key={label}
-          className={`flex flex-col items-center justify-center px-2 py-3.5 ${index < items.length - 1 ? "border-r border-white/6" : ""}`}
+          className={`relative flex flex-col items-center justify-center px-2 py-3.5 ${index < items.length - 1 ? "border-r border-white/6" : ""}`}
         >
-          <div className="w-8 h-8 rounded-xl bg-white/6 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-white/6 border border-white/5 flex items-center justify-center">
             <Icon size={14} style={{ color }} />
           </div>
           <span className="mt-2 text-white text-sm font-black tracking-tight leading-none text-center">
@@ -642,10 +652,10 @@ function MenuRow({ icon: Icon, label, badge, onClick }: MenuRowProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-white/4 active:bg-white/6 transition-colors group"
+      className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-orange-500/[0.045] active:bg-white/6 transition-colors group"
     >
       <div className="flex items-center gap-3">
-        <div className="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-white/8 flex items-center justify-center transition-all shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/5 group-hover:bg-orange-500/10 group-hover:border-orange-400/15 flex items-center justify-center transition-all shrink-0">
           <Icon
             size={14}
             className="text-white/40 group-hover:text-white/65 transition-colors"
@@ -668,7 +678,7 @@ function MenuRow({ icon: Icon, label, badge, onClick }: MenuRowProps) {
 
 function MenuCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-4 lg:mx-6 rounded-2xl bg-zinc-900/60 border border-white/6 overflow-hidden divide-y divide-white/5">
+    <div className="mx-4 lg:mx-6 rounded-[22px] bg-[#11100f]/90 border border-white/7 overflow-hidden divide-y divide-white/6 shadow-[0_12px_36px_rgba(0,0,0,0.22)]">
       {children}
     </div>
   );
@@ -691,8 +701,11 @@ export default function ProfilePage() {
   }, [user, openLoginModal, openSupportChat, setUnread]);
 
   return (
-    <div className="h-full bg-black overflow-y-auto pt-safe pb-24 lg:pb-8">
-      <div className="max-w-lg mx-auto lg:max-w-xl">
+    <div className="relative h-full overflow-y-auto bg-[#080706] pt-safe pb-24 lg:pb-8">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute left-1/2 top-0 h-[360px] w-[680px] -translate-x-1/2 bg-[radial-gradient(ellipse,rgba(255,69,0,0.1),transparent_66%)]" />
+      </div>
+      <div className="relative mx-auto w-full max-w-lg lg:max-w-6xl">
         <ProfileHeader />
 
         {/* Coins + VIP cards */}

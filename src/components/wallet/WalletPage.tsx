@@ -110,7 +110,7 @@ export default function WalletPage() {
 
   return (
     <div className="min-h-full h-full bg-black overflow-y-auto pb-24 lg:pb-8">
-      <div className="max-w-lg mx-auto">
+      <div className="mx-auto w-full max-w-lg lg:max-w-6xl">
         <PageHeader title="Ví của tôi" />
 
         {/* Balance card */}

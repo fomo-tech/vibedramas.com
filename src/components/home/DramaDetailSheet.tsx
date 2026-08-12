@@ -14,6 +14,9 @@ interface Episode {
   filename: string;
   link_m3u8: string;
   link_embed: string;
+  subtitle_vtt?: string;
+  subtitle_srt?: string;
+  has_vietnamese_audio?: boolean;
 }
 
 interface RelatedDrama {

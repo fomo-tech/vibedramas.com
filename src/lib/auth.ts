@@ -1,5 +1,13 @@
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers";
+
+export interface AuthTokenPayload extends JWTPayload {
+  userId?: string;
+  name?: string;
+  email?: string;
+  avatar?: string;
+  role?: string;
+}
 
 const secretKey = process.env.JWT_SECRET;
 if (!secretKey) {
@@ -8,11 +16,14 @@ if (!secretKey) {
     "[AUTH] CRITICAL: JWT_SECRET env var is not set. Authentication is insecure. Set a strong random secret in your .env.local",
   );
 }
-const key = new TextEncoder().encode(
-  secretKey ?? "MISSING_SECRET_REPLACE_IMMEDIATELY",
-);
+const key = secretKey
+  ? new TextEncoder().encode(secretKey)
+  : new Uint8Array(0);
 
-export async function encrypt(payload: any) {
+export async function encrypt(payload: JWTPayload) {
+  if (!secretKey) {
+    throw new Error("JWT_SECRET is not configured");
+  }
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -20,7 +31,7 @@ export async function encrypt(payload: any) {
     .sign(key);
 }
 
-export async function decrypt(input: string): Promise<any> {
+export async function decrypt(input: string): Promise<AuthTokenPayload | null> {
   try {
     const { payload } = await jwtVerify(input, key, {
       algorithms: ["HS256"],
@@ -86,7 +97,17 @@ export async function getUserSession(): Promise<UserSessionPayload | null> {
   const cookieStore = await cookies();
   const session = cookieStore.get("user_session")?.value;
   if (!session) return null;
-  return await decrypt(session);
+  const payload = await decrypt(session);
+  if (
+    !payload?.userId ||
+    typeof payload.name !== "string" ||
+    typeof payload.email !== "string" ||
+    typeof payload.avatar !== "string" ||
+    typeof payload.role !== "string"
+  ) {
+    return null;
+  }
+  return payload as UserSessionPayload;
 }
 
 export async function deleteUserSession() {

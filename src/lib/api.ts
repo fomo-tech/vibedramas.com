@@ -16,6 +16,9 @@ export const API_ROUTES = {
     config: "/api/gift/config",
     open: "/api/gift/open",
     ranks: "/api/gift/ranks",
+    watchStart: "/api/gift/watch/start",
+    watchHeartbeat: "/api/gift/watch/heartbeat",
+    shopeeClick: "/api/gift/shopee-click",
   },
   vip: {
     purchase: "/api/vip/purchase",

@@ -7,6 +7,14 @@ import { getUserSession } from "@/lib/auth";
 import { getCache, setCache } from "@/lib/cache";
 import { rateLimit } from "@/lib/rateLimit";
 
+const VIETNAMESE_PLAYBACK_FILTER = {
+  $or: [
+    { has_vietnamese_audio: true },
+    { subtitle_vtt: { $exists: true, $nin: [null, ""] } },
+    { subtitle_srt: { $exists: true, $nin: [null, ""] } },
+  ],
+};
+
 // ─── Resolve episode1 for a batch of dramas (single query, not N+1) ──────────
 async function attachEpisode1(dramas: any[]): Promise<any[]> {
   const dramaIds = dramas.map((d) => String(d._id));
@@ -16,9 +24,14 @@ async function attachEpisode1(dramas: any[]): Promise<any[]> {
   const ep1Names = ["1", "01", "Tập 1", "Tập 01", "Episode 1", "Full"];
   const episodes = await Episode.find({
     dramaId: { $in: objectIds },
-    $or: [
-      { name: { $in: ep1Names } },
-      { name: { $regex: /^(tập|tap|episode|ep|phần|phan)?\s*0*1\b/i } },
+    $and: [
+      VIETNAMESE_PLAYBACK_FILTER,
+      {
+        $or: [
+          { name: { $in: ep1Names } },
+          { name: { $regex: /^(tập|tap|episode|ep|phần|phan)?\s*0*1\b/i } },
+        ],
+      },
     ],
     link_m3u8: { $exists: true, $nin: [null, ""] },
   })
@@ -49,6 +62,7 @@ async function attachEpisode1(dramas: any[]): Promise<any[]> {
     const fallback = await Episode.find({
       dramaId: { $in: missingIds },
       link_m3u8: { $exists: true, $nin: [null, ""] },
+      ...VIETNAMESE_PLAYBACK_FILTER,
     })
       .sort({ createdAt: 1 })
       .lean()
@@ -158,7 +172,7 @@ export async function GET(req: NextRequest) {
     }
 
     // ── Guest feed: cache for 5 minutes (same random set per window) ────────
-    const cacheKey = "feed:guest:v1";
+    const cacheKey = "feed:guest:v2:vi-playback";
     const cached = await getCache<any[]>(cacheKey);
 
     let feedItems: any[];
